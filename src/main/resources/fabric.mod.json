@@ -17,6 +17,9 @@
     ],
     "main": [
       "ch.loewe.normal_use_client.fabricclient.FabricClient"
+    ],
+    "modmenu": [
+      "ch.loewe.normal_use_client.fabricclient.modmenu.ModMenuIntegration"
     ]
   },
   "mixins": [
