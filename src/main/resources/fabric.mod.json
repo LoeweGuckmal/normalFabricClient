@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "fabricclient",
+  "version": "${version}",
+  "name": "OpenRGB-fabric-client",
+  "description": "My personal fabric client to play normal",
+  "authors": [
+    "LoeweGuckmal"
+  ],
+  "icon": "assets/loewe/openrgb.png",
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "ch.loewe.normal_use_client.fabricclient.client.FabricClientClient"
+    ],
+    "main": [
+      "ch.loewe.normal_use_client.fabricclient.FabricClient"
+    ]
+  },
+  "mixins": [
+    "FabricClient.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.12",
+    "fabric": "*",
+    "minecraft": "1.19.3"
+  }
+}
