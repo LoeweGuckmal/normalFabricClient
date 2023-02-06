@@ -1,9 +1,11 @@
 package ch.loewe.normal_use_client.fabricclient.modmenu;
 
+import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
@@ -12,6 +14,7 @@ import net.minecraft.text.Text;
 import java.util.function.Supplier;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.mc;
 
 public class ConfigScreen extends SimpleOptionsScreen {
     private final Screen parent;
@@ -35,6 +38,10 @@ public class ConfigScreen extends SimpleOptionsScreen {
             }
 
             client.setScreen(this.parent);
+            if (mc.player != null)
+                DownloadManager.prepareDownload(mc.player, false);
+            else
+                logger.info("asfasf");
         }).dimensions(this.width / 2 - 100, this.height - 27, 200, 20).build());
     }
 

@@ -9,7 +9,8 @@
     "MinecraftClientAccessor",
     "MinecraftClientMixin",
     "MouseMixin",
-    "ZoomMixin"
+    "ZoomMixin",
+    "MixinPlayerEntityRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

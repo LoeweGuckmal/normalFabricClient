@@ -180,6 +180,7 @@ public class Config {
         getStandardColor();
         getShowFps();
         getShowCords();
+        getStandardZoom();
         getDebug();
 
         write();
