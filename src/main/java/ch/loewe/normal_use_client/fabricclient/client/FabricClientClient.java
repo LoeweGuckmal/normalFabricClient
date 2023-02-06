@@ -119,8 +119,5 @@ public class FabricClientClient implements ClientModInitializer {
         if (key.equals(propertyKeys.standardColor())){
             OpenRGB.loadMode(colorMap.get(Config.getStandardColor()));
         }
-        if (key.equals(propertyKeys.maxZoom())){
-
-        }
     }
 }

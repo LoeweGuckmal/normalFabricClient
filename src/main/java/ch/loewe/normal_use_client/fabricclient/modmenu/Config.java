@@ -40,8 +40,8 @@ public class Config {
         return getBoolean(propertyKeys.showCords(), DefaultConfig.getShowCords());
     }
 
-    public static int getMaxZoom() {
-        return getInt(propertyKeys.maxZoom(), DefaultConfig.getMaxZoom());
+    public static int getStandardZoom() {
+        return getInt(propertyKeys.standardZoom(), DefaultConfig.getStandardZoom());
     }
 
     public static boolean getDebug() {

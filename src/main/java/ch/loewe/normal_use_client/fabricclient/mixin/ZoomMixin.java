@@ -1,7 +1,5 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
-import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
-import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import ch.loewe.normal_use_client.fabricclient.zoom.Zoom;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -31,12 +29,12 @@ public class ZoomMixin {
             double fov = callbackInfo.getReturnValue();
             if (zoomLevel > 1)
                 zoomLevel = 1;
-            //if (zoomLevel < 9.12575328614815E-5D)
-                //zoomLevel = 9.12575328614815E-5D;
+            if (zoomLevel < 9.12575328614815E-5D)
+                zoomLevel = 9.12575328614815E-5D;
             if (!(zoomLevel == oldZoomLevel)) {
                 zoom_X = 1 / zoomLevel;
-                if (zoom_X > getZoomX())
-                    zoom_X = getZoomX();
+                if (zoom_X > 10000)
+                    zoom_X = 10000;
             }
             oldZoomLevel = zoomLevel;
             callbackInfo.setReturnValue(fov * zoomLevel);

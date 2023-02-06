@@ -22,7 +22,7 @@ public class ModMenuButtons {
             getNewBoolButton(propertyKeys.showFps(), DefaultConfig.getShowFps()),
             getNewBoolButton(propertyKeys.showCords(), DefaultConfig.getShowCords()),
 
-            getNewIntSlider(propertyKeys.maxZoom(), DefaultConfig.getMaxZoom(), Config.getMaxZoom()),
+            getNewIntSlider(propertyKeys.standardZoom(), DefaultConfig.getStandardZoom(), Config.getStandardZoom()),
 
             getNewBoolButton(propertyKeys.debug(), Config.getDebug())
     };
@@ -86,6 +86,6 @@ public class ModMenuButtons {
     //Enums
     public enum StandardColor {
         YELLOW,
-        BLUEGREEN
+        BLUEGREEN;
     }
 }

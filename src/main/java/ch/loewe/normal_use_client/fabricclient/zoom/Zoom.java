@@ -33,12 +33,13 @@ public class Zoom {
         if (zoomStarting()) {
             zoomStarted();
             enableSmoothCamera();
+            zoomLevel = getStandardZoom();
         }
 
         if (zoomStopping()) {
             zoomStopped();
             resetSmoothCamera();
-            zoomLevel = 0.33;
+            zoomLevel = getStandardZoom();
         }
 
     }
@@ -82,31 +83,25 @@ public class Zoom {
     }
 
 
-    public static Double getZoomX() {
-        switch (Config.getMaxZoom()) {
+    public static Double getStandardZoom() {
+        switch (Config.getStandardZoom()) {
             case 1 -> {
-                return 3.03D;
+                return 1D;
             }
             case 2 -> {
-                return 5D;
+                return 0.5D;
             }
             case 3 -> {
-                return 10D;
+                return 0.33D;
             }
             case 4 -> {
-                return 20D;
+                return 0.2D;
             }
             case 5 -> {
-                return 50D;
-            }
-            case 6 -> {
-                return 100D;
-            }
-            case 7 -> {
-                return 300D;
+                return 0.1D;
             }
             default -> {
-                return 10000D;
+                return 0.05D;
             }
         }
     }

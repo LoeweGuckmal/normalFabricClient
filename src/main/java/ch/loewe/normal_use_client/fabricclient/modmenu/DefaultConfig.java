@@ -23,8 +23,8 @@ public class DefaultConfig {
     }
 
     //zoom
-    public static MinMaxDefHolder getMaxZoom() {
-        return new MinMaxDefHolder(1, 8, 3);
+    public static MinMaxDefHolder getStandardZoom() {
+        return new MinMaxDefHolder(1, 6, 3);
     }
 
     //debug
@@ -55,8 +55,8 @@ public class DefaultConfig {
             return "show_cords";
         }
 
-        public static String maxZoom() {
-            return "max_zoom";
+        public static String standardZoom() {
+            return "standard_zoom";
         }
 
         public static String debug() {

@@ -12,13 +12,20 @@
     "loewe.button.standard_color.yellow": "yellow",
     "loewe.button.standard_color.bluegreen": "blue/green",
     "loewe.button.standard_color.tooltip.yellow": "The standard color is set to: \n§eyellow.",
-    "loewe.button.standard_color.tooltip.bluegreen": "The standard color is set to: \n§9blue§f/§agreen.",
+    "loewe.button.standard_color.tooltip.bluegreen": "The standard color is set to: \n§bblue§f/§agreen.",
 
     "loewe.button.show_fps": "Show Fps",
-    "loewe.button.show_fps.tooltip": "This will \nshow the Fps at the top left corner.",
+    "loewe.button.show_fps.tooltip": "This will show the Fps at the top left corner.",
 
     "loewe.button.show_cords": "Show Cords",
     "loewe.button.show_cords.tooltip": "This will show the cords at the top left corner.",
+
+    "loewe.button.standard_zoom": "standard zoom",
+    "loewe.button.standard_zoom.tooltip": "Changes what the standard zoom amount is.",
+    "loewe.button.standard_zoom.tooltip.min": "Changes what the standard zoom amount is.\n=0",
+    "loewe.button.standard_zoom.tooltip.max": "Changes what the standard zoom amount is.\nmax",
+    "loewe.button.standard_zoom.min": "1",
+    "loewe.button.standard_zoom.max": "6",
 
     "loewe.button.debug": "Debug",
     "loewe.button.debug.tooltip": "This enables the debug mode of this mod."
