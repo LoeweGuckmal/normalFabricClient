@@ -1,14 +1,15 @@
 package ch.loewe.normal_use_client.fabricclient.zoom;
 
+import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil.Type;
+import net.minecraft.client.util.InputUtil;
 
 public class Zoom {
     private static boolean currentlyZoomed;
     private static KeyBinding keyBinding;
-    private static KeyBinding smoothCameraBinding;
     private static boolean originalSmoothCameraEnabled;
     private static final MinecraftClient mc = MinecraftClient.getInstance();
     public static double zoomLevel = 0.33D;
@@ -18,7 +19,7 @@ public class Zoom {
     }
 
     public static void onInitializeClient() {
-        keyBinding = new KeyBinding("key.zoom.zoom", Type.KEYSYM, 67, "category.zoom.zoom");
+        keyBinding = new KeyBinding("loewe.key.zoom", Type.KEYSYM, InputUtil.GLFW_KEY_C, "loewe.category");
         currentlyZoomed = false;
         originalSmoothCameraEnabled = false;
         KeyBindingHelper.registerKeyBinding(keyBinding);
@@ -78,5 +79,35 @@ public class Zoom {
             disableSmoothCamera();
         }
 
+    }
+
+
+    public static Double getZoomX() {
+        switch (Config.getMaxZoom()) {
+            case 1 -> {
+                return 3.03D;
+            }
+            case 2 -> {
+                return 5D;
+            }
+            case 3 -> {
+                return 10D;
+            }
+            case 4 -> {
+                return 20D;
+            }
+            case 5 -> {
+                return 50D;
+            }
+            case 6 -> {
+                return 100D;
+            }
+            case 7 -> {
+                return 300D;
+            }
+            default -> {
+                return 10000D;
+            }
+        }
     }
 }

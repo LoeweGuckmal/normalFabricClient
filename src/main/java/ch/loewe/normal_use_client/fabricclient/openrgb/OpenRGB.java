@@ -6,16 +6,13 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class OpenRGB {
-    public static boolean loadMode(String mode) {
+    public static void loadMode(String mode) {
         String urlString = "http://127.0.0.1:6742/" + mode;
         try {
             URL url = new URL(urlString);
             URLConnection conn = url.openConnection();
             InputStream is = conn.getInputStream();
             is.close();
-            return true;
-        } catch (IOException ignored) {
-            return false;
-        }
+        } catch (IOException ignored) {}
     }
 }

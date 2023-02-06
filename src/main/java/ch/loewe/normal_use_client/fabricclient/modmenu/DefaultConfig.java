@@ -1,63 +1,62 @@
 package ch.loewe.normal_use_client.fabricclient.modmenu;
 
+import ch.loewe.normal_use_client.fabricclient.modmenu.ModMenuButtons.*;
+
 public class DefaultConfig {
     public DefaultConfig() {
     }
 
-    protected static MinMaxHolder getRawRadiusBound() {
-        return new MinMaxHolder(32, 0);
+    //rgb
+    public static boolean getDoRgb() {
+        return true;
+    }
+    public static StandardColor getStandardColor(){
+        return StandardColor.YELLOW;
     }
 
-    protected static MinMaxHolder getTryLimitBound() {
-        return new MinMaxHolder(1000, 1);
+    //overlay
+    public static boolean getShowFps(){
+        return true;
+    }
+    public static boolean getShowCords(){
+        return true;
     }
 
-    protected static int getRenderRadius() {
-        return 0;
+    //zoom
+    public static MinMaxDefHolder getMaxZoom() {
+        return new MinMaxDefHolder(1, 8, 3);
     }
 
-    protected static int getPregenRadius() {
-        return 5;
-    }
-
-    protected static int getTryLimit() {
-        return 100;
-    }
-
-    protected static boolean getCloseUnsafely() {
+    //debug
+    public static boolean getDebug() {
         return false;
     }
 
-    protected static boolean getDebug() {
-        return false;
-    }
+    /*public static MinMaxDefHolder getTestSlider() {
+        return new MinMaxDefHolder(2, 12, 5);
+    }*/
+
 
     public static class propertyKeys {
         public propertyKeys() {
         }
 
-        public static String pregen() {
-            return pregen(true) + "_radius";
+        public static String doRgb(){
+            return "do_rgb_on_damage";
+        }
+        public static String standardColor(){
+            return "standard_color";
         }
 
-        public static String pregen(boolean raw) {
-            return raw ? "pregen_chunk" : pregen();
+        public static String showFps(){
+            return "show_fps";
+        }
+        public static String showCords(){
+            return "show_cords";
         }
 
-        public static String render() {
-            return render(true) + "_radius";
-        }
-
-        public static String render(boolean raw) {
-            return raw ? "pre_render" : render();
-        }
-
-        public static String tryLimit() {
-            return "chunk_try_limit";
-        }
-
-        public static String unsafeClose() {
-            return "close_loading_screen_unsafely";
+        public static String maxZoom() {
+            return "max_zoom";
         }
 
         public static String debug() {

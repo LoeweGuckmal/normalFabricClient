@@ -1,6 +1,7 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
 import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
+import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import ch.loewe.normal_use_client.fabricclient.zoom.Zoom;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -10,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static ch.loewe.normal_use_client.fabricclient.zoom.Zoom.zoomLevel;
-import static ch.loewe.normal_use_client.fabricclient.zoom.Zoom.zoom_X;
+import static ch.loewe.normal_use_client.fabricclient.zoom.Zoom.*;
 
 @Environment(EnvType.CLIENT)
 @Mixin({GameRenderer.class})
@@ -31,12 +31,12 @@ public class ZoomMixin {
             double fov = callbackInfo.getReturnValue();
             if (zoomLevel > 1)
                 zoomLevel = 1;
-            if (zoomLevel < 9.12575328614815E-5D)
-                zoomLevel = 9.12575328614815E-5D;
+            //if (zoomLevel < 9.12575328614815E-5D)
+                //zoomLevel = 9.12575328614815E-5D;
             if (!(zoomLevel == oldZoomLevel)) {
                 zoom_X = 1 / zoomLevel;
-                if (zoom_X > 10000D)
-                    zoom_X = 10000D;
+                if (zoom_X > getZoomX())
+                    zoom_X = getZoomX();
             }
             oldZoomLevel = zoomLevel;
             callbackInfo.setReturnValue(fov * zoomLevel);

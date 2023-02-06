@@ -1,4 +1,25 @@
 {
-    "key.zoom.zoom": "Toggle Zoom",
-    "category.zoom.zoom": "Zoom"
+    "loewe.category": "Loewe",
+    "loewe.screen.config": "Loewe settings",
+    "loewe.key.zoom": "Zoom",
+    "loewe.key.settings": "Open settings",
+
+
+    "loewe.button.do_rgb_on_damage": "Change the lights",
+    "loewe.button.do_rgb_on_damage.tooltip": "Changes if the lights change when the player gets damage or regenerates Health.",
+
+    "loewe.button.standard_color": "Standard color",
+    "loewe.button.standard_color.yellow": "yellow",
+    "loewe.button.standard_color.bluegreen": "blue/green",
+    "loewe.button.standard_color.tooltip.yellow": "The standard color is set to: \n§eyellow.",
+    "loewe.button.standard_color.tooltip.bluegreen": "The standard color is set to: \n§9blue§f/§agreen.",
+
+    "loewe.button.show_fps": "Show Fps",
+    "loewe.button.show_fps.tooltip": "This will \nshow the Fps at the top left corner.",
+
+    "loewe.button.show_cords": "Show Cords",
+    "loewe.button.show_cords.tooltip": "This will show the cords at the top left corner.",
+
+    "loewe.button.debug": "Debug",
+    "loewe.button.debug.tooltip": "This enables the debug mode of this mod."
 }
