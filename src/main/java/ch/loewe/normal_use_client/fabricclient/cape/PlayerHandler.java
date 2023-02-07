@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
 
 public class PlayerHandler {
-    private static HashMap<UUID, PlayerHandler> instances = new HashMap();
+    private static final HashMap<UUID, PlayerHandler> instances = new HashMap<>();
     private boolean hasStaticCape = false;
     private boolean hasEars = false;
     private boolean hasAnimatedCape = false;
@@ -31,7 +31,7 @@ public class PlayerHandler {
     private Int2ObjectMap<NativeImage> animatedCape;
     private long lastFrameTime = 0L;
     private int lastFrame = 0;
-    private int capeInterval = 100;
+    private final int capeInterval = 100;
 
     public PlayerHandler(PlayerEntity player) {
         this.playerUUID = player.getUuid();
@@ -39,7 +39,7 @@ public class PlayerHandler {
     }
 
     public static PlayerHandler getFromPlayer(PlayerEntity player) {
-        PlayerHandler playerHandler = (PlayerHandler)instances.get(player.getUuid());
+        PlayerHandler playerHandler = instances.get(player.getUuid());
         return playerHandler == null ? new PlayerHandler(player) : playerHandler;
     }
 
@@ -89,8 +89,6 @@ public class PlayerHandler {
 
             NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
 
-            logger.warn(capeImage.getWidth());
-            logger.warn(capeImage.getHeight());
             for(x = 0; x < capeImage.getWidth(); ++x) {
                 for(int y = 0; y < capeImage.getHeight(); ++y) {
                     imgNew.setColor(x, y, capeImage.getColor(x, y));
@@ -149,10 +147,7 @@ public class PlayerHandler {
     }
 
     private void applyTexture(Identifier resourceLocation, NativeImage nativeImage) {
-        MinecraftClient.getInstance().execute(() -> {
-            logger.warn(nativeImage.toString());
-            MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, new NativeImageBackedTexture(nativeImage));
-        });
+        MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, new NativeImageBackedTexture(nativeImage)));
     }
 
     public String toString() {

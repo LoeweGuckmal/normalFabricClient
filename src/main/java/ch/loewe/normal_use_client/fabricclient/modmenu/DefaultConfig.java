@@ -27,6 +27,11 @@ public class DefaultConfig {
         return new MinMaxDefHolder(1, 6, 3);
     }
 
+    //cape
+    public static boolean getHasCapeGlint() {
+        return true;
+    }
+
     //debug
     public static boolean getDebug() {
         return false;
@@ -57,6 +62,10 @@ public class DefaultConfig {
 
         public static String standardZoom() {
             return "standard_zoom";
+        }
+
+        public static String hasCapeGlint() {
+            return "has_cape_glint";
         }
 
         public static String debug() {

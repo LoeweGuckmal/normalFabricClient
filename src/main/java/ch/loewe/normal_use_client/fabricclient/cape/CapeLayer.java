@@ -18,8 +18,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-    public CapeLayer(EntityRenderer p_i50950_1_) {
-        super((FeatureRendererContext)p_i50950_1_);
+    public CapeLayer(EntityRenderer<?> p_i50950_1_) {
+        super((FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>) p_i50950_1_);
     }
 
     public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
@@ -29,12 +29,12 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
             if (itemStack.getItem() != Items.ELYTRA || playerHandler.getForceHideElytra() && !playerHandler.getForceShowElytra()) {
                 matrixStackIn.push();
                 matrixStackIn.translate(0.0D, 0.0D, 0.125D);
-                double d0 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevCapeX, entitylivingbaseIn.capeX) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevX, entitylivingbaseIn.getX());
-                double d1 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevCapeY, entitylivingbaseIn.capeY) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevY, entitylivingbaseIn.getY());
-                double d2 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevCapeZ, entitylivingbaseIn.capeZ) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevZ, entitylivingbaseIn.getZ());
+                double d0 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevCapeX, entitylivingbaseIn.capeX) - MathHelper.lerp(partialTicks, entitylivingbaseIn.prevX, entitylivingbaseIn.getX());
+                double d1 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevCapeY, entitylivingbaseIn.capeY) - MathHelper.lerp(partialTicks, entitylivingbaseIn.prevY, entitylivingbaseIn.getY());
+                double d2 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevCapeZ, entitylivingbaseIn.capeZ) - MathHelper.lerp(partialTicks, entitylivingbaseIn.prevZ, entitylivingbaseIn.getZ());
                 float f = entitylivingbaseIn.prevBodyYaw + (entitylivingbaseIn.bodyYaw - entitylivingbaseIn.prevBodyYaw);
-                double d3 = (double)MathHelper.sin(f * 0.017453292F);
-                double d4 = (double)(-MathHelper.cos(f * 0.017453292F));
+                double d3 = MathHelper.sin(f * 0.017453292F);
+                double d4 = -MathHelper.cos(f * 0.017453292F);
                 float f1 = (float)d1 * 10.0F;
                 f1 = MathHelper.clamp(f1, -6.0F, 32.0F);
                 float f2 = (float)(d0 * d3 + d2 * d4) * 100.0F;
@@ -47,6 +47,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 
                 float f4 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevStrideDistance, entitylivingbaseIn.strideDistance);
                 f1 += MathHelper.sin(MathHelper.lerp(partialTicks, entitylivingbaseIn.prevHorizontalSpeed, entitylivingbaseIn.horizontalSpeed) * 6.0F) * 32.0F * f4;
+                f1 -= 180.0F;
                 if (entitylivingbaseIn.isInSneakingPose()) {
                     f1 += 25.0F;
                 }
@@ -61,7 +62,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
                     vertexConsumer = ItemRenderer.getItemGlintConsumer(bufferIn, RenderLayer.getEntityTranslucent(entitylivingbaseIn.getCapeTexture()), false, false);
                 }
 
-                ((PlayerEntityModel)this.getContextModel()).renderCape(matrixStackIn, vertexConsumer, packedLightIn, OverlayTexture.DEFAULT_UV);
+                this.getContextModel().renderCape(matrixStackIn, vertexConsumer, packedLightIn, OverlayTexture.DEFAULT_UV);
                 matrixStackIn.pop();
             }
         }

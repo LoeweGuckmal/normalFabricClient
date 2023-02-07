@@ -19,10 +19,12 @@ public class ModMenuButtons {
             getNewBoolButton(propertyKeys.doRgb(), Config.getDoRgb()),
             getNewEnumButton(propertyKeys.standardColor(), StandardColor.valueOf(Config.getStandardColor().toUpperCase())),
 
-            getNewBoolButton(propertyKeys.showFps(), DefaultConfig.getShowFps()),
-            getNewBoolButton(propertyKeys.showCords(), DefaultConfig.getShowCords()),
+            getNewBoolButton(propertyKeys.showFps(), Config.getShowFps()),
+            getNewBoolButton(propertyKeys.showCords(), Config.getShowCords()),
 
             getNewIntSlider(propertyKeys.standardZoom(), DefaultConfig.getStandardZoom(), Config.getStandardZoom()),
+
+            getNewBoolButton(propertyKeys.hasCapeGlint(), Config.getHasCapeGlint()),
 
             getNewBoolButton(propertyKeys.debug(), Config.getDebug())
     };

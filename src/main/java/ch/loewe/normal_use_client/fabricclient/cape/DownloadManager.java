@@ -1,6 +1,7 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
 import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
+import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileReader;
@@ -81,8 +82,9 @@ public class DownloadManager {
 
     private static void readProfile(PlayerHandler playerHandler, Reader reader) {
         DownloadManager.ProfileResult profileResult = (DownloadManager.ProfileResult)(new Gson()).fromJson(reader, DownloadManager.ProfileResult.class);
-        playerHandler.setHasCapeGlint(profileResult.capeGlint);
-        playerHandler.setUpsideDown(!profileResult.upsideDown);
+        //playerHandler.setHasCapeGlint(profileResult.capeGlint);
+        playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
+        playerHandler.setUpsideDown(profileResult.upsideDown);
         if (profileResult.textures.get("cape") != null) {
             playerHandler.applyCape((String)profileResult.textures.get("cape"));
         }

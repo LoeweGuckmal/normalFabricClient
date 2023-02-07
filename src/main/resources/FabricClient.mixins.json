@@ -8,9 +8,11 @@
   "client": [
     "MinecraftClientAccessor",
     "MinecraftClientMixin",
+    "MixinPlayerEntityRenderer",
+    "MixinPlayerJoinWorld",
+    "MixinPlayerModel",
     "MouseMixin",
-    "ZoomMixin",
-    "MixinPlayerEntityRenderer"
+    "ZoomMixin"
   ],
   "injectors": {
     "defaultRequire": 1

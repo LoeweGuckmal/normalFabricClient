@@ -44,6 +44,10 @@ public class Config {
         return getInt(propertyKeys.standardZoom(), DefaultConfig.getStandardZoom());
     }
 
+    public static boolean getHasCapeGlint() {
+        return getBoolean(propertyKeys.hasCapeGlint(), DefaultConfig.getHasCapeGlint());
+    }
+
     public static boolean getDebug() {
         return getBoolean(propertyKeys.debug(), DefaultConfig.getDebug());
     }
@@ -181,6 +185,7 @@ public class Config {
         getShowFps();
         getShowCords();
         getStandardZoom();
+        getHasCapeGlint();
         getDebug();
 
         write();

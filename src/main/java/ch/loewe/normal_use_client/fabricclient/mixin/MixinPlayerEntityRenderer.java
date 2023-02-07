@@ -2,6 +2,8 @@ package ch.loewe.normal_use_client.fabricclient.mixin;
 
 import ch.loewe.normal_use_client.fabricclient.cape.CapeLayer;
 import ch.loewe.normal_use_client.fabricclient.cape.CompatHooks;
+import ch.loewe.normal_use_client.fabricclient.cape.Deadmau5;
+import ch.loewe.normal_use_client.fabricclient.cape.ElytraLayer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory.Context;
@@ -28,15 +30,10 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
     )
     private void construct(Context ctm, boolean alex, CallbackInfo info) {
         this.addFeature(new CapeLayer(this));
-
-        //this.addFeature(new Deadmau5(this));
-        //this.addFeature(new ElytraLayer(this, ctm.getModelLoader()));
-        this.features.removeIf((modelFeature) -> {
-            return modelFeature instanceof ElytraFeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>;
-        });
-        this.features.removeIf((modelFeature) -> {
-            return modelFeature instanceof CapeFeatureRenderer;
-        });
+        this.addFeature(new Deadmau5(this));
+        this.addFeature(new ElytraLayer<>(this, ctm.getModelLoader()));
+        this.features.removeIf((modelFeature) -> modelFeature instanceof ElytraFeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>);
+        this.features.removeIf((modelFeature) -> modelFeature instanceof CapeFeatureRenderer);
     }
 
     @Inject(
