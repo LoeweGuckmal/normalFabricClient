@@ -1,5 +1,6 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
+import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -47,7 +48,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 
                 float f4 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevStrideDistance, entitylivingbaseIn.strideDistance);
                 f1 += MathHelper.sin(MathHelper.lerp(partialTicks, entitylivingbaseIn.prevHorizontalSpeed, entitylivingbaseIn.horizontalSpeed) * 6.0F) * 32.0F * f4;
-                f1 -= 180.0F;
+                f1 -= 180.0;
                 if (entitylivingbaseIn.isInSneakingPose()) {
                     f1 += 25.0F;
                 }

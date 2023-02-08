@@ -25,6 +25,8 @@ public class ModMenuButtons {
             getNewIntSlider(propertyKeys.standardZoom(), DefaultConfig.getStandardZoom(), Config.getStandardZoom()),
 
             getNewBoolButton(propertyKeys.hasCapeGlint(), Config.getHasCapeGlint()),
+            getNewBoolButton(propertyKeys.capeFromFile(), Config.getCapeFromFile()),
+            getNewEnumButton(propertyKeys.reloadCape(), ReloadCape.valueOf(Config.getReloadCape().toUpperCase())),
 
             getNewBoolButton(propertyKeys.debug(), Config.getDebug())
     };
@@ -89,5 +91,9 @@ public class ModMenuButtons {
     public enum StandardColor {
         YELLOW,
         BLUEGREEN;
+    }
+    public enum ReloadCape {
+        RELOAD,
+        RELOAD2;
     }
 }

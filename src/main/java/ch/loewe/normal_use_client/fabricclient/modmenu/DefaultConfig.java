@@ -31,6 +31,12 @@ public class DefaultConfig {
     public static boolean getHasCapeGlint() {
         return true;
     }
+    public static boolean getCapeFromFile() {
+        return false;
+    }
+    public static ReloadCape getReloadCape() {
+        return ReloadCape.RELOAD;
+    }
 
     //debug
     public static boolean getDebug() {
@@ -66,6 +72,12 @@ public class DefaultConfig {
 
         public static String hasCapeGlint() {
             return "has_cape_glint";
+        }
+        public static String capeFromFile() {
+            return "cape_from_file";
+        }
+        public static String reloadCape() {
+            return "cape_reload";
         }
 
         public static String debug() {

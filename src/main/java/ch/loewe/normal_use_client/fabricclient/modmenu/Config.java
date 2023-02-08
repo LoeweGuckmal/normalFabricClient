@@ -47,6 +47,12 @@ public class Config {
     public static boolean getHasCapeGlint() {
         return getBoolean(propertyKeys.hasCapeGlint(), DefaultConfig.getHasCapeGlint());
     }
+    public static boolean getCapeFromFile() {
+        return getBoolean(propertyKeys.capeFromFile(), DefaultConfig.getCapeFromFile());
+    }
+    public static String getReloadCape() {
+        return getString(propertyKeys.reloadCape(), DefaultConfig.getReloadCape());
+    }
 
     public static boolean getDebug() {
         return getBoolean(propertyKeys.debug(), DefaultConfig.getDebug());
@@ -186,6 +192,7 @@ public class Config {
         getShowCords();
         getStandardZoom();
         getHasCapeGlint();
+        getCapeFromFile();
         getDebug();
 
         write();

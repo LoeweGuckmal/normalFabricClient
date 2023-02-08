@@ -24,8 +24,7 @@ public abstract class MixinPlayerJoinWorld extends PlayerEntity {
     )
     private void construct(ClientWorld clientLevel, GameProfile gameProfile, CallbackInfo ci) {
         if (this.getWorld().isClient()) {
-            DownloadManager.prepareDownload(this, false);
+            DownloadManager.prepareDownload(this, true);
         }
-
     }
 }

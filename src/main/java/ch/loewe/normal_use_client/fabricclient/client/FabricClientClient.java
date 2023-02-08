@@ -1,5 +1,6 @@
 package ch.loewe.normal_use_client.fabricclient.client;
 
+import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
 import ch.loewe.normal_use_client.fabricclient.cape.MessageLogger;
 import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftClientAccessor;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
@@ -120,6 +121,13 @@ public class FabricClientClient implements ClientModInitializer {
     public static void doCustom(String key){
         if (key.equals(propertyKeys.standardColor())){
             OpenRGB.loadMode(colorMap.get(Config.getStandardColor()));
+        }
+        if (key.equals(propertyKeys.hasCapeGlint()) || key.equals(propertyKeys.capeFromFile()) || key.equals(propertyKeys.reloadCape())){
+            logger.info("1");
+            if (mc.player != null) {
+                logger.info("2");
+                DownloadManager.prepareDownload(mc.player, true);
+            }
         }
     }
 }

@@ -3,6 +3,9 @@ package ch.loewe.normal_use_client.fabricclient.cape;
 import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import com.google.gson.Gson;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,12 +16,19 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
+
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.util.Identifier;
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.css.RGBColor;
+
+import javax.imageio.ImageIO;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.mc;
 
 public class DownloadManager {
     public DownloadManager() {
@@ -34,6 +44,9 @@ public class DownloadManager {
                     UUID uuid = MinecraftApi.getUUID(player.getEntityName());
                     if (uuid != null) {
                         playerHandler.setPlayerUUID(uuid);
+                        downloadProfile(playerHandler);
+                    } else if (Config.getCapeFromFile()) {
+                        playerHandler.setPlayerUUID(player.getUuid());
                         downloadProfile(playerHandler);
                     }
                 });
@@ -53,6 +66,8 @@ public class DownloadManager {
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
             playerHandler.setHasInfo(true);
+            if (Config.getCapeFromFile())
+                loadOfflineProfilePng(playerHandler);
 
             try {
                 logger.info("Getting profile for {}", playerHandler.getPlayerUUID());
@@ -64,14 +79,24 @@ public class DownloadManager {
                 httpurlconnection.connect();
                 if (httpurlconnection.getResponseCode() / 100 == 2) {
                     Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), StandardCharsets.UTF_8);
-                    readProfile(playerHandler, reader);
+                    if (Config.getCapeFromFile())
+                        loadOfflineProfilePng(playerHandler);
+                    else
+                        readProfile(playerHandler, reader);
+                    //loadOfflineProfile(playerHandler);
                     reader.close();
                 } else {
-                    loadOfflineProfile(playerHandler);
+                    if (Config.getCapeFromFile())
+                        loadOfflineProfilePng(playerHandler);
+                    else
+                        loadOfflineProfile(playerHandler);
                     logger.warn("minecraftcapes.net returned a {}", httpurlconnection.getResponseCode());
                 }
             } catch (IOException var4) {
-                loadOfflineProfile(playerHandler);
+                if (Config.getCapeFromFile())
+                    loadOfflineProfilePng(playerHandler);
+                else
+                    loadOfflineProfile(playerHandler);
                 logger.warn("No connection to minecraftcapes.net detected");
             }
 
@@ -81,16 +106,16 @@ public class DownloadManager {
     }
 
     private static void readProfile(PlayerHandler playerHandler, Reader reader) {
-        DownloadManager.ProfileResult profileResult = (DownloadManager.ProfileResult)(new Gson()).fromJson(reader, DownloadManager.ProfileResult.class);
+        DownloadManager.ProfileResult profileResult = (new Gson()).fromJson(reader, ProfileResult.class);
         //playerHandler.setHasCapeGlint(profileResult.capeGlint);
         playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
         playerHandler.setUpsideDown(profileResult.upsideDown);
         if (profileResult.textures.get("cape") != null) {
-            playerHandler.applyCape((String)profileResult.textures.get("cape"));
+            playerHandler.applyCape(profileResult.textures.get("cape"));
         }
 
         if (profileResult.textures.get("ears") != null) {
-            playerHandler.applyEars((String)profileResult.textures.get("ears"));
+            playerHandler.applyEars(profileResult.textures.get("ears"));
         }
 
         cacheProfile(playerHandler, profileResult);
@@ -127,14 +152,64 @@ public class DownloadManager {
         }
 
     }
+    private static void loadOfflineProfilePng(PlayerHandler playerHandler) {
+        String fileName = "cape.png";
+        File profileDirectory = new File(MinecraftClient.getInstance().runDirectory + "/config/minecraftcapes" + "/profile");
+        profileDirectory.mkdirs();
+        File profileFile = new File(profileDirectory, fileName);
+        playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
+        if (profileFile.exists()) {
+            try {
+                BufferedImage capeImage = ImageIO.read(profileFile);
+                int imageWidth = 64;
+                int imageHeight = 32;
+                int currentFrame = capeImage.getWidth();
 
-    private static class ProfileResult {
+                for(int x = capeImage.getHeight(); imageWidth < currentFrame || imageHeight < x; imageHeight *= 2) {
+                    imageWidth *= 2;
+                }
+
+                NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
+
+                for(int x = 0; x < capeImage.getWidth(); ++x) {
+                    for(int y = 0; y < capeImage.getHeight(); ++y) {
+                        imgNew.setColor(x, y, ABGRfromARGB(capeImage.getRGB(x, y)));
+                    }
+                }
+
+                playerHandler.applyTextureP(new Identifier("minecraftcapes", "capes/" + playerHandler.getPlayerUUID()), imgNew);
+                playerHandler.setHasStaticCape(true);
+                playerHandler.setHasAnimatedCape(false);
+                logger.info("Static cape loaded for {}", playerHandler.getPlayerUUID());
+            } catch (Exception var5) {
+                logger.error("Cache corrupt for {}", fileName);
+                profileFile.delete();
+            }
+        } else {
+            try {
+                profileFile.createNewFile();
+                logger.warn("created new");
+            } catch (Exception ignored){}
+        }
+    }
+
+    public static class ProfileResult {
         private boolean capeGlint = false;
         private boolean upsideDown = false;
-        private Map<String, String> textures = null;
+        public Map<String, String> textures = null;
 
         private ProfileResult() {
         }
+    }
+    public static int ABGR(int r, int g, int b, int a) {
+        return ((a & 255) << 24) | ((b & 255) << 16) | ((g & 255) << 8) | (r & 255);
+    }
+    public static int ABGRfromARGB(int px) {
+        int a = (px >> 24)& 0xff;
+        int r = (px >> 16)& 0xff;
+        int g = (px >> 8)& 0xff;
+        int b = (px)& 0xff;
+        return ABGR(r, g, b, a);
     }
 }
 

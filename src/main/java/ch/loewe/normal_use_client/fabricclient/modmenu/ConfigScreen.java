@@ -36,12 +36,10 @@ public class ConfigScreen extends SimpleOptionsScreen {
                 if (Config.getDebug())
                     logger.info(key.toUpperCase() + ": " + value.toUpperCase());
             }
-
             client.setScreen(this.parent);
-            if (mc.player != null)
-                DownloadManager.prepareDownload(mc.player, false);
-            else
-                logger.info("asfasf");
+            if (mc.player != null) {
+                DownloadManager.prepareDownload(mc.player, true);
+            }
         }).dimensions(this.width / 2 - 100, this.height - 27, 200, 20).build());
     }
 

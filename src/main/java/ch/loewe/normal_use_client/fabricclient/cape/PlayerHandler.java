@@ -150,6 +150,10 @@ public class PlayerHandler {
         MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, new NativeImageBackedTexture(nativeImage)));
     }
 
+    public void applyTextureP(Identifier resourceLocation, NativeImage nativeImage){
+        applyTexture(resourceLocation, nativeImage);
+    }
+
     public String toString() {
         return "PlayerHandler{hasStaticCape=" + this.hasStaticCape + ", hasEars=" + this.hasEars + ", hasAnimatedCape=" + this.hasAnimatedCape + ", showCape=" + this.showCape + ", hasCapeGlint=" + this.hasCapeGlint + ", upsideDown=" + this.upsideDown + ", hasInfo=" + this.hasInfo + ", playerUUID=" + this.playerUUID + ", animatedCape=" + this.animatedCape + ", lastFrameTime=" + this.lastFrameTime + ", lastFrame=" + this.lastFrame + ", capeInterval=" + this.capeInterval + "}";
     }
@@ -195,6 +199,7 @@ public class PlayerHandler {
     }
 
     public void setHasCapeGlint(Boolean hasCapeGlint) {
+        logger.info("Cape glint set.");
         this.hasCapeGlint = hasCapeGlint;
     }
 

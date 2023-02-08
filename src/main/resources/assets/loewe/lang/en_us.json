@@ -27,6 +27,9 @@
     "loewe.button.standard_zoom.min": "1",
     "loewe.button.standard_zoom.max": "6",
 
+    "loewe.button.has_cape_glint": "Cape glint",
+    "loewe.button.has_cape_glint.tooltip": "Changes if the cape has glint.",
+
     "loewe.button.debug": "Debug",
     "loewe.button.debug.tooltip": "This enables the debug mode of this mod."
 }
