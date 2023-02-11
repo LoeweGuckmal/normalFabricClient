@@ -30,6 +30,15 @@
     "loewe.button.has_cape_glint": "Cape glint",
     "loewe.button.has_cape_glint.tooltip": "Changes if the cape has glint.",
 
+    "loewe.button.cape_from_file": "Cape from file",
+    "loewe.button.cape_from_file.tooltip": "Changes if the cape is load from a local file.\n(folder: /config/loewe/cape/cape.png)",
+
+    "loewe.button.cape_reload": "Reload cape ",
+    "loewe.button.cape_reload.reload": "^)",
+    "loewe.button.cape_reload.reload2": "^)",
+    "loewe.button.cape_reload.tooltip.reload": "Reloads the cape.",
+    "loewe.button.cape_reload.tooltip.reload2": "Reloads the cape.",
+
     "loewe.button.debug": "Debug",
     "loewe.button.debug.tooltip": "This enables the debug mode of this mod."
 }

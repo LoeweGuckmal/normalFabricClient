@@ -123,9 +123,7 @@ public class FabricClientClient implements ClientModInitializer {
             OpenRGB.loadMode(colorMap.get(Config.getStandardColor()));
         }
         if (key.equals(propertyKeys.hasCapeGlint()) || key.equals(propertyKeys.capeFromFile()) || key.equals(propertyKeys.reloadCape())){
-            logger.info("1");
             if (mc.player != null) {
-                logger.info("2");
                 DownloadManager.prepareDownload(mc.player, true);
             }
         }

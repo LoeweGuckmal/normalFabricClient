@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
@@ -47,6 +48,7 @@ public class PlayerHandler {
         try {
             byte[] imgBytes = Base64.getDecoder().decode(textureBase64);
             ByteArrayInputStream bias = new ByteArrayInputStream(imgBytes);
+            //logger.info(String.valueOf(Arrays.equals(Base64.getEncoder().encode(NativeImage.read(bias).getBytes()), imgBytes)));
             return NativeImage.read(bias);
         } catch (IOException var4) {
             logger.error(var4.getMessage());
@@ -60,6 +62,7 @@ public class PlayerHandler {
         int imageHeight;
         int currentFrame;
         int x;
+        logger.info(capeImage.getHeight() + ", " + capeImage.getWidth() + ", " + (capeImage.getHeight() != capeImage.getWidth() / 2));
         if (capeImage.getHeight() != capeImage.getWidth() / 2) {
             Int2ObjectMap<NativeImage> animatedCapeFrames = new Int2ObjectOpenHashMap();
             imageHeight = capeImage.getHeight() / (capeImage.getWidth() / 2);
@@ -77,7 +80,7 @@ public class PlayerHandler {
             }
 
             this.setAnimatedCape(animatedCapeFrames);
-            logger.info("Animated cape loaded for {}", this.playerUUID);
+            //logger.info("Animated cape loaded for {}", this.playerUUID);
         } else {
             int imageWidth = 64;
             imageHeight = 32;
@@ -96,22 +99,22 @@ public class PlayerHandler {
             }
 
             capeImage.close();
-            this.applyTexture(new Identifier("minecraftcapes", "capes/" + this.playerUUID), imgNew);
+            this.applyTexture(new Identifier("loewe", "capes/" + this.playerUUID), imgNew);
             this.setHasStaticCape(true);
             this.setHasAnimatedCape(false);
-            logger.info("Static cape loaded for {}", this.playerUUID);
+            //logger.info("Static cape loaded for {}", this.playerUUID);
         }
 
     }
 
     public void applyEars(String ears) {
         NativeImage earImage = this.readTexture(ears);
-        this.applyTexture(new Identifier("minecraftcapes", "ears/" + this.playerUUID), earImage);
+        this.applyTexture(new Identifier("loewe", "ears/" + this.playerUUID), earImage);
         this.setHasEars(true);
     }
 
     public void setAnimatedCape(Int2ObjectMap<NativeImage> animatedCape) {
-        logger.info("Setting animated cape for {}", this.playerUUID);
+        //logger.info("Setting animated cape for {}", this.playerUUID);
         this.animatedCape = animatedCape;
         this.setHasStaticCape(false);
         this.setHasAnimatedCape(true);
@@ -119,9 +122,9 @@ public class PlayerHandler {
     }
 
     private void loadFramesToResource() {
-        logger.info("Loading resources to memory for {}", this.playerUUID);
+        //logger.info("Loading resources to memory for {}", this.playerUUID);
         this.getAnimatedCape().forEach((integer, nativeImage) -> {
-            Identifier currentResource = new Identifier("minecraftcapes", String.format("capes/%s/%d", this.playerUUID, integer));
+            Identifier currentResource = new Identifier("loewe", String.format("capes/%s/%d", this.playerUUID, integer));
             this.applyTexture(currentResource, nativeImage);
         });
     }
@@ -132,18 +135,18 @@ public class PlayerHandler {
             int currentFrameNo = this.lastFrame + 1 > this.getAnimatedCape().size() - 1 ? 0 : this.lastFrame + 1;
             this.lastFrame = currentFrameNo;
             this.lastFrameTime = time;
-            return new Identifier("minecraftcapes", String.format("capes/%s/%d", this.playerUUID, currentFrameNo));
+            return new Identifier("loewe", String.format("capes/%s/%d", this.playerUUID, currentFrameNo));
         } else {
-            return new Identifier("minecraftcapes", String.format("capes/%s/%d", this.playerUUID, this.lastFrame));
+            return new Identifier("loewe", String.format("capes/%s/%d", this.playerUUID, this.lastFrame));
         }
     }
 
     public Identifier getCapeLocation() {
-        return this.hasStaticCape ? new Identifier("minecraftcapes", "capes/" + this.playerUUID) : (this.hasAnimatedCape ? this.getFrame() : null);
+        return this.hasStaticCape ? new Identifier("loewe", "capes/" + this.playerUUID) : (this.hasAnimatedCape ? this.getFrame() : null);
     }
 
     public Identifier getEarLocation() {
-        return this.hasEars ? new Identifier("minecraftcapes", "ears/" + this.playerUUID) : null;
+        return this.hasEars ? new Identifier("loewe", "ears/" + this.playerUUID) : null;
     }
 
     private void applyTexture(Identifier resourceLocation, NativeImage nativeImage) {
@@ -199,7 +202,6 @@ public class PlayerHandler {
     }
 
     public void setHasCapeGlint(Boolean hasCapeGlint) {
-        logger.info("Cape glint set.");
         this.hasCapeGlint = hasCapeGlint;
     }
 

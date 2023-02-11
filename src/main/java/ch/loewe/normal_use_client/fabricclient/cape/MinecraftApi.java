@@ -1,31 +1,33 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
-import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
+
 public class MinecraftApi {
     public MinecraftApi() {
     }
 
     public static UUID getUUID(String username) {
-        FabricClientClient.logger.warn("Making an API call for {}", username);
+        //logger.warn("Making an API call for {}", username);
         JsonObject playerElement = getApiData(username);
         if (playerElement != null) {
             JsonElement playerUUID = playerElement.get("full_uuid");
             if (playerUUID != null && !playerUUID.isJsonNull()) {
-                FabricClientClient.logger.warn("{} ({}) was found", username, playerUUID);
+                //logger.warn("{} ({}) was found", username, playerUUID);
                 return UUID.fromString(playerUUID.getAsString());
             }
         }
 
-        FabricClientClient.logger.warn("{} was not found", username);
+        //logger.warn("{} was not found", username);
         return null;
     }
 
