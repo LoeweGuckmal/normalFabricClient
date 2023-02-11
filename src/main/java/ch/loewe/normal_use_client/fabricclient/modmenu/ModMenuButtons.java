@@ -28,6 +28,8 @@ public class ModMenuButtons {
             getNewBoolButton(propertyKeys.capeFromFile(), Config.getCapeFromFile()),
             getNewEnumButton(propertyKeys.reloadCape(), ReloadCape.valueOf(Config.getReloadCape().toUpperCase())),
 
+            getNewBoolButton(propertyKeys.skipFrontView(), Config.getSkipFrontView()),
+
             getNewBoolButton(propertyKeys.debug(), Config.getDebug())
     };
 

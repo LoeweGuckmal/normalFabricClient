@@ -54,12 +54,13 @@ public class Config {
         return getString(propertyKeys.reloadCape(), DefaultConfig.getReloadCape());
     }
 
+    public static boolean getSkipFrontView() {
+        return getBoolean(propertyKeys.skipFrontView(), DefaultConfig.getSkipFrontView());
+    }
+
     public static boolean getDebug() {
         return getBoolean(propertyKeys.debug(), DefaultConfig.getDebug());
     }
-    /*public static int getTestSlider() {
-        return getInt(propertyKeys.testSlider(), DefaultConfig.getTestSlider());
-    }*/
 
 
 
@@ -193,6 +194,7 @@ public class Config {
         getStandardZoom();
         getHasCapeGlint();
         getCapeFromFile();
+        getSkipFrontView();
         getDebug();
 
         write();

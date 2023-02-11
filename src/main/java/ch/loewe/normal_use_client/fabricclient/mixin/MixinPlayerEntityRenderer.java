@@ -4,6 +4,8 @@ import ch.loewe.normal_use_client.fabricclient.cape.CapeLayer;
 import ch.loewe.normal_use_client.fabricclient.cape.CompatHooks;
 import ch.loewe.normal_use_client.fabricclient.cape.Deadmau5;
 import ch.loewe.normal_use_client.fabricclient.cape.ElytraLayer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory.Context;
@@ -18,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@Environment(EnvType.CLIENT)
 @Mixin({PlayerEntityRenderer.class})
 public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
     public MixinPlayerEntityRenderer(Context context, PlayerEntityModel<AbstractClientPlayerEntity> entityModel, float f) {

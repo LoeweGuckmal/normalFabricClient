@@ -12,6 +12,7 @@
     "MixinPlayerJoinWorld",
     "MixinPlayerModel",
     "MouseMixin",
+    "skipThirdPersonMixin",
     "ZoomMixin"
   ],
   "injectors": {

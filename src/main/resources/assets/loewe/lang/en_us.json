@@ -34,10 +34,13 @@
     "loewe.button.cape_from_file.tooltip": "Changes if the cape is load from a local file.\n(folder: /config/loewe/cape/cape.png)",
 
     "loewe.button.cape_reload": "Reload cape ",
-    "loewe.button.cape_reload.reload": "^)",
-    "loewe.button.cape_reload.reload2": "^)",
+    "loewe.button.cape_reload.reload": " ;^)",
+    "loewe.button.cape_reload.reload2": " ;^)",
     "loewe.button.cape_reload.tooltip.reload": "Reloads the cape.",
     "loewe.button.cape_reload.tooltip.reload2": "Reloads the cape.",
+
+    "loewe.button.skip_front_view": "Skip front view",
+    "loewe.button.skip_front_view.tooltip": "Skips the front view from the §ef5§f function.",
 
     "loewe.button.debug": "Debug",
     "loewe.button.debug.tooltip": "This enables the debug mode of this mod."

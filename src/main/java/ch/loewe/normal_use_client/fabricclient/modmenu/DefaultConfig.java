@@ -38,6 +38,11 @@ public class DefaultConfig {
         return ReloadCape.RELOAD;
     }
 
+    //f5
+    public static boolean getSkipFrontView() {
+        return true;
+    }
+
     //debug
     public static boolean getDebug() {
         return false;
@@ -78,6 +83,10 @@ public class DefaultConfig {
         }
         public static String reloadCape() {
             return "cape_reload";
+        }
+
+        public static String skipFrontView() {
+            return "skip_front_view";
         }
 
         public static String debug() {

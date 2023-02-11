@@ -1,5 +1,7 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -9,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@Environment(EnvType.CLIENT)
 @Mixin({PlayerEntityModel.class})
 public abstract class MixinPlayerModel extends BipedEntityModel<LivingEntity> {
     public MixinPlayerModel(ModelPart root) {
