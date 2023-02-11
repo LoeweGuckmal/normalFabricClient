@@ -1,0 +1,47 @@
+{
+    "loewe.category": "Loewe",
+    "loewe.screen.config": "Einstellungen der Loewemod",
+    "loewe.key.zoom": "Zoom",
+    "loewe.key.settings": "Öffne die Einstellung",
+
+
+    "loewe.button.do_rgb_on_damage": "RGB bei Schaden",
+    "loewe.button.do_rgb_on_damage.tooltip": "Ändert die Farben, wenn der Spieler Schaden kriegt.",
+
+    "loewe.button.standard_color": "Standardfarbe",
+    "loewe.button.standard_color.yellow": "Gelb",
+    "loewe.button.standard_color.bluegreen": "Blau/Grün",
+    "loewe.button.standard_color.tooltip.yellow": "Die Standardfarbe ist jetzt: \n§eGelb.",
+    "loewe.button.standard_color.tooltip.bluegreen": "Die Standardfarbe ist jetzt: \n§bBlau§f/§aGrün.",
+
+    "loewe.button.show_fps": "FPS anzeigen",
+    "loewe.button.show_fps.tooltip": "Dadurch werden die FPS in der oberen linken Ecke angezeigt.",
+
+    "loewe.button.show_cords": "Koordinaten anzeigen",
+    "loewe.button.show_cords.tooltip": "Dadurch werden die Koordinaten in der oberen linken Ecke angezeigt.",
+
+    "loewe.button.standard_zoom": "Standardzoom",
+    "loewe.button.standard_zoom.tooltip": "Ändert die Standardvergrösserung beim Zoomen.",
+    "loewe.button.standard_zoom.tooltip.min": "Ändert die Standardvergrösserung beim Zoomen.\n(=0)",
+    "loewe.button.standard_zoom.tooltip.max": "Ändert die Standardvergrösserung beim Zoomen.\n(Maximal)",
+    "loewe.button.standard_zoom.min": "1",
+    "loewe.button.standard_zoom.max": "6",
+
+    "loewe.button.has_cape_glint": "Cape glitzern",
+    "loewe.button.has_cape_glint.tooltip": "Ändert ob das Cape glitzert.",
+
+    "loewe.button.cape_from_file": "Lokales Cape",
+    "loewe.button.cape_from_file.tooltip": "Ändert ob das Cape von einem lokalen Ordner geladen wird.\n(Ordner: /config/loewe/cape/cape.png)",
+
+    "loewe.button.cape_reload": "Cape neuladen",
+    "loewe.button.cape_reload.reload": " ;^)",
+    "loewe.button.cape_reload.reload2": " ;^)",
+    "loewe.button.cape_reload.tooltip.reload": "Ladet das Cape neu.",
+    "loewe.button.cape_reload.tooltip.reload2": "Ladet das Cape neu.",
+
+    "loewe.button.skip_front_view": "Vorderansicht überspringen",
+    "loewe.button.skip_front_view.tooltip": "Überspringt die Vorderansicht der §ef5§f Funktion.",
+
+    "loewe.button.debug": "Debug",
+    "loewe.button.debug.tooltip": "Dies aktiviert den Debugmodus."
+}

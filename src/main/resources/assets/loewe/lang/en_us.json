@@ -5,8 +5,8 @@
     "loewe.key.settings": "Open settings",
 
 
-    "loewe.button.do_rgb_on_damage": "Change the lights",
-    "loewe.button.do_rgb_on_damage.tooltip": "Changes if the lights change when the player gets damage or regenerates Health.",
+    "loewe.button.do_rgb_on_damage": "RGB on damage",
+    "loewe.button.do_rgb_on_damage.tooltip": "Changes whether the lights change when the player gets damage or regenerates Health.",
 
     "loewe.button.standard_color": "Standard color",
     "loewe.button.standard_color.yellow": "yellow",
@@ -14,13 +14,13 @@
     "loewe.button.standard_color.tooltip.yellow": "The standard color is set to: \n§eyellow.",
     "loewe.button.standard_color.tooltip.bluegreen": "The standard color is set to: \n§bblue§f/§agreen.",
 
-    "loewe.button.show_fps": "Show Fps",
-    "loewe.button.show_fps.tooltip": "This will show the Fps at the top left corner.",
+    "loewe.button.show_fps": "Show FPS",
+    "loewe.button.show_fps.tooltip": "This will show the FPS at the top left corner.",
 
     "loewe.button.show_cords": "Show Cords",
     "loewe.button.show_cords.tooltip": "This will show the cords at the top left corner.",
 
-    "loewe.button.standard_zoom": "standard zoom",
+    "loewe.button.standard_zoom": "Standard zoom",
     "loewe.button.standard_zoom.tooltip": "Changes what the standard zoom amount is.",
     "loewe.button.standard_zoom.tooltip.min": "Changes what the standard zoom amount is.\n=0",
     "loewe.button.standard_zoom.tooltip.max": "Changes what the standard zoom amount is.\nmax",
@@ -30,10 +30,10 @@
     "loewe.button.has_cape_glint": "Cape glint",
     "loewe.button.has_cape_glint.tooltip": "Changes if the cape has glint.",
 
-    "loewe.button.cape_from_file": "Cape from file",
-    "loewe.button.cape_from_file.tooltip": "Changes if the cape is load from a local file.\n(folder: /config/loewe/cape/cape.png)",
+    "loewe.button.cape_from_file": "Local cape",
+    "loewe.button.cape_from_file.tooltip": "Changes whether the cape is loaded from a local file.\n(folder: /config/loewe/cape/cape.png)",
 
-    "loewe.button.cape_reload": "Reload cape ",
+    "loewe.button.cape_reload": "Reload cape",
     "loewe.button.cape_reload.reload": " ;^)",
     "loewe.button.cape_reload.reload2": " ;^)",
     "loewe.button.cape_reload.tooltip.reload": "Reloads the cape.",
