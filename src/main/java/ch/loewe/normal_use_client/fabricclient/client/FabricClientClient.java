@@ -1,7 +1,6 @@
 package ch.loewe.normal_use_client.fabricclient.client;
 
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
-import ch.loewe.normal_use_client.fabricclient.cape.MessageLogger;
 import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftClientAccessor;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import ch.loewe.normal_use_client.fabricclient.modmenu.ConfigScreen;
@@ -124,7 +123,7 @@ public class FabricClientClient implements ClientModInitializer {
         }
         if (key.equals(propertyKeys.hasCapeGlint()) || key.equals(propertyKeys.capeFromFile()) || key.equals(propertyKeys.reloadCape())){
             if (mc.player != null) {
-                DownloadManager.prepareDownload(mc.player, true);
+                DownloadManager.prepareDownload(mc.player, true, false);
             }
         }
     }

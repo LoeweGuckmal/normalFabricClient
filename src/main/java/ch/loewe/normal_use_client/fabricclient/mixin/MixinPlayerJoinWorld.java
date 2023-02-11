@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Environment(EnvType.CLIENT)
 @Mixin({AbstractClientPlayerEntity.class})
 public abstract class MixinPlayerJoinWorld extends PlayerEntity {
+
     public MixinPlayerJoinWorld(World level, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(level, blockPos, f, gameProfile);
     }
@@ -27,7 +28,7 @@ public abstract class MixinPlayerJoinWorld extends PlayerEntity {
     )
     private void construct(ClientWorld clientLevel, GameProfile gameProfile, CallbackInfo ci) {
         if (this.getWorld().isClient()) {
-            DownloadManager.prepareDownload(this, true);
+            DownloadManager.prepareDownload(this, false, true);
         }
     }
 }

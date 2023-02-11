@@ -39,7 +39,7 @@
     "loewe.button.cape_reload.tooltip.reload": "Ladet das Cape neu.",
     "loewe.button.cape_reload.tooltip.reload2": "Ladet das Cape neu.",
 
-    "loewe.button.skip_front_view": "Vorderansicht überspringen",
+    "loewe.button.skip_front_view": "keine Vorderansicht",
     "loewe.button.skip_front_view.tooltip": "Überspringt die Vorderansicht der §ef5§f Funktion.",
 
     "loewe.button.debug": "Debug",

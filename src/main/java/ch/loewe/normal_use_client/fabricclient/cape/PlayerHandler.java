@@ -62,7 +62,6 @@ public class PlayerHandler {
         int imageHeight;
         int currentFrame;
         int x;
-        logger.info(capeImage.getHeight() + ", " + capeImage.getWidth() + ", " + (capeImage.getHeight() != capeImage.getWidth() / 2));
         if (capeImage.getHeight() != capeImage.getWidth() / 2) {
             Int2ObjectMap<NativeImage> animatedCapeFrames = new Int2ObjectOpenHashMap();
             imageHeight = capeImage.getHeight() / (capeImage.getWidth() / 2);

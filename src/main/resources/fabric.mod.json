@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "fabricclient",
   "version": "${version}",
-  "name": "Loewe-fabric-client",
+  "name": "Loewe fabric client",
   "description": "My personal fabric client to play normal",
   "authors": [
     "LoeweGuckmal"

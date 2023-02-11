@@ -4,7 +4,6 @@ import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import com.google.gson.Gson;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,7 +11,6 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -22,35 +20,35 @@ import java.util.Map;
 import java.util.UUID;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.mc;
 
 public class DownloadManager {
     public DownloadManager() {
     }
 
-    public static void prepareDownload(PlayerEntity player, boolean doRefresh) {
-        ClientPlayerEntity localPlayer = MinecraftClient.getInstance().player;
+    public static void prepareDownload(PlayerEntity player, boolean doRefresh, boolean forceThrough) {
+        ClientPlayerEntity localPlayer = mc.player;
         if (player.getUuid().version() == 4 || localPlayer == null || localPlayer.getUuid().equals(player.getUuid())) {
             PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
-            if (player.getUuid().version() != 4 && !playerHandler.getHasInfo() && !doRefresh) {
-                playerHandler.setHasInfo(true);
+            if (forceThrough || (!playerHandler.getHasInfo() && !doRefresh)) {
                 Thread playerDownload = new Thread(() -> {
                     UUID uuid = MinecraftApi.getUUID(player.getEntityName());
                     if (uuid != null) {
                         playerHandler.setPlayerUUID(uuid);
                         downloadProfile(playerHandler);
-                    } else if (Config.getCapeFromFile()) {
+                    }
+                    else if (localPlayer == null || localPlayer.getUuid().equals(player.getUuid())) {
                         playerHandler.setPlayerUUID(player.getUuid());
-                        downloadProfile(playerHandler);
+                        loadOfflineProfilePng(playerHandler);
                     }
                 });
                 playerDownload.setDaemon(true);
                 playerDownload.start();
             } else {
-                if (playerHandler.getHasInfo() && !doRefresh) {
+                if (playerHandler.getHasInfo() && !doRefresh)
                     return;
-                }
-
-                downloadProfile(playerHandler);
+                if (playerHandler.getHasInfo()) 
+                    downloadProfile(playerHandler);
             }
 
         }
@@ -59,36 +57,28 @@ public class DownloadManager {
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
             playerHandler.setHasInfo(true);
-            if (Config.getCapeFromFile())
+            ClientPlayerEntity localPlayer = mc.player;
+            if (Config.getCapeFromFile() && (localPlayer == null || localPlayer.getUuid().equals(playerHandler.getPlayerUUID())))
                 loadOfflineProfilePng(playerHandler);
 
             try {
                 //logger.info("Getting profile for {}", playerHandler.getPlayerUUID());
-                String var10002 = playerHandler.getPlayerUUID().toString();
-                URL url = new URL("https://minecraftcapes.net/profile/" + var10002.replace("-", ""));
-                HttpURLConnection httpurlconnection = (HttpURLConnection)url.openConnection(MinecraftClient.getInstance().getNetworkProxy());
-                httpurlconnection.setDoInput(true);
-                httpurlconnection.setDoOutput(false);
-                httpurlconnection.connect();
-                if (httpurlconnection.getResponseCode() / 100 == 2) {
-                    Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), StandardCharsets.UTF_8);
-                    if (Config.getCapeFromFile())
-                        loadOfflineProfilePng(playerHandler);
-                    else
-                        readProfile(playerHandler, reader);
+                String uuidString = playerHandler.getPlayerUUID().toString();
+                URL url = new URL("https://minecraftcapes.net/profile/" + uuidString.replace("-", ""));
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection(mc.getNetworkProxy());
+                conn.setDoInput(true);
+                conn.setDoOutput(false);
+                conn.connect();
+                if (conn.getResponseCode() / 100 == 2) {
+                    Reader reader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
+                    readProfile(playerHandler, reader);
                     reader.close();
                 } else {
-                    if (Config.getCapeFromFile())
-                        loadOfflineProfilePng(playerHandler);
-                    else
-                        loadOfflineProfile(playerHandler);
-                    //logger.warn("minecraftcapes.net returned a {}", httpurlconnection.getResponseCode());
+                    loadOfflineProfile(playerHandler);
+                    //logger.warn("minecraftcapes.net returned a {}", conn.getResponseCode());
                 }
             } catch (IOException var4) {
-                if (Config.getCapeFromFile())
-                    loadOfflineProfilePng(playerHandler);
-                else
-                    loadOfflineProfile(playerHandler);
+                loadOfflineProfile(playerHandler);
                 //logger.warn("No connection to minecraftcapes.net detected");
             }
 
@@ -99,8 +89,11 @@ public class DownloadManager {
 
     private static void readProfile(PlayerHandler playerHandler, Reader reader) {
         DownloadManager.ProfileResult profileResult = (new Gson()).fromJson(reader, ProfileResult.class);
-        playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
+        playerHandler.setHasCapeGlint(profileResult.capeGlint);
         playerHandler.setUpsideDown(profileResult.upsideDown);
+        ClientPlayerEntity localPlayer = mc.player;
+        if (localPlayer == null || localPlayer.getUuid().equals(playerHandler.getPlayerUUID()))
+            playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
         if (profileResult.textures.get("cape") != null) {
             playerHandler.applyCape(profileResult.textures.get("cape"));
         }
@@ -115,7 +108,7 @@ public class DownloadManager {
     private static void cacheProfile(PlayerHandler playerHandler, DownloadManager.ProfileResult profileResult) {
         String fileName = playerHandler.getPlayerUUID().toString();
         String profileJson = (new Gson()).toJson(profileResult);
-        File profileDirectory = new File(MinecraftClient.getInstance().runDirectory + "/config/minecraftcapes" + "/profile");
+        File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
         File profileFile = new File(new File(profileDirectory, fileName.length() > 2 ? fileName.substring(0, 2) : "xx"), fileName);
 
         try {
@@ -129,7 +122,7 @@ public class DownloadManager {
 
     private static void loadOfflineProfile(PlayerHandler playerHandler) {
         String fileName = playerHandler.getPlayerUUID().toString();
-        File profileDirectory = new File(MinecraftClient.getInstance().runDirectory + "/config/loewe" + "/cape");
+        File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
         File profileFile = new File(new File(profileDirectory, fileName.length() > 2 ? fileName.substring(0, 2) : "xx"), fileName);
         if (profileFile.exists()) {
             try {
@@ -144,8 +137,9 @@ public class DownloadManager {
 
     }
     private static void loadOfflineProfilePng(PlayerHandler playerHandler) {
+        playerHandler.setHasInfo(true);
         String fileName = "cape.png";
-        File profileDirectory = new File(MinecraftClient.getInstance().runDirectory + "/config/loewe" + "/cape");
+        File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
         profileDirectory.mkdirs();
         File profileFile = new File(profileDirectory, fileName);
 
