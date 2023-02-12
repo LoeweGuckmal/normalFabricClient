@@ -1,6 +1,5 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
-import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;

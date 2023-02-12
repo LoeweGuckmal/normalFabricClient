@@ -43,6 +43,11 @@ public class DefaultConfig {
         return true;
     }
 
+    //accountSwitcher
+    public static OpenAccountSwitcher getOpenAccountSwitcher() {
+        return OpenAccountSwitcher.ACCOUNT;
+    }
+
     //debug
     public static boolean getDebug() {
         return false;
@@ -87,6 +92,10 @@ public class DefaultConfig {
 
         public static String skipFrontView() {
             return "skip_front_view";
+        }
+
+        public static String openAccountSwitcher() {
+            return "open_account_switcher";
         }
 
         public static String debug() {

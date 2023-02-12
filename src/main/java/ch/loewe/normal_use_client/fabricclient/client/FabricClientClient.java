@@ -1,5 +1,8 @@
 package ch.loewe.normal_use_client.fabricclient.client;
 
+import ch.loewe.normal_use_client.fabricclient.account.SharedIAS;
+import ch.loewe.normal_use_client.fabricclient.account.gui.IASConfigScreen;
+import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
 import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftClientAccessor;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
@@ -14,6 +17,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -42,6 +46,7 @@ public class FabricClientClient implements ClientModInitializer {
     public void onInitializeClient() {
         logger.info("Loaded client");
         Zoom.onInitializeClient();
+        IAS.onInitializeClient();
         //rgb
         colorMap.put("yellow", "gelb");
         colorMap.put("bluegreen", "bg");
@@ -125,6 +130,10 @@ public class FabricClientClient implements ClientModInitializer {
             if (mc.player != null) {
                 DownloadManager.prepareDownload(mc.player, true, false);
             }
+        }
+        if (key.equals(propertyKeys.openAccountSwitcher())){
+            SharedIAS.LOG.info("open");
+            mc.setScreen(new IASConfigScreen(mc.currentScreen));
         }
     }
 }

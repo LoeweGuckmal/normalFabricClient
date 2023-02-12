@@ -30,6 +30,8 @@ public class ModMenuButtons {
 
             getNewBoolButton(propertyKeys.skipFrontView(), Config.getSkipFrontView()),
 
+            getNewEnumButton(propertyKeys.openAccountSwitcher(), OpenAccountSwitcher.valueOf(Config.getOpenAccountSwitcher().toUpperCase())),
+
             getNewBoolButton(propertyKeys.debug(), Config.getDebug())
     };
 
@@ -97,5 +99,9 @@ public class ModMenuButtons {
     public enum ReloadCape {
         RELOAD,
         RELOAD2;
+    }
+    public enum OpenAccountSwitcher {
+        ACCOUNT,
+        ACCOUNT2;
     }
 }

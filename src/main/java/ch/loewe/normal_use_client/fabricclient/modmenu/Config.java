@@ -58,6 +58,10 @@ public class Config {
         return getBoolean(propertyKeys.skipFrontView(), DefaultConfig.getSkipFrontView());
     }
 
+    public static String getOpenAccountSwitcher() {
+        return getString(propertyKeys.openAccountSwitcher(), DefaultConfig.getOpenAccountSwitcher());
+    }
+
     public static boolean getDebug() {
         return getBoolean(propertyKeys.debug(), DefaultConfig.getDebug());
     }

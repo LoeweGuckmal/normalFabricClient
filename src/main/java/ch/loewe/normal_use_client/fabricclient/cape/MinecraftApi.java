@@ -10,8 +10,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
-
 public class MinecraftApi {
     public MinecraftApi() {
     }

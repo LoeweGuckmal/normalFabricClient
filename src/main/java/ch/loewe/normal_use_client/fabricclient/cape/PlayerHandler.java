@@ -1,11 +1,9 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
-import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
