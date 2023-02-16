@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -39,7 +38,6 @@ public class FabricClientClient implements ClientModInitializer {
     private static int timeoutBack = 10;
     public static final DecimalFormat df = new DecimalFormat("#.00");
     public static Logger logger = LoggerFactory.getLogger("Loewe");
-    //public static MessageLogger logger = new MessageLogger();
     public static HashMap<String, String> colorMap = new HashMap<>();
 
     @Override
