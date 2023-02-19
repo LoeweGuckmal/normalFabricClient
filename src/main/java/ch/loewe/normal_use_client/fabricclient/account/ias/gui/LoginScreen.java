@@ -93,7 +93,8 @@ public class LoginScreen extends Screen {
         this.state = "";
         SharedIAS.EXECUTOR.execute(() -> {
             this.state = I18n.translate("ias.loginGui.microsoft.checkBrowser", new Object[0]);
-            Util.getOperatingSystem().open("https://login.live.com/oauth20_authorize.srf?client_id=54fd49e4-2103-4044-9603-2b028c814ec3&response_type=code&scope=XboxLive.signin%20XboxLive.offline_access&redirect_uri=http://localhost:59125&prompt=select_account");
+            //Util.getOperatingSystem().open("https://login.live.com/oauth20_authorize.srf?client_id=54fd49e4-2103-4044-9603-2b028c814ec3&response_type=code&scope=XboxLive.signin%20XboxLive.offline_access&redirect_uri=http://localhost:59125&prompt=select_account");
+            Util.getOperatingSystem().open("https://login.live.com/oauth20_authorize.srf?client_id=55fca734-6e47-4719-ac3f-1fcdc5600732&response_type=code&scope=XboxLive.signin%20XboxLive.offline_access&redirect_uri=http://localhost:59125&prompt=select_account");
             this.callback.start((s, o) -> {
                 this.state = I18n.translate(s, o);
             }, I18n.translate("ias.loginGui.microsoft.canClose", new Object[0])).whenComplete((acc, t) -> {

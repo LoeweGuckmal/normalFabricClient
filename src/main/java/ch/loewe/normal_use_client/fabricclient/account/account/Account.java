@@ -14,7 +14,7 @@ public interface Account {
     String name();
 
     @NotNull
-    CompletableFuture<Account.AuthData> login(@NotNull BiConsumer<String, Object[]> var1);
+    CompletableFuture<AuthData> login(@NotNull BiConsumer<String, Object[]> var1);
 
     public static class AuthData {
         public static final String MSA = "msa";

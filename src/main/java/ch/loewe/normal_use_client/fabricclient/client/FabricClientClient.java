@@ -31,7 +31,7 @@ import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowFps;
 
 @Environment(EnvType.CLIENT)
 public class FabricClientClient implements ClientModInitializer {
-    private static KeyBinding settingsKeyBinding;
+    public static KeyBinding settingsKeyBinding;
     private static int oldHealth = 0;
     public static MinecraftClient mc = MinecraftClient.getInstance();
     private static int timeout = 9;
@@ -84,9 +84,11 @@ public class FabricClientClient implements ClientModInitializer {
     }
 
     public static void onTick(){
-        if (settingsKeyBinding.isPressed()) {
+        if (settingsKeyBinding.isPressed() && ConfigScreen.openTimeout == 0) {
             mc.setScreen(new ConfigScreen(mc.currentScreen));
         }
+        if (ConfigScreen.openTimeout > 0)
+            ConfigScreen.openTimeout -= 1;
         damageRGB();
     }
 
@@ -120,13 +122,17 @@ public class FabricClientClient implements ClientModInitializer {
         }
     }
 
+    public static void logTest(int i){
+        logger.info("test: " + i);
+    }
+
     public static void doCustom(String key){
         if (key.equals(propertyKeys.standardColor())){
             OpenRGB.loadMode(colorMap.get(Config.getStandardColor()));
         }
         if (key.equals(propertyKeys.hasCapeGlint()) || key.equals(propertyKeys.capeFromFile()) || key.equals(propertyKeys.reloadCape())){
             if (mc.player != null) {
-                DownloadManager.prepareDownload(mc.player, true, false);
+                DownloadManager.prepareDownload(mc.player, true , false);
             }
         }
         if (key.equals(propertyKeys.openAccountSwitcher())){

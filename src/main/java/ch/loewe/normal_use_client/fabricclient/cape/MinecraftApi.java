@@ -15,17 +15,14 @@ public class MinecraftApi {
     }
 
     public static UUID getUUID(String username) {
-        //logger.warn("Making an API call for {}", username);
         JsonObject playerElement = getApiData(username);
         if (playerElement != null) {
             JsonElement playerUUID = playerElement.get("full_uuid");
             if (playerUUID != null && !playerUUID.isJsonNull()) {
-                //logger.warn("{} ({}) was found", username, playerUUID);
                 return UUID.fromString(playerUUID.getAsString());
             }
         }
 
-        //logger.warn("{} was not found", username);
         return null;
     }
 
@@ -49,8 +46,7 @@ public class MinecraftApi {
 
                 return JsonParser.parseString(response.toString()).getAsJsonObject();
             }
-        } catch (Exception var6) {
-            var6.printStackTrace();
+        } catch (Exception ignored) {
             return null;
         }
     }

@@ -49,8 +49,8 @@ public class Auth {
 
         SimpleImmutableEntry var5;
         try {
-            String var10001 = URLEncoder.encode("54fd49e4-2103-4044-9603-2b028c814ec3", "UTF-8");
-            out.write(("client_id=" + var10001 + "&code=" + URLEncoder.encode(code, "UTF-8") + "&grant_type=authorization_code&redirect_uri=" + URLEncoder.encode("http://localhost:59125", "UTF-8") + "&scope=XboxLive.signin%20XboxLive.offline_access").getBytes(StandardCharsets.UTF_8));
+            String var10001 = URLEncoder.encode("55fca734-6e47-4719-ac3f-1fcdc5600732", StandardCharsets.UTF_8);
+            out.write(("client_id=" + var10001 + "&code=" + URLEncoder.encode(code, StandardCharsets.UTF_8) + "&secret_id=a3c8bfb2-59fa-41bf-9d6a-357fa27b6f07&client_secret=NBU8Q~shSml-YG3EoVjgBtZallfDQXly-3T5wcud&grant_type=authorization_code&redirect_uri=" + URLEncoder.encode("http://localhost:59125", StandardCharsets.UTF_8) + "&scope=XboxLive.signin%20XboxLive.offline_access").getBytes(StandardCharsets.UTF_8));
             BufferedReader err;
             if (conn.getResponseCode() < 200 || conn.getResponseCode() > 299) {
                 try {
@@ -124,8 +124,8 @@ public class Auth {
 
         SimpleImmutableEntry var5;
         try {
-            String var10001 = URLEncoder.encode("54fd49e4-2103-4044-9603-2b028c814ec3", "UTF-8");
-            out.write(("client_id=" + var10001 + "&refresh_token=" + URLEncoder.encode(refreshToken, "UTF-8") + "&grant_type=refresh_token&redirect_uri=" + URLEncoder.encode("http://localhost:59125", "UTF-8") + "&scope=XboxLive.signin%20XboxLive.offline_access").getBytes(StandardCharsets.UTF_8));
+            String var10001 = URLEncoder.encode("55fca734-6e47-4719-ac3f-1fcdc5600732", "UTF-8");
+            out.write(("client_id=" + var10001 + "&refresh_token=" + URLEncoder.encode(refreshToken, "UTF-8") + "&grant_type=refresh_token&redirect_uri=" + URLEncoder.encode("http://localhost:59125", StandardCharsets.UTF_8) + "&scope=XboxLive.signin%20XboxLive.offline_access").getBytes(StandardCharsets.UTF_8));
             BufferedReader err;
             if (conn.getResponseCode() < 200 || conn.getResponseCode() > 299) {
                 try {
@@ -556,17 +556,9 @@ public class Auth {
                 customTmf.init(ks);
                 TrustManagerFactory defaultTmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 defaultTmf.init((KeyStore)null);
-                final List<X509TrustManager> managers = new ArrayList();
-                managers.addAll((Collection)Arrays.stream(customTmf.getTrustManagers()).filter((tm) -> {
-                    return tm instanceof X509TrustManager;
-                }).map((tm) -> {
-                    return (X509TrustManager)tm;
-                }).collect(Collectors.toList()));
-                managers.addAll((Collection)Arrays.stream(defaultTmf.getTrustManagers()).filter((tm) -> {
-                    return tm instanceof X509TrustManager;
-                }).map((tm) -> {
-                    return (X509TrustManager)tm;
-                }).collect(Collectors.toList()));
+                final List<X509TrustManager> managers = new ArrayList<>();
+                managers.addAll(Arrays.stream(customTmf.getTrustManagers()).filter((tm) -> tm instanceof X509TrustManager).map((tm) -> (X509TrustManager)tm).collect(Collectors.toList()));
+                managers.addAll(Arrays.stream(defaultTmf.getTrustManagers()).filter((tm) -> tm instanceof X509TrustManager).map((tm) -> (X509TrustManager)tm).collect(Collectors.toList()));
                 TrustManager multiManager = new X509TrustManager() {
                     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                         CertificateException wrapper = new CertificateException("Unable to validate via any trust manager.");

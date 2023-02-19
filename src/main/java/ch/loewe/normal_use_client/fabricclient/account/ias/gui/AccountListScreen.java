@@ -146,7 +146,7 @@ public class AccountListScreen extends Screen {
 
     private void login() {
         if (this.list.getSelectedOrNull() != null && this.state == null) {
-            Account acc = ((AccountList.AccountEntry)this.list.getSelectedOrNull()).account();
+            Account acc = this.list.getSelectedOrNull().account();
             this.updateButtons();
             this.state = "";
             acc.login((s, o) -> {
@@ -157,7 +157,7 @@ public class AccountListScreen extends Screen {
                     this.client.execute(() -> {
                         this.client.setScreen(new NoticeScreen(() -> {
                             this.client.setScreen(this);
-                        }, Text.translatable("ias.error").formatted(Formatting.RED), Text.literal(String.valueOf(t))));
+                        }, Text.translatable("ias.error").formatted(Formatting.RED), Text.literal(t + "\nPlease delete the acc and add it a second time.")));
                     });
                 } else {
                     this.client.execute(() -> {
@@ -170,12 +170,12 @@ public class AccountListScreen extends Screen {
                     });
                 }
             });
+
         }
     }
-
     private void loginOffline() {
+        Account acc = this.list.getSelectedOrNull().account();
         if (this.list.getSelectedOrNull() != null && this.state == null) {
-            Account acc = this.list.getSelectedOrNull().account();
             ((MinecraftAccessor)this.client).ias$user(new Session(acc.name(), UUIDTypeAdapter.fromUUID(UUID.nameUUIDFromBytes("OfflinePlayer".concat(acc.name()).getBytes(StandardCharsets.UTF_8))), "0", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
             UserApiService apiSvc = ((MinecraftAccessor)this.client).ias$createUserApiService(((MinecraftAccessor)this.client).ias$authenticationService(), new RunArgs(new RunArgs.Network(this.client.getSession(), null, null, null), null, null, null, null));
             ((MinecraftAccessor)this.client).ias$userApiService(apiSvc);
