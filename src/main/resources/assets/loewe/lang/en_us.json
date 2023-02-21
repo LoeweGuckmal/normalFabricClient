@@ -48,6 +48,12 @@
     "loewe.button.open_account_switcher.account": "▢",
     "loewe.button.open_account_switcher.account2": "▢",
 
+    "loewe.button.request_server_access": "Server-access",
+    "loewe.button.request_server_access.tooltip.request": "Aks for server-access.",
+    "loewe.button.request_server_access.tooltip.request2": "Aks for server-access.",
+    "loewe.request_server_access.request": "▢",
+    "loewe.request_server_access.request2": "▢",
+
     "loewe.button.debug": "Debug",
     "loewe.button.debug.tooltip": "This enables the debug mode of this mod."
 }

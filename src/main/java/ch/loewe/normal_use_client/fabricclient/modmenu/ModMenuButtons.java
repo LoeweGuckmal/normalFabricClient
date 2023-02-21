@@ -32,6 +32,8 @@ public class ModMenuButtons {
 
             getNewEnumButton(propertyKeys.openAccountSwitcher(), OpenAccountSwitcher.valueOf(Config.getOpenAccountSwitcher().toUpperCase())),
 
+            getNewEnumButton(propertyKeys.requestServerAccess(), RequestServerAccess.valueOf(Config.getRequestServerAccess().toUpperCase())),
+
             getNewBoolButton(propertyKeys.debug(), Config.getDebug())
     };
 
@@ -103,5 +105,9 @@ public class ModMenuButtons {
     public enum OpenAccountSwitcher {
         ACCOUNT,
         ACCOUNT2;
+    }
+    public enum RequestServerAccess {
+        ACCESS,
+        ACCESS2;
     }
 }

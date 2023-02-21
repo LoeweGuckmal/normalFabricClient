@@ -10,6 +10,7 @@ import ch.loewe.normal_use_client.fabricclient.modmenu.ConfigScreen;
 import ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.propertyKeys;
 import ch.loewe.normal_use_client.fabricclient.openrgb.OpenRGB;
 import ch.loewe.normal_use_client.fabricclient.zoom.Zoom;
+import com.mojang.brigadier.ParseResults;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,14 +18,20 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.telemetry.WorldSession;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowCords;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowFps;
@@ -32,6 +39,7 @@ import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowFps;
 @Environment(EnvType.CLIENT)
 public class FabricClientClient implements ClientModInitializer {
     public static KeyBinding settingsKeyBinding;
+    public static KeyBinding infoKeyBinding;
     private static int oldHealth = 0;
     public static MinecraftClient mc = MinecraftClient.getInstance();
     private static int timeout = 9;
@@ -81,6 +89,8 @@ public class FabricClientClient implements ClientModInitializer {
         }); //Zoom
         settingsKeyBinding = new KeyBinding("loewe.key.settings", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_R, "loewe.category");
         KeyBindingHelper.registerKeyBinding(settingsKeyBinding);
+        infoKeyBinding = new KeyBinding("loewe.key.info", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_I, "loewe.category");
+        KeyBindingHelper.registerKeyBinding(infoKeyBinding);
     }
 
     public static void onTick(){
@@ -107,8 +117,8 @@ public class FabricClientClient implements ClientModInitializer {
         else if (player != null) {
             if (Config.getDoRgb()) {
                 if (oldHealth > health) {
-                    timeout = 40;
-                    timeoutBack = 20;
+                    timeout = 35;
+                    timeoutBack = 17;
                     OpenRGB.loadMode("rot");
                 } else if (oldHealth < health) {
                     timeout = 30;
@@ -123,7 +133,7 @@ public class FabricClientClient implements ClientModInitializer {
     }
 
     public static void logTest(int i){
-        logger.info("test: " + i);
+        logger.info("test: {}", i);
     }
 
     public static void doCustom(String key){
@@ -136,8 +146,10 @@ public class FabricClientClient implements ClientModInitializer {
             }
         }
         if (key.equals(propertyKeys.openAccountSwitcher())){
-            SharedIAS.LOG.info("open");
             mc.setScreen(new IASConfigScreen(mc.currentScreen));
+        }
+        if (key.equals(propertyKeys.requestServerAccess()) && mc.player != null){
+            mc.player.networkHandler.sendChatCommand("request loewe");
         }
     }
 }

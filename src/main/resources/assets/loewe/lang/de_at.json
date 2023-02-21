@@ -48,6 +48,12 @@
     "loewe.button.open_account_switcher.account": "▢",
     "loewe.button.open_account_switcher.account2": "▢",
 
+    "loewe.button.request_server_access": "Serverzugang",
+    "loewe.button.request_server_access.tooltip.request": "Fragt um Serverzugang.",
+    "loewe.button.request_server_access.tooltip.request2": "Fragt um Serverzugang.",
+    "loewe.request_server_access.request": "▢",
+    "loewe.request_server_access.request2": "▢",
+
     "loewe.button.debug": "Debug",
     "loewe.button.debug.tooltip": "Dies aktiviert den Debugmodus."
 }

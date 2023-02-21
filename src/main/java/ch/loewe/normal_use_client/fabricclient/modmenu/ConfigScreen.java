@@ -1,21 +1,19 @@
 package ch.loewe.normal_use_client.fabricclient.modmenu;
 
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
-import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
-import net.minecraft.client.Keyboard;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
@@ -57,6 +55,9 @@ public class ConfigScreen extends SimpleOptionsScreen {
         if (settingsKeyBinding.matchesKey(keyCode, scanCode)) {
             openTimeout = 5;
             close();
+        }
+        if (infoKeyBinding.matchesKey(keyCode, scanCode)) {
+            logger.info(String.valueOf(mc.player.getServer() != null));
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }

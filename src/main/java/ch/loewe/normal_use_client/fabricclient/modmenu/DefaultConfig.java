@@ -48,14 +48,15 @@ public class DefaultConfig {
         return OpenAccountSwitcher.ACCOUNT;
     }
 
+    //server
+    public static RequestServerAccess getRequestServerAccess() {
+        return RequestServerAccess.ACCESS;
+    }
+
     //debug
     public static boolean getDebug() {
         return false;
     }
-
-    /*public static MinMaxDefHolder getTestSlider() {
-        return new MinMaxDefHolder(2, 12, 5);
-    }*/
 
 
     public static class propertyKeys {
@@ -96,6 +97,10 @@ public class DefaultConfig {
 
         public static String openAccountSwitcher() {
             return "open_account_switcher";
+        }
+
+        public static String requestServerAccess() {
+            return "request_server_access";
         }
 
         public static String debug() {

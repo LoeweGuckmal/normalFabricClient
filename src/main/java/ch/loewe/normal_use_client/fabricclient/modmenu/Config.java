@@ -62,6 +62,10 @@ public class Config {
         return getString(propertyKeys.openAccountSwitcher(), DefaultConfig.getOpenAccountSwitcher());
     }
 
+    public static String getRequestServerAccess() {
+        return getString(propertyKeys.requestServerAccess(), DefaultConfig.getRequestServerAccess());
+    }
+
     public static boolean getDebug() {
         return getBoolean(propertyKeys.debug(), DefaultConfig.getDebug());
     }
