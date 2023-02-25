@@ -4,6 +4,7 @@ import ch.loewe.normal_use_client.fabricclient.account.SharedIAS;
 import ch.loewe.normal_use_client.fabricclient.account.gui.IASConfigScreen;
 import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
+import ch.loewe.normal_use_client.fabricclient.loewe.HandleServerMessage;
 import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftClientAccessor;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import ch.loewe.normal_use_client.fabricclient.modmenu.ConfigScreen;
@@ -15,7 +16,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -24,8 +27,10 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.telemetry.WorldSession;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +46,7 @@ public class FabricClientClient implements ClientModInitializer {
     public static KeyBinding settingsKeyBinding;
     public static KeyBinding infoKeyBinding;
     private static int oldHealth = 0;
+    public static boolean firstTime = true;
     public static MinecraftClient mc = MinecraftClient.getInstance();
     private static int timeout = 9;
     private static int timeoutBack = 10;
@@ -56,6 +62,8 @@ public class FabricClientClient implements ClientModInitializer {
         //rgb
         colorMap.put("yellow", "gelb");
         colorMap.put("bluegreen", "bg");
+        ClientPlayNetworking.registerGlobalReceiver(new Identifier("monopoly", "loewe"), (client, handler, buf, responseSender) ->
+                HandleServerMessage.onReceiveMessage(client, handler, new String(buf.getWrittenBytes()), responseSender));
 
         //overlay
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
@@ -149,7 +157,7 @@ public class FabricClientClient implements ClientModInitializer {
             mc.setScreen(new IASConfigScreen(mc.currentScreen));
         }
         if (key.equals(propertyKeys.requestServerAccess()) && mc.player != null){
-            mc.player.networkHandler.sendChatCommand("request loewe");
+            HandleServerMessage.requestSettings();
         }
     }
 }

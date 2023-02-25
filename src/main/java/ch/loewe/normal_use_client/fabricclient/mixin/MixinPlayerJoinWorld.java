@@ -1,18 +1,24 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
+import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
+import ch.loewe.normal_use_client.fabricclient.loewe.HandleServerMessage;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
 
 @Environment(EnvType.CLIENT)
 @Mixin({AbstractClientPlayerEntity.class})
