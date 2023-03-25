@@ -1,6 +1,5 @@
 package ch.loewe.normal_use_client.fabricclient.loewe;
 
-import ch.loewe.normal_use_client.fabricclient.account.gui.IASConfigScreen;
 import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -10,8 +9,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import java.util.Random;
-
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.mc;
 
 public class HandleServerMessage {
     private static String code = null;

@@ -46,7 +46,6 @@ public class FabricClientClient implements ClientModInitializer {
     public static KeyBinding settingsKeyBinding;
     public static KeyBinding infoKeyBinding;
     private static int oldHealth = 0;
-    public static boolean firstTime = true;
     public static MinecraftClient mc = MinecraftClient.getInstance();
     private static int timeout = 9;
     private static int timeoutBack = 10;

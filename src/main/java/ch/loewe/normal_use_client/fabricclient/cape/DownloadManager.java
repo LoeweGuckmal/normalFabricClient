@@ -4,6 +4,7 @@ import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import com.google.gson.Gson;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
@@ -17,10 +18,16 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.mc;
 
 public class DownloadManager {
+    public static boolean wait = false;
+    public static boolean clickedDuringWait = false;
+    public static boolean firstClick = false;
     public DownloadManager() {
     }
 
@@ -35,6 +42,10 @@ public class DownloadManager {
                         downloadProfile(playerHandler);
                     }
                     else if (isLocalPlayer(player)) { //is local player
+                        wait = true;
+                        firstClick = false;
+                        clickedDuringWait = false;
+                        mc.options.setPerspective(Perspective.FIRST_PERSON);
                         playerHandler.setPlayerUUID(player.getUuid());
                         loadOfflineProfilePng(playerHandler);
                     }
@@ -50,7 +61,7 @@ public class DownloadManager {
     }
 
     public static boolean isLocalPlayer(PlayerEntity player){
-        return mc.player == null || mc.player.getUuid().equals(player.getUuid());
+        return isLocalPlayer(player.getUuid());
     }
     public static boolean isLocalPlayer(UUID uuid){
         return mc.player == null || mc.player.getUuid().equals(uuid);
@@ -92,8 +103,6 @@ public class DownloadManager {
             playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
         if (profileResult.textures.get("cape") != null) {
             playerHandler.applyCape(profileResult.textures.get("cape"));
-        } else {
-            loadOfflineProfile(playerHandler);
         }
         if (profileResult.textures.get("ears") != null) {
             playerHandler.applyEars(profileResult.textures.get("ears"));
@@ -104,11 +113,10 @@ public class DownloadManager {
     private static void cacheProfile(PlayerHandler playerHandler, ProfileResult profileResult) {
         String fileName = playerHandler.getPlayerUUID().toString();
         String profileJson = (new Gson()).toJson(profileResult);
-        File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
+        File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape/cache");
         if(profileDirectory.mkdirs())
-            logger.warn("created directory \"/config/loewe/cape\"");
+            logger.warn("created directory \"/config/loewe/cape/cache\"");
         File profileFile = new File(new File(profileDirectory, shortUuid(fileName)), fileName);
-
         try {
             FileUtils.writeStringToFile(profileFile, profileJson, StandardCharsets.UTF_8);
         } catch (Exception ignored) {}
@@ -117,80 +125,89 @@ public class DownloadManager {
     private static void loadOfflineProfile(PlayerHandler playerHandler) {
         try {
             String fileName = playerHandler.getPlayerUUID().toString();
-            File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
+            File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape/cache");
             if(profileDirectory.mkdirs())
-                logger.warn("created directory \"/config/loewe/cape\"");
+                logger.warn("created directory \"/config/loewe/cape/cache\"");
             File profileFile = new File(new File(profileDirectory, shortUuid(fileName)), fileName);
             if (profileFile.exists()) {
                 try {
                     Reader reader = new FileReader(profileFile);
-                    readProfile(playerHandler, reader, false);
+                    ProfileResult profileResult = (new Gson()).fromJson(reader, ProfileResult.class);
+                    if (!profileResult.textures.isEmpty()) {
+                        readProfile(playerHandler, reader, false);
+                        reader.close();
+                        return;
+                    }
                     reader.close();
                 } catch (Exception ignored) {
                     profileFile.delete();
                 }
-            } else if (isLocalPlayer(playerHandler.getPlayerUUID()))
+            }
+            if (isLocalPlayer(playerHandler.getPlayerUUID()))
                 loadOfflineProfilePng(playerHandler);
         } catch (Exception ignored){}
     }
     private static void loadOfflineProfilePng(PlayerHandler playerHandler) {
-        String fileName = "cape.png";
-        File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
-        if(profileDirectory.mkdirs())
-            logger.warn("created directory \"/config/loewe/cape\"");
-        File profileFile = new File(profileDirectory, fileName);
+        if (isLocalPlayer(playerHandler.getPlayerUUID())) {
+            String fileName = "cape.png";
+            File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
+            if (profileDirectory.mkdirs())
+                logger.warn("created directory \"/config/loewe/cape\"");
+            File profileFile = new File(profileDirectory, fileName);
 
-        playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
-        if (profileFile.exists()) {
-            try {
-                BufferedImage capeImage = ImageIO.read(profileFile);
-                if (isAnimated(capeImage)) { //animated
-                    Int2ObjectMap<NativeImage> animatedCapeFrames = new Int2ObjectOpenHashMap<>();
-                    int framesAmount = capeImage.getHeight() / (capeImage.getWidth() / 2);
-                    int imageWidth = capeImage.getWidth();
-                    int imageHeigt = (capeImage.getWidth() / 2);
+            playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
+            if (profileFile.exists()) {
+                try {
+                    BufferedImage capeImage = ImageIO.read(profileFile);
+                    if (isAnimated(capeImage)) { //animated
+                        Int2ObjectMap<NativeImage> animatedCapeFrames = new Int2ObjectOpenHashMap<>();
+                        int framesAmount = capeImage.getHeight() / (capeImage.getWidth() / 2);
+                        int imageWidth = capeImage.getWidth();
+                        int imageHeigt = (capeImage.getWidth() / 2);
 
-                    for(int currentFrame = 0; currentFrame < framesAmount; ++currentFrame) {
-                        NativeImage frame = new NativeImage(imageWidth, imageHeigt, true);
+                        for (int currentFrame = 0; currentFrame < framesAmount; ++currentFrame) {
+                            NativeImage frame = new NativeImage(imageWidth, imageHeigt, true);
 
-                        for(int x = 0; x < frame.getWidth(); ++x) {
-                            for(int y = 0; y < frame.getHeight(); ++y) {
-                                frame.setColor(x, y, ABGRfromARGB(capeImage.getRGB(x, y + currentFrame * imageHeigt)));
+                            for (int x = 0; x < frame.getWidth(); ++x) {
+                                for (int y = 0; y < frame.getHeight(); ++y) {
+                                    frame.setColor(x, y, ABGRfromARGB(capeImage.getRGB(x, y + currentFrame * imageHeigt)));
+                                }
+                            }
+
+                            animatedCapeFrames.put(currentFrame, frame);
+                        }
+
+                        playerHandler.setHasInfo(true);
+                        playerHandler.setAnimatedCape(animatedCapeFrames);
+                    } else { //static
+                        int width = 64;
+                        int height = 32;
+                        int imageWidth = capeImage.getWidth();
+                        int imageHeight = capeImage.getHeight();
+                        while (width < imageWidth || height < imageHeight) {
+                            height *= 2;
+                            width *= 2;
+                        }
+
+                        NativeImage imgNew = new NativeImage(width, height, true);
+
+                        for (int x = 0; x < imageWidth; ++x) {
+                            for (int y = 0; y < imageHeight; ++y) {
+                                imgNew.setColor(x, y, ABGRfromARGB(capeImage.getRGB(x, y)));
                             }
                         }
 
-                        animatedCapeFrames.put(currentFrame, frame);
+                        playerHandler.setHasInfo(true);
+                        playerHandler.applyTextureP(new Identifier("loewe", "capes/" + playerHandler.getPlayerUUID()), imgNew);
+                        playerHandler.setHasStaticCape(true);
+                        playerHandler.setHasAnimatedCape(false);
                     }
-
-                    playerHandler.setHasInfo(true);
-                    playerHandler.setAnimatedCape(animatedCapeFrames);
-                } else { //static
-                    int width = 64;
-                    int height = 32;
-                    int imageWidth = capeImage.getWidth();
-                    int imageHeight = capeImage.getHeight();
-                    while (width < imageWidth || height < imageHeight) {
-                        height *= 2;
-                        width *= 2;
-                    }
-
-                    NativeImage imgNew = new NativeImage(width, height, true);
-
-                    for (int x = 0; x < imageWidth; ++x) {
-                        for (int y = 0; y < imageHeight; ++y) {
-                            imgNew.setColor(x, y, ABGRfromARGB(capeImage.getRGB(x, y)));
-                        }
-                    }
-
-                    playerHandler.setHasInfo(true);
-                    playerHandler.applyTextureP(new Identifier("loewe", "capes/" + playerHandler.getPlayerUUID()), imgNew);
-                    playerHandler.setHasStaticCape(true);
-                    playerHandler.setHasAnimatedCape(false);
+                } catch (Exception ignored) {
+                    profileFile.delete();
                 }
-            } catch (Exception ignored) {
-                profileFile.delete();
             }
         }
+        wait = false;
     }
 
     public static boolean isAnimated(BufferedImage image) {

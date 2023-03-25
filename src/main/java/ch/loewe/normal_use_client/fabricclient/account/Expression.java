@@ -1,6 +1,8 @@
 package ch.loewe.normal_use_client.fabricclient.account;
 
 import java.util.Locale;
+import java.util.Objects;
+
 import org.jetbrains.annotations.Contract;
 
 public class Expression {
@@ -97,6 +99,6 @@ public class Expression {
             pure = true
     )
     public static double parseWidthHeight(String expression, int width, int height) throws IllegalArgumentException {
-        return (new Expression(expression.toLowerCase(Locale.ROOT).replace("w", String.valueOf(width)).replace("h", String.valueOf(height)))).parse();
+        return (new Expression(Objects.requireNonNullElse(expression, "").toLowerCase(Locale.ROOT).replace("w", String.valueOf(width)).replace("h", String.valueOf(height)))).parse();
     }
 }

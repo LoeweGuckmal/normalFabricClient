@@ -1,5 +1,6 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
+import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
@@ -136,7 +137,7 @@ public class PlayerHandler {
     }
 
     public Identifier getCapeLocation() {
-        return this.hasStaticCape ? new Identifier("loewe", "capes/" + this.playerUUID) : (this.hasAnimatedCape ? this.getFrame() : null);
+        return this.hasStaticCape ? new Identifier("loewe", "capes/" + this.playerUUID) : this.hasAnimatedCape ? this.getFrame() : null;
     }
     public Identifier getEarLocation() {
         return this.hasEars ? new Identifier("loewe", "ears/" + this.playerUUID) : null;
