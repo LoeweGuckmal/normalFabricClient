@@ -93,7 +93,7 @@ public class AccountListScreen extends Screen {
     public void render(MatrixStack ms, int mx, int my, float delta) {
         this.renderBackground(ms);
         super.render(ms, mx, my, delta);
-        drawCenteredText(ms, this.textRenderer, this.title, this.width / 2, 4, -1);
+        drawCenteredTextWithShadow(ms, this.textRenderer, this.title, this.width / 2, 4, -1);
         if (this.list.getSelectedOrNull() != null) {
             RenderSystem.setShaderTexture(0, ((AccountList.AccountEntry)this.list.getSelectedOrNull()).skin());
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -131,7 +131,7 @@ public class AccountListScreen extends Screen {
         }
 
         if (this.state != null) {
-            drawCenteredText(ms, this.textRenderer, this.state, this.width / 2, this.height - 62, -26368);
+            drawCenteredTextWithShadow(ms, this.textRenderer, this.state, this.width / 2, this.height - 62, -26368);
         }
 
     }
@@ -149,9 +149,7 @@ public class AccountListScreen extends Screen {
             Account acc = this.list.getSelectedOrNull().account();
             this.updateButtons();
             this.state = "";
-            acc.login((s, o) -> {
-                this.state = I18n.translate(s, o);
-            }).whenComplete((d, t) -> {
+            acc.login((s, o) -> this.state = I18n.translate(s, o)).whenComplete((d, t) -> {
                 this.state = null;
                 if (t != null) {
                     this.client.execute(() -> {
@@ -173,8 +171,18 @@ public class AccountListScreen extends Screen {
 
         }
     }
-    private void loginOffline() {
+    public void loginOffline() {
         Account acc = this.list.getSelectedOrNull().account();
+        if (this.list.getSelectedOrNull() != null && this.state == null) {
+            ((MinecraftAccessor)this.client).ias$user(new Session(acc.name(), UUIDTypeAdapter.fromUUID(UUID.nameUUIDFromBytes("OfflinePlayer".concat(acc.name()).getBytes(StandardCharsets.UTF_8))), "0", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
+            UserApiService apiSvc = ((MinecraftAccessor)this.client).ias$createUserApiService(((MinecraftAccessor)this.client).ias$authenticationService(), new RunArgs(new RunArgs.Network(this.client.getSession(), null, null, null), null, null, null, null));
+            ((MinecraftAccessor)this.client).ias$userApiService(apiSvc);
+            ((MinecraftAccessor)this.client).ias$playerSocialManager(new SocialInteractionsManager(this.client, apiSvc));
+            ((MinecraftAccessor)this.client).ias$profileKeyPairManager(new ProfileKeysImpl(apiSvc, new UUID(0L, 0L), this.client.runDirectory.toPath()));
+            ((MinecraftAccessor)this.client).ias$reportingContext(AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), apiSvc));
+        }
+    }
+    public void loginOffline(Account acc) {
         if (this.list.getSelectedOrNull() != null && this.state == null) {
             ((MinecraftAccessor)this.client).ias$user(new Session(acc.name(), UUIDTypeAdapter.fromUUID(UUID.nameUUIDFromBytes("OfflinePlayer".concat(acc.name()).getBytes(StandardCharsets.UTF_8))), "0", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
             UserApiService apiSvc = ((MinecraftAccessor)this.client).ias$createUserApiService(((MinecraftAccessor)this.client).ias$authenticationService(), new RunArgs(new RunArgs.Network(this.client.getSession(), null, null, null), null, null, null, null));

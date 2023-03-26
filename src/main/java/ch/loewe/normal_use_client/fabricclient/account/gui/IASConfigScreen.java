@@ -122,7 +122,7 @@ public class IASConfigScreen extends Screen {
 
     public void render(MatrixStack ms, int mx, int my, float delta) {
         this.renderBackground(ms);
-        drawCenteredText(ms, this.textRenderer, this.title, this.width / 2, 5, -1);
+        drawCenteredTextWithShadow(ms, this.textRenderer, this.title, this.width / 2, 5, -1);
         super.render(ms, mx, my, delta);
     }
 }

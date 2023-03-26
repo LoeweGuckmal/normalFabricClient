@@ -1,6 +1,5 @@
 package ch.loewe.normal_use_client.fabricclient.client;
 
-import ch.loewe.normal_use_client.fabricclient.account.SharedIAS;
 import ch.loewe.normal_use_client.fabricclient.account.gui.IASConfigScreen;
 import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
@@ -11,32 +10,23 @@ import ch.loewe.normal_use_client.fabricclient.modmenu.ConfigScreen;
 import ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.propertyKeys;
 import ch.loewe.normal_use_client.fabricclient.openrgb.OpenRGB;
 import ch.loewe.normal_use_client.fabricclient.zoom.Zoom;
-import com.mojang.brigadier.ParseResults;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.telemetry.WorldSession;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.Objects;
 
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowCords;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowFps;

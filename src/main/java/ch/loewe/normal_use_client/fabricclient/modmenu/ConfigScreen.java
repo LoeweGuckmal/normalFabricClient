@@ -47,7 +47,7 @@ public class ConfigScreen extends SimpleOptionsScreen {
     }
 
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackgroundTexture(0);
+        this.renderBackgroundTexture(matrices);
         super.render(matrices, mouseX, mouseY, delta);
     }
 

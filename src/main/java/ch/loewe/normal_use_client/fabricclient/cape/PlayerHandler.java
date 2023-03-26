@@ -1,6 +1,5 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
-import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
@@ -33,9 +32,11 @@ public class PlayerHandler {
     private long lastFrameTime = 0L;
     private int lastFrame = 0;
     private final int capeInterval = 100;
+    private PlayerEntity player;
 
     public PlayerHandler(PlayerEntity player) {
         this.playerUUID = player.getUuid();
+        this.player = player;
         instances.put(this.playerUUID, this);
     }
 
@@ -212,6 +213,13 @@ public class PlayerHandler {
     }
     public UUID getPlayerUUID() {
         return this.playerUUID;
+    }
+    
+    public PlayerEntity getPlayer() {
+        return this.player;
+    }
+    public void setPlayer(PlayerEntity player) {
+        this.player = player;
     }
 
     public Int2ObjectMap<NativeImage> getAnimatedCape() {

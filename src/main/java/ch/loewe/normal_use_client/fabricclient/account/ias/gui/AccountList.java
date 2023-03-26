@@ -87,7 +87,7 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
                 color = 65280;
             }
 
-            DrawableHelper.drawStringWithShadow(ms, AccountList.this.client.textRenderer, this.account.name(), x + 10, y + 1, color);
+            DrawableHelper.drawTextWithShadow(ms, AccountList.this.client.textRenderer, this.account.name(), x + 10, y + 1, color);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, this.skin());
             Screen.drawTexture(ms, x, y + 1, 8.0F, 8.0F, 8, 8, 64, 64);

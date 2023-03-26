@@ -14,8 +14,8 @@ public class ModMenuIntegration implements ModMenuApi {
 
     public static int buttonOffset() {
         try {
-            ModMenuConfig.ModsButtonStyle style = (ModMenuConfig.ModsButtonStyle)ModMenuConfig.MODS_BUTTON_STYLE.getValue();
-            if (style == ModMenuConfig.ModsButtonStyle.ICON) {
+            ModMenuConfig.TitleMenuButtonStyle style = ModMenuConfig.MODS_BUTTON_STYLE.getValue();
+            if (style == ModMenuConfig.TitleMenuButtonStyle.ICON) {
                 return -48;
             }
         } catch (Throwable ignored) {

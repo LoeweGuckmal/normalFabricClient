@@ -1,14 +1,24 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
+import ch.loewe.normal_use_client.fabricclient.account.account.Account;
+import ch.loewe.normal_use_client.fabricclient.account.ias.gui.AccountListScreen;
+import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
+import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftAccessor;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import com.google.gson.Gson;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.util.Session;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -17,9 +27,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.mc;
@@ -44,7 +57,7 @@ public class DownloadManager {
                     else if (isLocalPlayer(player)) { //is local player
                         wait = true;
                         firstClick = false;
-                        clickedDuringWait = false;
+                        clickedDuringWait = mc.options.getPerspective().equals(Perspective.THIRD_PERSON_BACK);
                         mc.options.setPerspective(Perspective.FIRST_PERSON);
                         playerHandler.setPlayerUUID(player.getUuid());
                         loadOfflineProfilePng(playerHandler);
@@ -53,25 +66,40 @@ public class DownloadManager {
                 playerDownload.setDaemon(true);
                 playerDownload.start();
             } else {
-                if (playerHandler.getHasInfo() && doRefresh) //doRefresh
+                if (playerHandler.getHasInfo() && doRefresh) { //doRefresh
                     downloadProfile(playerHandler);
+                }
             }
-
         }
     }
 
     public static boolean isLocalPlayer(PlayerEntity player){
-        return isLocalPlayer(player.getUuid());
-    }
-    public static boolean isLocalPlayer(UUID uuid){
-        return mc.player == null || mc.player.getUuid().equals(uuid);
+        if (mc.player != null && !mc.player.getUuid().equals(player.getUuid()) && mc.player.getEntityName().equals(player.getEntityName())) {
+            new AccountListScreen(mc.currentScreen).loginOffline(new Account() {
+                @Override
+                public @NotNull UUID uuid() {
+                    return player.getUuid();
+                }
+
+                @Override
+                public @NotNull String name() {
+                    return player.getEntityName();
+                }
+
+                @Override
+                public @NotNull CompletableFuture<AuthData> login(@NotNull BiConsumer<String, Object[]> var1) {
+                    return null;
+                }
+            });
+        }
+        return mc.player == null || mc.player.getUuid().equals(player.getUuid()) || mc.player.getEntityName().equals(player.getEntityName());
     }
 
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
-            if (Config.getCapeFromFile() && isLocalPlayer(playerHandler.getPlayerUUID())) {
+            if (Config.getCapeFromFile() && isLocalPlayer(playerHandler.getPlayer()))
                 loadOfflineProfilePng(playerHandler);
-            } else try {
+            else try { //////////////////////////////////////////////////////////
                 String uuidString = playerHandler.getPlayerUUID().toString();
                 URL url = new URL("https://minecraftcapes.net/profile/" + uuidString.replace("-", ""));
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection(mc.getNetworkProxy());
@@ -80,11 +108,15 @@ public class DownloadManager {
                 conn.connect();
                 if (conn.getResponseCode() / 100 == 2) {
                     Reader reader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
-                    readProfile(playerHandler, reader, true);
+                    ProfileResult profileResult = (new Gson()).fromJson(reader, ProfileResult.class);
+                    if (!profileResult.textures.isEmpty()) {
+                        readProfile(playerHandler, reader, true);
+                        reader.close();
+                        return;
+                    }
                     reader.close();
-                } else {
-                    loadOfflineProfile(playerHandler);
                 }
+                loadOfflineProfile(playerHandler);
             } catch (IOException ignored) {
                 loadOfflineProfile(playerHandler);
             }
@@ -99,7 +131,7 @@ public class DownloadManager {
         ProfileResult profileResult = (new Gson()).fromJson(reader, ProfileResult.class);
         playerHandler.setHasCapeGlint(profileResult.capeGlint);
         playerHandler.setUpsideDown(profileResult.upsideDown);
-        if (isLocalPlayer(playerHandler.getPlayerUUID()))
+        if (isLocalPlayer(playerHandler.getPlayer()))
             playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
         if (profileResult.textures.get("cape") != null) {
             playerHandler.applyCape(profileResult.textures.get("cape"));
@@ -143,12 +175,18 @@ public class DownloadManager {
                     profileFile.delete();
                 }
             }
-            if (isLocalPlayer(playerHandler.getPlayerUUID()))
+            if (isLocalPlayer(playerHandler.getPlayer()))
                 loadOfflineProfilePng(playerHandler);
         } catch (Exception ignored){}
     }
     private static void loadOfflineProfilePng(PlayerHandler playerHandler) {
-        if (isLocalPlayer(playerHandler.getPlayerUUID())) {
+        if (isLocalPlayer(playerHandler.getPlayer())) {
+            if (!wait) {
+                wait = true;
+                firstClick = false;
+                clickedDuringWait = mc.options.getPerspective().equals(Perspective.THIRD_PERSON_BACK);
+                mc.options.setPerspective(Perspective.FIRST_PERSON);
+            }
             String fileName = "cape.png";
             File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
             if (profileDirectory.mkdirs())
@@ -208,6 +246,10 @@ public class DownloadManager {
             }
         }
         wait = false;
+        if (clickedDuringWait) {
+            mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
+            clickedDuringWait = false;
+        }
     }
 
     public static boolean isAnimated(BufferedImage image) {

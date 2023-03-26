@@ -59,11 +59,11 @@ public class LoginScreen extends Screen {
 
     public void render(MatrixStack ms, int mx, int my, float delta) {
         this.renderBackground(ms);
-        drawCenteredText(ms, this.textRenderer, this.title, this.width / 2, 5, -1);
-        drawCenteredText(ms, this.textRenderer, I18n.translate("ias.loginGui.nickname", new Object[0]), this.width / 2, this.height / 2 - 22, -1);
+        drawCenteredTextWithShadow(ms, this.textRenderer, this.title, this.width / 2, 5, -1);
+        drawCenteredTextWithShadow(ms, this.textRenderer, I18n.translate("ias.loginGui.nickname", new Object[0]), this.width / 2, this.height / 2 - 22, -1);
         if (this.state != null) {
-            drawCenteredText(ms, this.textRenderer, this.state, this.width / 2, this.height / 3 * 2, -26368);
-            drawCenteredText(ms, this.textRenderer, SharedIAS.LOADING[(int)(System.currentTimeMillis() / 50L % (long)SharedIAS.LOADING.length)], this.width / 2, this.height / 3 * 2 + 10, -26368);
+            drawCenteredTextWithShadow(ms, this.textRenderer, this.state, this.width / 2, this.height / 3 * 2, -26368);
+            drawCenteredTextWithShadow(ms, this.textRenderer, SharedIAS.LOADING[(int)(System.currentTimeMillis() / 50L % (long)SharedIAS.LOADING.length)], this.width / 2, this.height / 3 * 2 + 10, -26368);
         }
 
         super.render(ms, mx, my, delta);
@@ -123,7 +123,7 @@ public class LoginScreen extends Screen {
     private void loginOffline() {
         this.state = "";
         SharedIAS.EXECUTOR.execute(() -> {
-            this.state = I18n.translate("ias.loginGui.offline.progress", new Object[0]);
+            this.state = I18n.translate("ias.loginGui.offline.progress");
             Account account = new OfflineAccount(this.username.getText(), Auth.resolveUUID(this.username.getText()));
             this.client.execute(() -> {
                 this.handler.accept(account);
