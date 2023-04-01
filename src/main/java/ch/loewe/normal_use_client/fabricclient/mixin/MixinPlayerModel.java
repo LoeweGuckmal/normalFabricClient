@@ -24,7 +24,7 @@ public abstract class MixinPlayerModel extends BipedEntityModel<LivingEntity> {
             cancellable = true
     )
     private static void getTexturedModelData(Dilation cubeDeformation, boolean slim, CallbackInfoReturnable<ModelData> cir) {
-        ModelData meshDefinition = (ModelData)cir.getReturnValue();
+        ModelData meshDefinition = cir.getReturnValue();
         meshDefinition.getRoot().addChild("ear", ModelPartBuilder.create(), ModelTransform.NONE);
         ModelPartData partDefinition = meshDefinition.getRoot().getChild("ear");
         partDefinition.addChild("left_ear", ModelPartBuilder.create().uv(0, 0).cuboid(1.5F, -10.5F, -1.0F, 6.0F, 6.0F, 1.0F, cubeDeformation, 0.21875F, 0.109375F), ModelTransform.NONE);

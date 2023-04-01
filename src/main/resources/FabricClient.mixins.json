@@ -7,12 +7,14 @@
   ],
   "client": [
     "MinecraftAccessor",
+    "MinecraftAccessorClass",
     "MinecraftClientAccessor",
     "MinecraftClientMixin",
     "MixinPlayerEntityRenderer",
     "MixinPlayerJoinWorld",
     "MixinPlayerModel",
     "MouseMixin",
+    "DisconnectMixin",
     "skipThirdPersonMixin",
     "ZoomMixin"
   ],

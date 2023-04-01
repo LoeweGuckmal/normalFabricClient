@@ -483,7 +483,7 @@ public class Auth {
 
             UUID var3;
             try {
-                uuid = UUID.fromString(((JsonObject)SharedIAS.GSON.fromJson(in, JsonObject.class)).get("id").getAsString().replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+                uuid = UUID.fromString(SharedIAS.GSON.fromJson(in, JsonObject.class).get("id").getAsString().replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
                 var3 = uuid;
             } catch (Throwable var5) {
                 try {

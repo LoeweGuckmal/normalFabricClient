@@ -1,24 +1,17 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
-import ch.loewe.normal_use_client.fabricclient.account.account.Account;
+import ch.loewe.normal_use_client.fabricclient.account.account.Auth;
+import ch.loewe.normal_use_client.fabricclient.account.account.OfflineAccount;
 import ch.loewe.normal_use_client.fabricclient.account.ias.gui.AccountListScreen;
-import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
-import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftAccessor;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import com.google.gson.Gson;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.util.Session;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -27,12 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.mc;
@@ -54,11 +42,12 @@ public class DownloadManager {
                         playerHandler.setPlayerUUID(uuid);
                         downloadProfile(playerHandler);
                     }
-                    else if (isLocalPlayer(player)) { //is local player
+                    else if (isLocalPlayer(player)) {
+                        /*is local player
                         wait = true;
                         firstClick = false;
                         clickedDuringWait = mc.options.getPerspective().equals(Perspective.THIRD_PERSON_BACK);
-                        mc.options.setPerspective(Perspective.FIRST_PERSON);
+                        mc.options.setPerspective(Perspective.FIRST_PERSON);*/
                         playerHandler.setPlayerUUID(player.getUuid());
                         loadOfflineProfilePng(playerHandler);
                     }
@@ -75,30 +64,16 @@ public class DownloadManager {
 
     public static boolean isLocalPlayer(PlayerEntity player){
         if (mc.player != null && !mc.player.getUuid().equals(player.getUuid()) && mc.player.getEntityName().equals(player.getEntityName())) {
-            new AccountListScreen(mc.currentScreen).loginOffline(new Account() {
-                @Override
-                public @NotNull UUID uuid() {
-                    return player.getUuid();
-                }
-
-                @Override
-                public @NotNull String name() {
-                    return player.getEntityName();
-                }
-
-                @Override
-                public @NotNull CompletableFuture<AuthData> login(@NotNull BiConsumer<String, Object[]> var1) {
-                    return null;
-                }
-            });
+            new AccountListScreen(mc.currentScreen).loginOffline(new OfflineAccount(player.getEntityName(), Auth.resolveUUID(player.getEntityName())));
         }
         return mc.player == null || mc.player.getUuid().equals(player.getUuid()) || mc.player.getEntityName().equals(player.getEntityName());
     }
 
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
-            if (Config.getCapeFromFile() && isLocalPlayer(playerHandler.getPlayer()))
+            if (Config.getCapeFromFile() && isLocalPlayer(playerHandler.getPlayer())) {
                 loadOfflineProfilePng(playerHandler);
+            }
             else try { //////////////////////////////////////////////////////////
                 String uuidString = playerHandler.getPlayerUUID().toString();
                 URL url = new URL("https://minecraftcapes.net/profile/" + uuidString.replace("-", ""));
@@ -109,8 +84,9 @@ public class DownloadManager {
                 if (conn.getResponseCode() / 100 == 2) {
                     Reader reader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
                     ProfileResult profileResult = (new Gson()).fromJson(reader, ProfileResult.class);
+                    //logger.info(profileResult.toString());
                     if (!profileResult.textures.isEmpty()) {
-                        readProfile(playerHandler, reader, true);
+                        readProfile(playerHandler, profileResult, true);
                         reader.close();
                         return;
                     }
@@ -126,20 +102,31 @@ public class DownloadManager {
         playerDownload.start();
     }
 
-    private static void readProfile(PlayerHandler playerHandler, Reader reader, boolean cache) {
+    private static void readProfile(PlayerHandler playerHandler, ProfileResult profileResult, boolean cache) {
         playerHandler.setHasInfo(true);
-        ProfileResult profileResult = (new Gson()).fromJson(reader, ProfileResult.class);
+        //logger.info(profileResult.toString() + isLocalPlayer(playerHandler.getPlayer()));
         playerHandler.setHasCapeGlint(profileResult.capeGlint);
         playerHandler.setUpsideDown(profileResult.upsideDown);
-        if (isLocalPlayer(playerHandler.getPlayer()))
+        boolean cape = profileResult.textures.get("cape") != null;
+        boolean ears = profileResult.textures.get("ears") != null;
+        if (isLocalPlayer(playerHandler.getPlayer())) {
             playerHandler.setHasCapeGlint(Config.getHasCapeGlint());
-        if (profileResult.textures.get("cape") != null) {
-            playerHandler.applyCape(profileResult.textures.get("cape"));
         }
-        if (profileResult.textures.get("ears") != null) {
-            playerHandler.applyEars(profileResult.textures.get("ears"));
+        if (!cape && !ears) {
+            if (isLocalPlayer(playerHandler.getPlayer()))
+                loadOfflineProfilePng(playerHandler);
+        } else {
+            playerHandler.setDownloadedPngLast(false);
+            if (cape) {
+                playerHandler.applyCape(profileResult.textures.get("cape"));
+            }
+            if (ears) {
+                playerHandler.applyEars(profileResult.textures.get("ears"));
+            }
+            if (cache && cape) {
+                cacheProfile(playerHandler, profileResult);
+            }
         }
-        if (cache && profileResult.textures.get("cape") != null) cacheProfile(playerHandler, profileResult);
     }
 
     private static void cacheProfile(PlayerHandler playerHandler, ProfileResult profileResult) {
@@ -151,7 +138,8 @@ public class DownloadManager {
         File profileFile = new File(new File(profileDirectory, shortUuid(fileName)), fileName);
         try {
             FileUtils.writeStringToFile(profileFile, profileJson, StandardCharsets.UTF_8);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     private static void loadOfflineProfile(PlayerHandler playerHandler) {
@@ -166,7 +154,7 @@ public class DownloadManager {
                     Reader reader = new FileReader(profileFile);
                     ProfileResult profileResult = (new Gson()).fromJson(reader, ProfileResult.class);
                     if (!profileResult.textures.isEmpty()) {
-                        readProfile(playerHandler, reader, false);
+                        readProfile(playerHandler, profileResult, false);
                         reader.close();
                         return;
                     }
@@ -175,18 +163,20 @@ public class DownloadManager {
                     profileFile.delete();
                 }
             }
-            if (isLocalPlayer(playerHandler.getPlayer()))
+            if (isLocalPlayer(playerHandler.getPlayer())) {
                 loadOfflineProfilePng(playerHandler);
+            }
         } catch (Exception ignored){}
     }
     private static void loadOfflineProfilePng(PlayerHandler playerHandler) {
+        playerHandler.setDownloadedPngLast(true);
         if (isLocalPlayer(playerHandler.getPlayer())) {
-            if (!wait) {
+            /*if (!wait) {
                 wait = true;
                 firstClick = false;
                 clickedDuringWait = mc.options.getPerspective().equals(Perspective.THIRD_PERSON_BACK);
                 mc.options.setPerspective(Perspective.FIRST_PERSON);
-            }
+            }*/
             String fileName = "cape.png";
             File profileDirectory = new File(mc.runDirectory + "/config/loewe/cape");
             if (profileDirectory.mkdirs())
@@ -245,11 +235,11 @@ public class DownloadManager {
                 }
             }
         }
-        wait = false;
+        /*wait = false;
         if (clickedDuringWait) {
             mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
             clickedDuringWait = false;
-        }
+        }*/
     }
 
     public static boolean isAnimated(BufferedImage image) {
@@ -268,6 +258,11 @@ public class DownloadManager {
         public Map<String, String> textures = null;
 
         private ProfileResult() {
+        }
+
+        @Override
+        public String toString(){
+            return "capeGlint: " + capeGlint + ", upsideDown: " + upsideDown + ", textures-size: " + textures.size();
         }
     }
     public static int ABGR(int r, int g, int b, int a) {

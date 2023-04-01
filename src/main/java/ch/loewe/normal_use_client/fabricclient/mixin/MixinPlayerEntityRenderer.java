@@ -34,7 +34,7 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
     private void construct(Context ctm, boolean alex, CallbackInfo info) {
         this.addFeature(new CapeLayer(this));
         this.addFeature(new Deadmau5(this));
-        this.addFeature(new ElytraLayer<>(this, ctm.getModelLoader()));
+        this.addFeature(new ElytraLayer(this, ctm.getModelLoader()));
         this.features.removeIf((modelFeature) -> modelFeature instanceof ElytraFeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>);
         this.features.removeIf((modelFeature) -> modelFeature instanceof CapeFeatureRenderer);
     }

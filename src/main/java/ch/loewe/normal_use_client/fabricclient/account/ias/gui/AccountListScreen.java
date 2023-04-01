@@ -172,25 +172,27 @@ public class AccountListScreen extends Screen {
         }
     }
     public void loginOffline() {
-        Account acc = this.list.getSelectedOrNull().account();
-        if (this.list.getSelectedOrNull() != null && this.state == null) {
-            ((MinecraftAccessor)this.client).ias$user(new Session(acc.name(), UUIDTypeAdapter.fromUUID(UUID.nameUUIDFromBytes("OfflinePlayer".concat(acc.name()).getBytes(StandardCharsets.UTF_8))), "0", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
-            UserApiService apiSvc = ((MinecraftAccessor)this.client).ias$createUserApiService(((MinecraftAccessor)this.client).ias$authenticationService(), new RunArgs(new RunArgs.Network(this.client.getSession(), null, null, null), null, null, null, null));
-            ((MinecraftAccessor)this.client).ias$userApiService(apiSvc);
-            ((MinecraftAccessor)this.client).ias$playerSocialManager(new SocialInteractionsManager(this.client, apiSvc));
-            ((MinecraftAccessor)this.client).ias$profileKeyPairManager(new ProfileKeysImpl(apiSvc, new UUID(0L, 0L), this.client.runDirectory.toPath()));
-            ((MinecraftAccessor)this.client).ias$reportingContext(AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), apiSvc));
-        }
+        try {
+            Account acc = this.list.getSelectedOrNull().account();
+            if (this.list.getSelectedOrNull() != null && this.state == null) {
+                ((MinecraftAccessor) this.client).ias$user(new Session(acc.name(), UUIDTypeAdapter.fromUUID(UUID.nameUUIDFromBytes("OfflinePlayer".concat(acc.name()).getBytes(StandardCharsets.UTF_8))), "0", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
+                UserApiService apiSvc = ((MinecraftAccessor) this.client).ias$createUserApiService(((MinecraftAccessor) this.client).ias$authenticationService(), new RunArgs(new RunArgs.Network(this.client.getSession(), null, null, null), null, null, null, null));
+                ((MinecraftAccessor) this.client).ias$userApiService(apiSvc);
+                ((MinecraftAccessor) this.client).ias$playerSocialManager(new SocialInteractionsManager(this.client, apiSvc));
+                ((MinecraftAccessor) this.client).ias$profileKeyPairManager(new ProfileKeysImpl(apiSvc, new UUID(0L, 0L), this.client.runDirectory.toPath()));
+                ((MinecraftAccessor) this.client).ias$reportingContext(AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), apiSvc));
+            }
+        } catch (Exception ignored){}
     }
     public void loginOffline(Account acc) {
-        if (this.list.getSelectedOrNull() != null && this.state == null) {
-            ((MinecraftAccessor)this.client).ias$user(new Session(acc.name(), UUIDTypeAdapter.fromUUID(UUID.nameUUIDFromBytes("OfflinePlayer".concat(acc.name()).getBytes(StandardCharsets.UTF_8))), "0", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
-            UserApiService apiSvc = ((MinecraftAccessor)this.client).ias$createUserApiService(((MinecraftAccessor)this.client).ias$authenticationService(), new RunArgs(new RunArgs.Network(this.client.getSession(), null, null, null), null, null, null, null));
-            ((MinecraftAccessor)this.client).ias$userApiService(apiSvc);
-            ((MinecraftAccessor)this.client).ias$playerSocialManager(new SocialInteractionsManager(this.client, apiSvc));
-            ((MinecraftAccessor)this.client).ias$profileKeyPairManager(new ProfileKeysImpl(apiSvc, new UUID(0L, 0L), this.client.runDirectory.toPath()));
-            ((MinecraftAccessor)this.client).ias$reportingContext(AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), apiSvc));
-        }
+        try {
+            ((MinecraftAccessor) this.client).ias$user(new Session(acc.name(), UUIDTypeAdapter.fromUUID(UUID.nameUUIDFromBytes("OfflinePlayer".concat(acc.name()).getBytes(StandardCharsets.UTF_8))), "0", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
+            UserApiService apiSvc = ((MinecraftAccessor) this.client).ias$createUserApiService(((MinecraftAccessor) this.client).ias$authenticationService(), new RunArgs(new RunArgs.Network(this.client.getSession(), null, null, null), null, null, null, null));
+            ((MinecraftAccessor) this.client).ias$userApiService(apiSvc);
+            ((MinecraftAccessor) this.client).ias$playerSocialManager(new SocialInteractionsManager(this.client, apiSvc));
+            ((MinecraftAccessor) this.client).ias$profileKeyPairManager(new ProfileKeysImpl(apiSvc, new UUID(0L, 0L), this.client.runDirectory.toPath()));
+            ((MinecraftAccessor) this.client).ias$reportingContext(AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), apiSvc));
+        } catch (Exception ignored){}
     }
 
     private void add() {

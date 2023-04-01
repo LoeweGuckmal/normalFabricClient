@@ -33,6 +33,7 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private final int capeInterval = 100;
     private PlayerEntity player;
+    private boolean downloadedPngLast = false;
 
     public PlayerHandler(PlayerEntity player) {
         this.playerUUID = player.getUuid();
@@ -224,6 +225,14 @@ public class PlayerHandler {
 
     public Int2ObjectMap<NativeImage> getAnimatedCape() {
         return this.animatedCape;
+    }
+
+    public boolean isDownloadedPngLast() {
+        return this.downloadedPngLast;
+    }
+
+    public void setDownloadedPngLast(boolean downloadedPngLast) {
+        this.downloadedPngLast = downloadedPngLast;
     }
 }
 

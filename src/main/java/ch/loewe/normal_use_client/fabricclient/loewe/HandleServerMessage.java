@@ -11,24 +11,28 @@ import net.minecraft.util.Identifier;
 import java.util.Random;
 
 public class HandleServerMessage {
-    private static String code = null;
+    //private static String code = null;
     public static void onReceiveMessage(MinecraftClient client, ClientPlayNetworkHandler handler, String message, PacketSender responseSender){
         if (message.length() > 0 && !Character.isLetter(message.charAt(0)))
             message = message.substring(1);
         switch (message) {
-            case "send request" -> {
+            case "monopoly" -> {
+                FabricClientClient.isOnMonopoly = true;
+            }
+            /*case "send request" -> {
+                FabricClientClient.isOnMonopoly = true;
                 code = randomString();
                 ClientPlayNetworking.registerReceiver(new Identifier("monopoly", code), (client2, handler2, buf2, responseSender2) ->
                         HandleServerMessage.onReceiveMessage(client2, handler2, new String(buf2.getWrittenBytes()), responseSender2));
                 responseSender.sendPacket(new Identifier("monopoly", "loewe"), PacketByteBufs.create().writeString("request_code " + code));
             }
             case "secure channel" -> {}
-            case "settings allowed" -> {}//mc.setScreen(new IASConfigScreen(mc.currentScreen)); set screen here
+            case "settings allowed" -> {}//mc.setScreen(new IASConfigScreen(mc.currentScreen)); set screen here*/
             default -> FabricClientClient.logger.info(message);
         }
     }
 
-    public static void requestSettings(){
+    /*public static void requestSettings(){
         if (code == null) {
             ClientPlayNetworking.send(new Identifier("monopoly", "loewe"), PacketByteBufs.create().writeString("ask request"));
             if (code != null){
@@ -51,5 +55,5 @@ public class HandleServerMessage {
         }
 
         return sb.toString();
-    }
+    }*/
 }

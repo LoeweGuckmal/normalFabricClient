@@ -11,11 +11,12 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ModMenuButtons {
     public static final ArrayList<String> addressStorage = new ArrayList<>();
     public static final String LB = "Loewe".toLowerCase() + ".button.";
-    protected static final SimpleOption<?>[] buttons = new SimpleOption[]{
+    public static final SimpleOption<?>[] buttons = new SimpleOption[]{
             getNewBoolButton(propertyKeys.doRgb(), Config.getDoRgb()),
             getNewEnumButton(propertyKeys.standardColor(), StandardColor.valueOf(Config.getStandardColor().toUpperCase())),
 
@@ -85,7 +86,15 @@ public class ModMenuButtons {
 
     //other
     public static SimpleOption<?>[] asOptions() {
-        return (SimpleOption<?>[]) new ArrayList<>(Arrays.asList(buttons)).toArray(SimpleOption[]::new);
+        SimpleOption<?>[] newArr;
+        if (!FabricClientClient.isOnMonopoly) {
+            newArr = new SimpleOption<?>[buttons.length - 1];
+            System.arraycopy(buttons, 0, newArr, 0, buttons.length - 2);
+            newArr[buttons.length-2] = buttons[buttons.length-1];
+        } else {
+            newArr = buttons.clone();
+        }
+        return newArr.clone();
     }
 
     public static String getButtonAddresses(int i) {

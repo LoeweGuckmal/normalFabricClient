@@ -19,19 +19,18 @@ import static ch.loewe.normal_use_client.fabricclient.cape.DownloadManager.*;
 public abstract class skipThirdPersonMixin {
     @Shadow public abstract void setPerspective(Perspective perspective);
 
-    @Shadow private Perspective perspective;
-
     @Inject(
             method = {"setPerspective"},
             at = {@At("TAIL")}
     )
     public void onIsThirdPerson(Perspective perspective, CallbackInfo ci) {
-        if (wait) {
+        /*if (wait) {
             this.perspective = Perspective.FIRST_PERSON;
             if (!firstClick) {
                 firstClick = true;
             } else clickedDuringWait = true;
-        } else if (perspective == Perspective.THIRD_PERSON_FRONT && Config.getSkipFrontView()) {
+        } else*/
+        if (perspective == Perspective.THIRD_PERSON_FRONT && Config.getSkipFrontView()) {
             setPerspective(Perspective.FIRST_PERSON);
         }
     }

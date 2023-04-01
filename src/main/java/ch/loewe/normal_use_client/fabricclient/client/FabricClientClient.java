@@ -42,6 +42,7 @@ public class FabricClientClient implements ClientModInitializer {
     public static final DecimalFormat df = new DecimalFormat("#.00");
     public static Logger logger = LoggerFactory.getLogger("Loewe");
     public static HashMap<String, String> colorMap = new HashMap<>();
+    public static boolean isOnMonopoly = false;
 
     @Override
     public void onInitializeClient() {
@@ -146,7 +147,7 @@ public class FabricClientClient implements ClientModInitializer {
             mc.setScreen(new IASConfigScreen(mc.currentScreen));
         }
         if (key.equals(propertyKeys.requestServerAccess()) && mc.player != null){
-            HandleServerMessage.requestSettings();
+            mc.setScreen(new IASConfigScreen(mc.currentScreen));
         }
     }
 }

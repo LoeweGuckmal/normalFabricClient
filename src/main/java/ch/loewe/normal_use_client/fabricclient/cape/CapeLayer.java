@@ -5,7 +5,7 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -18,52 +18,52 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-    public CapeLayer(EntityRenderer<?> p_i50950_1_) {
-        super((FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>) p_i50950_1_);
+    public CapeLayer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext) {
+        super(featureRendererContext);
     }
 
-    public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
-        if (playerHandler.getShowCape() && !entitylivingbaseIn.isInvisible() && (entitylivingbaseIn.getCapeTexture() != null || playerHandler.getCapeLocation() != null)) {
-            ItemStack itemStack = entitylivingbaseIn.getEquippedStack(EquipmentSlot.CHEST);
-            if (itemStack.getItem() != Items.ELYTRA || playerHandler.getForceHideElytra() && !playerHandler.getForceShowElytra()) {
-                matrixStackIn.push();
-                matrixStackIn.translate(0.0D, 0.0D, 0.125D);
-                double d0 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevCapeX, entitylivingbaseIn.capeX) - MathHelper.lerp(partialTicks, entitylivingbaseIn.prevX, entitylivingbaseIn.getX());
-                double d1 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevCapeY, entitylivingbaseIn.capeY) - MathHelper.lerp(partialTicks, entitylivingbaseIn.prevY, entitylivingbaseIn.getY());
-                double d2 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevCapeZ, entitylivingbaseIn.capeZ) - MathHelper.lerp(partialTicks, entitylivingbaseIn.prevZ, entitylivingbaseIn.getZ());
-                float f = entitylivingbaseIn.prevBodyYaw + (entitylivingbaseIn.bodyYaw - entitylivingbaseIn.prevBodyYaw);
-                double d3 = MathHelper.sin(f * 0.017453292F);
-                double d4 = -MathHelper.cos(f * 0.017453292F);
-                float f1 = (float)d1 * 10.0F;
-                f1 = MathHelper.clamp(f1, -6.0F, 32.0F);
-                float f2 = (float)(d0 * d3 + d2 * d4) * 100.0F;
-                f2 = MathHelper.clamp(f2, 0.0F, 150.0F);
-                float f3 = (float)(d0 * d4 - d2 * d3) * 100.0F;
-                f3 = MathHelper.clamp(f3, -20.0F, 20.0F);
-                if (f2 < 0.0F) {
-                    f2 = 0.0F;
+    public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
+        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
+        if (abstractClientPlayerEntity.canRenderCapeTexture() && !abstractClientPlayerEntity.isInvisible()
+                && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && (abstractClientPlayerEntity.getCapeTexture() != null
+                || playerHandler.getCapeLocation() != null)) {
+            ItemStack itemStack = abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST);
+            if (!itemStack.isOf(Items.ELYTRA)) {
+                matrixStack.push();
+                matrixStack.translate(0.0F, 0.0F, 0.125F);
+                double d = MathHelper.lerp(h, abstractClientPlayerEntity.prevCapeX, abstractClientPlayerEntity.capeX) - MathHelper.lerp(h, abstractClientPlayerEntity.prevX, abstractClientPlayerEntity.getX());
+                double e = MathHelper.lerp(h, abstractClientPlayerEntity.prevCapeY, abstractClientPlayerEntity.capeY) - MathHelper.lerp(h, abstractClientPlayerEntity.prevY, abstractClientPlayerEntity.getY());
+                double m = MathHelper.lerp(h, abstractClientPlayerEntity.prevCapeZ, abstractClientPlayerEntity.capeZ) - MathHelper.lerp(h, abstractClientPlayerEntity.prevZ, abstractClientPlayerEntity.getZ());
+                float n = MathHelper.lerpAngleDegrees(h, abstractClientPlayerEntity.prevBodyYaw, abstractClientPlayerEntity.bodyYaw);
+                double o = MathHelper.sin(n * 0.017453292F);
+                double p = -MathHelper.cos(n * 0.017453292F);
+                float q = (float)e * 10.0F;
+                q = MathHelper.clamp(q, -6.0F, 32.0F);
+                float r = (float)(d * o + m * p) * 100.0F;
+                r = MathHelper.clamp(r, 0.0F, 150.0F);
+                float s = (float)(d * p - m * o) * 100.0F;
+                s = MathHelper.clamp(s, -20.0F, 20.0F);
+                if (r < 0.0F) {
+                    r = 0.0F;
                 }
 
-                float f4 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevStrideDistance, entitylivingbaseIn.strideDistance);
-                f1 += MathHelper.sin(MathHelper.lerp(partialTicks, entitylivingbaseIn.prevHorizontalSpeed, entitylivingbaseIn.horizontalSpeed) * 6.0F) * 32.0F * f4;
-                f1 -= 180.0;
-                if (entitylivingbaseIn.isInSneakingPose()) {
-                    f1 += 25.0F;
+                float t = MathHelper.lerp(h, abstractClientPlayerEntity.prevStrideDistance, abstractClientPlayerEntity.strideDistance);
+                q += MathHelper.sin(MathHelper.lerp(h, abstractClientPlayerEntity.prevHorizontalSpeed, abstractClientPlayerEntity.horizontalSpeed) * 6.0F) * 32.0F * t;
+                if (abstractClientPlayerEntity.isInSneakingPose()) {
+                    q += 25.0F;
                 }
 
-                matrixStackIn.multiply(RotationAxis.POSITIVE_X.rotationDegrees(6.0F + f2 / 2.0F + f1));
-                matrixStackIn.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(f3 / 2.0F));
-                matrixStackIn.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180.0F - f3 / 2.0F));
+                matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(6.0F + r / 2.0F + q));
+                matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(s / 2.0F));
+                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - s / 2.0F));
                 VertexConsumer vertexConsumer;
                 if (playerHandler.getCapeLocation() != null) {
-                    vertexConsumer = ItemRenderer.getItemGlintConsumer(bufferIn, RenderLayer.getEntityTranslucent(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+                    vertexConsumer = ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, RenderLayer.getEntitySolid(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
                 } else {
-                    vertexConsumer = ItemRenderer.getItemGlintConsumer(bufferIn, RenderLayer.getEntityTranslucent(entitylivingbaseIn.getCapeTexture()), false, false);
+                    vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(abstractClientPlayerEntity.getCapeTexture()));
                 }
-
-                this.getContextModel().renderCape(matrixStackIn, vertexConsumer, packedLightIn, OverlayTexture.DEFAULT_UV);
-                matrixStackIn.pop();
+                this.getContextModel().renderCape(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV);
+                matrixStack.pop();
             }
         }
 

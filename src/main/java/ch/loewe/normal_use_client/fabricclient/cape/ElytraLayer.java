@@ -18,25 +18,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
-public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
+public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
     private static final Identifier WINGS_LOCATION = new Identifier("textures/entity/elytra.png");
-    private final ElytraEntityModel<T> elytraModel;
+    private final ElytraEntityModel<AbstractClientPlayerEntity> elytraModel;
 
-    public ElytraLayer(EntityRenderer<? extends PlayerEntity> p_174493_, EntityModelLoader entityModelSet) {
-        super((FeatureRendererContext<T, M>) p_174493_);
-        this.elytraModel = new ElytraEntityModel(entityModelSet.getModelPart(EntityModelLayers.ELYTRA));
+    public ElytraLayer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext, EntityModelLoader entityModelSet) {
+        super(featureRendererContext);
+        this.elytraModel = new ElytraEntityModel<>(entityModelSet.getModelPart(EntityModelLayers.ELYTRA));
     }
 
-    public void render(MatrixStack poseStack, VertexConsumerProvider bufferIn, int packedLightIn, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        AbstractClientPlayerEntity abstractClientPlayer = (AbstractClientPlayerEntity)livingEntity;
-        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayer);
-        ItemStack itemStack = abstractClientPlayer.getEquippedStack(EquipmentSlot.CHEST);
-        if ((itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) && !playerHandler.getForceHideElytra()) {
+    public void render(MatrixStack poseStack, VertexConsumerProvider bufferIn, int packedLightIn, AbstractClientPlayerEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
+        ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
+        if (itemStack.getItem() == Items.ELYTRA) {
             Identifier resourcelocation;
             if (playerHandler.getCapeLocation() != null) {
                 resourcelocation = playerHandler.getCapeLocation();
-            } else if (abstractClientPlayer.getCapeTexture() != null && abstractClientPlayer.isPartVisible(PlayerModelPart.CAPE)) {
-                resourcelocation = abstractClientPlayer.getCapeTexture();
+            } else if (livingEntity.getCapeTexture() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+                resourcelocation = livingEntity.getCapeTexture();
             } else {
                 resourcelocation = WINGS_LOCATION;
             }
