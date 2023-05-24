@@ -4,14 +4,19 @@ import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.propertyKeys;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.option.SimpleOption.ValidatingIntSliderCallbacks;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.Callbacks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ModMenuButtons {
     public static final ArrayList<String> addressStorage = new ArrayList<>();
@@ -37,6 +42,9 @@ public class ModMenuButtons {
 
             getNewBoolButton(propertyKeys.debug(), Config.getDebug())
     };
+    public static final SimpleOption<?>[] monopolyButtons = new SimpleOption[]{
+            getNewEnumButton(propertyKeys.startGame(), StartGame.valueOf(Config.getStartGame().toUpperCase()))
+    };
 
     public ModMenuButtons() {}
 
@@ -57,24 +65,24 @@ public class ModMenuButtons {
         int min = minMaxDefHolder.min();
         return new SimpleOption<>(LB + type,
                 (value) -> {
-            if (value == min) return Tooltip.of(Text.translatable(LB + type + ".tooltip.min"));
-            else if (value == max) return Tooltip.of(Text.translatable(LB + type + ".tooltip.max"));
-            else return Tooltip.of(Text.translatable(LB + type + ".tooltip"));
-            },
+                    if (value == min) return Tooltip.of(Text.translatable(LB + type + ".tooltip.min"));
+                    else if (value == max) return Tooltip.of(Text.translatable(LB + type + ".tooltip.max"));
+                    else return Tooltip.of(Text.translatable(LB + type + ".tooltip"));
+                },
                 (optionText, value) -> {
-            if (value == min) {
-                return GameOptions.getGenericValueText(optionText, Text.translatable(LB + type + ".min"));
-            } else {
-                return value.equals(max) ? GameOptions.getGenericValueText(optionText, Text.translatable(LB + type + ".max")) : GameOptions.getGenericValueText(optionText, value);
-            }
-            },
+                    if (value == min) {
+                        return GameOptions.getGenericValueText(optionText, Text.translatable(LB + type + ".min"));
+                    } else {
+                        return value.equals(max) ? GameOptions.getGenericValueText(optionText, Text.translatable(LB + type + ".max")) : GameOptions.getGenericValueText(optionText, value);
+                    }
+                },
                 new ValidatingIntSliderCallbacks(min, max),
                 Codec.DOUBLE.xmap((value) -> max, (value) -> (double) value - (double) max),
                 current,
                 (value) -> {
-            Config.storeProperty(type, String.valueOf(value));
-            FabricClientClient.doCustom(type);
-            Config.write();
+                    Config.storeProperty(type, String.valueOf(value));
+                    FabricClientClient.doCustom(type);
+                    Config.write();
                 }
         );
     }
@@ -87,7 +95,7 @@ public class ModMenuButtons {
     //other
     public static SimpleOption<?>[] asOptions() {
         SimpleOption<?>[] newArr;
-        if (!FabricClientClient.isOnMonopoly) {
+        if (!FabricClientClient.isOnMonopoly()) {
             newArr = new SimpleOption<?>[buttons.length - 1];
             System.arraycopy(buttons, 0, newArr, 0, buttons.length - 2);
             newArr[buttons.length-2] = buttons[buttons.length-1];
@@ -96,13 +104,16 @@ public class ModMenuButtons {
         }
         return newArr.clone();
     }
+    public static SimpleOption<?>[] asOptionsMonopoly() {
+        return monopolyButtons.clone();
+    }
 
     public static String getButtonAddresses(int i) {
         return addressStorage.get(i);
     }
 
 
-    //Enums
+    //Enums (loewe)
     public enum StandardColor {
         YELLOW,
         BLUEGREEN;
@@ -118,5 +129,11 @@ public class ModMenuButtons {
     public enum RequestServerAccess {
         ACCESS,
         ACCESS2;
+    }
+
+    //Enums (monopoly)
+    public enum StartGame {
+        START,
+        START2;
     }
 }

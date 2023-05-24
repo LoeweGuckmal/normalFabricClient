@@ -73,10 +73,10 @@ public class AccountListScreen extends Screen {
             this.client.setScreen(this.prev);
         }).dimensions(this.width / 2 + 4 + 50, this.height - 28, 110, 20).build());
         this.updateButtons();
-        this.search.setSuggestion(I18n.translate("ias.listGui.search", new Object[0]));
+        this.search.setSuggestion(I18n.translate("ias.listGui.search"));
         this.search.setChangedListener((s) -> {
             this.list.updateAccounts(s);
-            this.search.setSuggestion(s.isEmpty() ? I18n.translate("ias.listGui.search", new Object[0]) : "");
+            this.search.setSuggestion(s.isEmpty() ? I18n.translate("ias.listGui.search") : "");
         });
         this.list.updateAccounts(this.search.getText());
     }
@@ -97,7 +97,7 @@ public class AccountListScreen extends Screen {
         if (this.list.getSelectedOrNull() != null) {
             RenderSystem.setShaderTexture(0, ((AccountList.AccountEntry)this.list.getSelectedOrNull()).skin());
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            boolean slim = ((AccountList.AccountEntry)this.list.getSelectedOrNull()).slimSkin();
+            boolean slim = this.list.getSelectedOrNull().slimSkin();
             ms.push();
             ms.scale(4.0F, 4.0F, 4.0F);
             ms.translate(1.0D, (double)this.height / 8.0D - 16.0D - 4.0D, 0.0D);

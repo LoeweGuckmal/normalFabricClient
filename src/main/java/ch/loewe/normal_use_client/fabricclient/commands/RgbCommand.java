@@ -31,7 +31,7 @@ public class RgbCommand{
     private static int mode(String mode){
         if (mode.equals("gelb") || mode.equals("bg")) {
             Config.storeProperty(propertyKeys.standardColor(), mode);
-            OpenRGB.loadMode(getStandardColor());
+            OpenRGB.loadMode(getStandardColor(), false);
         }
         return 1;
     }

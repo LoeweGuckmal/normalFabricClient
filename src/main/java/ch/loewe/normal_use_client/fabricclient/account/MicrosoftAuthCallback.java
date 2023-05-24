@@ -38,9 +38,9 @@ public class MicrosoftAuthCallback implements Closeable {
 
                     try {
                         progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"preparing"});
-                        byte[] b = ((String)in.lines().collect(Collectors.joining("\n"))).replace("%message%", done).getBytes(StandardCharsets.UTF_8);
+                        byte[] b = in.lines().collect(Collectors.joining("\n")).replace("%message%", done).getBytes(StandardCharsets.UTF_8);
                         ex.getResponseHeaders().add("Content-Type", "text/html; charset=UTF-8");
-                        ex.sendResponseHeaders(307, (long)b.length);
+                        ex.sendResponseHeaders(307, b.length);
                         OutputStream os = ex.getResponseBody();
 
                         try {

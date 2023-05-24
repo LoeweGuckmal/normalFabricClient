@@ -1,24 +1,34 @@
 package ch.loewe.normal_use_client.fabricclient.loewe;
 
-import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ServerAddress;
 import net.minecraft.util.Identifier;
 
-import java.util.Random;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.lastAddress;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
 
 public class HandleServerMessage {
-    //private static String code = null;
-    public static void onReceiveMessage(MinecraftClient client, ClientPlayNetworkHandler handler, String message, PacketSender responseSender){
-        if (message.length() > 0 && !Character.isLetter(message.charAt(0)))
-            message = message.substring(1);
-        switch (message) {
-            case "monopoly" -> {
-                FabricClientClient.isOnMonopoly = true;
-            }
+    public static void onReceiveMessage(MinecraftClient client, ClientPlayNetworkHandler handler, String message, PacketSender responseSender) {
+        if (message.equals("monopoly")) {
+            lastAddress = new ServerAddress("loewe-monopoly.feathermc.gg", lastAddress.getPort());
+        } else {
+            logger.info(message);
+        }
+    }
+
+    public static void sendMessage(String namespace, String path, String message) {
+        ClientPlayNetworking.send(new Identifier(namespace, path), PacketByteBufs.create().writeString(message));
+    }
+
+    public static void sendMessage(String message) {
+        sendMessage("monopoly", "leowe", message);
+    }
+}
+
             /*case "send request" -> {
                 FabricClientClient.isOnMonopoly = true;
                 code = randomString();
@@ -28,9 +38,6 @@ public class HandleServerMessage {
             }
             case "secure channel" -> {}
             case "settings allowed" -> {}//mc.setScreen(new IASConfigScreen(mc.currentScreen)); set screen here*/
-            default -> FabricClientClient.logger.info(message);
-        }
-    }
 
     /*public static void requestSettings(){
         if (code == null) {
@@ -56,4 +63,3 @@ public class HandleServerMessage {
 
         return sb.toString();
     }*/
-}

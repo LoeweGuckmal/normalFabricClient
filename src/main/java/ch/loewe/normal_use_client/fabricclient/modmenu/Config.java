@@ -24,8 +24,7 @@ public class Config {
 
 
     //get the value of buttons
-
-
+    //loewe
     public static boolean getDoRgb() {
         return getBoolean(propertyKeys.doRgb(), DefaultConfig.getDoRgb());
     }
@@ -68,6 +67,11 @@ public class Config {
 
     public static boolean getDebug() {
         return getBoolean(propertyKeys.debug(), DefaultConfig.getDebug());
+    }
+
+    //monopoly
+    public static String getStartGame() {
+        return getString(propertyKeys.startGame(), DefaultConfig.getStartGame());
     }
 
 

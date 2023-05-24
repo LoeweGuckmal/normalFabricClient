@@ -90,8 +90,8 @@ public class MicrosoftAccount implements Account {
                 progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"getProfile"});
                 Entry<UUID, String> profile = Auth.getProfile(accessToken);
                 SharedIAS.LOG.info("Refreshed.");
-                this.uuid = (UUID)profile.getKey();
-                this.name = (String)profile.getValue();
+                this.uuid = profile.getKey();
+                this.name = profile.getValue();
                 this.accessToken = accessToken;
                 this.refreshToken = refreshToken;
             } catch (Exception var9) {

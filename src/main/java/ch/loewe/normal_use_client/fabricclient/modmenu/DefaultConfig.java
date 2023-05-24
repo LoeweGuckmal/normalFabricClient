@@ -1,11 +1,14 @@
 package ch.loewe.normal_use_client.fabricclient.modmenu;
 
 import ch.loewe.normal_use_client.fabricclient.modmenu.ModMenuButtons.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public class DefaultConfig {
     public DefaultConfig() {
     }
 
+    //loewe
     //rgb
     public static boolean getDoRgb() {
         return true;
@@ -13,7 +16,6 @@ public class DefaultConfig {
     public static StandardColor getStandardColor(){
         return StandardColor.YELLOW;
     }
-
     //overlay
     public static boolean getShowFps(){
         return true;
@@ -21,12 +23,10 @@ public class DefaultConfig {
     public static boolean getShowCords(){
         return true;
     }
-
     //zoom
     public static MinMaxDefHolder getStandardZoom() {
         return new MinMaxDefHolder(1, 6, 3);
     }
-
     //cape
     public static boolean getHasCapeGlint() {
         return true;
@@ -37,32 +37,32 @@ public class DefaultConfig {
     public static ReloadCape getReloadCape() {
         return ReloadCape.RELOAD;
     }
-
     //f5
     public static boolean getSkipFrontView() {
         return true;
     }
-
     //accountSwitcher
     public static OpenAccountSwitcher getOpenAccountSwitcher() {
         return OpenAccountSwitcher.ACCOUNT;
     }
-
     //server
     public static RequestServerAccess getRequestServerAccess() {
         return RequestServerAccess.ACCESS;
     }
-
     //debug
     public static boolean getDebug() {
         return false;
     }
 
+    //monopoly
+    public static StartGame getStartGame() {
+        return StartGame.START;
+    }
 
-    public static class propertyKeys {
-        public propertyKeys() {
-        }
+    public static final class propertyKeys {
+        public propertyKeys() {}
 
+        //loewe settings
         public static String doRgb(){
             return "do_rgb_on_damage";
         }
@@ -105,6 +105,11 @@ public class DefaultConfig {
 
         public static String debug() {
             return "debug";
+        }
+
+        //monopolyscreen
+        public static String startGame() {
+            return "start_game";
         }
     }
 }

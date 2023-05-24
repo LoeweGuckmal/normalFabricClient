@@ -76,7 +76,7 @@ public class Auth {
             err = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
 
             try {
-                JsonObject resp = (JsonObject) SharedIAS.GSON.fromJson((String)err.lines().collect(Collectors.joining("\n")), JsonObject.class);
+                JsonObject resp = SharedIAS.GSON.fromJson(err.lines().collect(Collectors.joining("\n")), JsonObject.class);
                 var5 = new SimpleImmutableEntry(resp.get("access_token").getAsString(), resp.get("refresh_token").getAsString());
             } catch (Throwable var9) {
                 try {
@@ -125,7 +125,7 @@ public class Auth {
         SimpleImmutableEntry var5;
         try {
             String var10001 = URLEncoder.encode("55fca734-6e47-4719-ac3f-1fcdc5600732", "UTF-8");
-            out.write(("client_id=" + var10001 + "&refresh_token=" + URLEncoder.encode(refreshToken, "UTF-8") + "&grant_type=refresh_token&redirect_uri=" + URLEncoder.encode("http://localhost:59125", StandardCharsets.UTF_8) + "&scope=XboxLive.signin%20XboxLive.offline_access").getBytes(StandardCharsets.UTF_8));
+            out.write(("client_id=" + var10001 + "&refresh_token=" + URLEncoder.encode(refreshToken, "UTF-8") + "&grant_type=refresh_token&client_secret=" + URLEncoder.encode("7O_8Q~0OGyKOQZwV9eEXOJj8IT6jUd_Vvw~VMcTi", StandardCharsets.UTF_8) + "&redirect_uri=" + URLEncoder.encode("http://localhost:59125", StandardCharsets.UTF_8) + "&scope=XboxLive.signin%20XboxLive.offline_access").getBytes(StandardCharsets.UTF_8));
             BufferedReader err;
             if (conn.getResponseCode() < 200 || conn.getResponseCode() > 299) {
                 try {
@@ -133,7 +133,7 @@ public class Auth {
 
                     try {
                         int var10002 = conn.getResponseCode();
-                        throw new IllegalArgumentException("refreshToken response: " + var10002 + ", data: " + (String)err.lines().collect(Collectors.joining("\n")));
+                        throw new IllegalArgumentException("refreshToken response: " + var10002 + ", data: " + err.lines().collect(Collectors.joining("\n")));
                     } catch (Throwable var10) {
                         try {
                             err.close();
@@ -528,7 +528,7 @@ public class Auth {
                     }
                 };
                 ctx = SSLContext.getInstance("TLS");
-                ctx.init((KeyManager[])null, new TrustManager[]{blindManager}, new SecureRandom());
+                ctx.init(null, new TrustManager[]{blindManager}, new SecureRandom());
                 SharedIAS.LOG.warn("Blindly skipping SSL checks. (behavior: 'ias.blindSSL' property)");
             } else if (!NO_CUSTOM_SSL) {
                 KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());

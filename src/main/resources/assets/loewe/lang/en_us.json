@@ -42,9 +42,9 @@
     "loewe.button.skip_front_view": "Skip front view",
     "loewe.button.skip_front_view.tooltip": "Skips the front view from the §ef5§f function.",
 
-    "loewe.button.open_account_switcher": "Accountswitcher-settings",
-    "loewe.button.open_account_switcher.tooltip.account": "Opens the accountswitcher-settings.",
-    "loewe.button.open_account_switcher.tooltip.account2": "Opens the accountswitcher-settings.",
+    "loewe.button.open_account_switcher": "Accountswitcher",
+    "loewe.button.open_account_switcher.tooltip.account": "Opens the accountswitcher.",
+    "loewe.button.open_account_switcher.tooltip.account2": "Opens the accountswitcher.",
     "loewe.button.open_account_switcher.account": "▢",
     "loewe.button.open_account_switcher.account2": "▢",
 

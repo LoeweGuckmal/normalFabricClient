@@ -32,16 +32,16 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
         }).forEach((acc) -> {
             this.addEntry(new AccountList.AccountEntry(acc));
         });
-        this.setSelected(this.children().isEmpty() ? null : (AccountList.AccountEntry)this.getEntry(0));
+        this.setSelected(this.children().isEmpty() ? null : this.getEntry(0));
     }
 
     public void swap(int first, int second) {
-        Account account = (Account)Config.accounts.get(first);
-        Config.accounts.set(first, (Account)Config.accounts.get(second));
+        Account account = Config.accounts.get(first);
+        Config.accounts.set(first, Config.accounts.get(second));
         Config.accounts.set(second, account);
         Config.save(this.client.runDirectory.toPath());
-        AccountList.AccountEntry entry = (AccountList.AccountEntry)this.children().get(first);
-        this.children().set(first, (AccountList.AccountEntry)this.children().get(second));
+        AccountList.AccountEntry entry = this.children().get(first);
+        this.children().set(first, this.children().get(second));
         this.children().set(second, entry);
         this.setSelected(entry);
     }
@@ -54,7 +54,7 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
         public AccountEntry(Account account) {
             this.account = account;
             if (IAS.SKIN_CACHE.containsKey(account.uuid())) {
-                this.skin = (Identifier)IAS.SKIN_CACHE.get(account.uuid());
+                this.skin = IAS.SKIN_CACHE.get(account.uuid());
             } else {
                 this.skin = DefaultSkinHelper.getTexture(account.uuid());
                 this.slimSkin = DefaultSkinHelper.getModel(account.uuid()).equalsIgnoreCase("slim");
@@ -138,11 +138,10 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
                     }
                 }
 
-                return true;
             } else {
                 AccountList.this.setSelected(this);
-                return true;
             }
+            return true;
         }
 
         public Text getNarration() {

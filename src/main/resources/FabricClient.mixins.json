@@ -6,15 +6,16 @@
   "mixins": [
   ],
   "client": [
+    "ConnectMixin",
+    "DisconnectMixin",
     "MinecraftAccessor",
     "MinecraftAccessorClass",
-    "MinecraftClientAccessor",
     "MinecraftClientMixin",
     "MixinPlayerEntityRenderer",
     "MixinPlayerJoinWorld",
     "MixinPlayerModel",
     "MouseMixin",
-    "DisconnectMixin",
+    "ProfileKeyChange",
     "skipThirdPersonMixin",
     "ZoomMixin"
   ],

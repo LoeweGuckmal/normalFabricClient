@@ -86,7 +86,7 @@ public class IASConfigScreen extends Screen {
         }
 
         Config.titleScreenTextAlignment = Config.Alignment.values()[i];
-        this.titleScreenTextAlignment.setMessage(Text.translatable("ias.configGui.titleScreenText.alignment", new Object[]{I18n.translate(Config.titleScreenTextAlignment.key(), new Object[0])}));
+        this.titleScreenTextAlignment.setMessage(Text.translatable("ias.configGui.titleScreenText.alignment", I18n.translate(Config.titleScreenTextAlignment.key(), new Object[0])));
         this.titleScreenTextAlignment.setWidth(this.textRenderer.getWidth(this.titleScreenTextAlignment.getMessage()) + 20);
     }
 
