@@ -14,7 +14,7 @@ import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.
 public class HandleServerMessage {
     public static void onReceiveMessage(MinecraftClient client, ClientPlayNetworkHandler handler, String message, PacketSender responseSender) {
         if (message.equals("monopoly")) {
-            lastAddress = new ServerAddress("loewe-monopoly.feathermc.gg", lastAddress.getPort());
+            lastAddress = new ServerAddress("loewe-monopoly.feathermc.gg", 25565);
         } else {
             logger.info(message);
         }

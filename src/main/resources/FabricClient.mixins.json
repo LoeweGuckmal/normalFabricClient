@@ -3,11 +3,13 @@
   "minVersion": "0.8",
   "package": "ch.loewe.normal_use_client.fabricclient.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-  ],
+  "mixins": [],
   "client": [
     "ConnectMixin",
     "DisconnectMixin",
+    "Errors",
+    "Errors$KeyPairMixin",
+    "HealthMixin",
     "MinecraftAccessor",
     "MinecraftAccessorClass",
     "MinecraftClientMixin",
@@ -15,7 +17,7 @@
     "MixinPlayerJoinWorld",
     "MixinPlayerModel",
     "MouseMixin",
-    "ProfileKeyChange",
+    "Errors$TextureManagerMixin",
     "skipThirdPersonMixin",
     "ZoomMixin"
   ],

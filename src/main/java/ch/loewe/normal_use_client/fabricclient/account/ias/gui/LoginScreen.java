@@ -5,6 +5,7 @@ import ch.loewe.normal_use_client.fabricclient.account.SharedIAS;
 import ch.loewe.normal_use_client.fabricclient.account.account.Account;
 import ch.loewe.normal_use_client.fabricclient.account.account.Auth;
 import ch.loewe.normal_use_client.fabricclient.account.account.OfflineAccount;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.NoticeScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -57,16 +58,16 @@ public class LoginScreen extends Screen {
         }).dimensions(this.width / 2 - 50, this.height / 2 + 12, 100, 20).build());
     }
 
-    public void render(MatrixStack ms, int mx, int my, float delta) {
-        this.renderBackground(ms);
-        drawCenteredTextWithShadow(ms, this.textRenderer, this.title, this.width / 2, 5, -1);
-        drawCenteredTextWithShadow(ms, this.textRenderer, I18n.translate("ias.loginGui.nickname", new Object[0]), this.width / 2, this.height / 2 - 22, -1);
+    public void render(DrawContext drawContext, int mx, int my, float delta) {
+        this.renderBackground(drawContext);
+        drawContext.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 5, -1);
+        drawContext.drawCenteredTextWithShadow(this.textRenderer, I18n.translate("ias.loginGui.nickname", new Object[0]), this.width / 2, this.height / 2 - 22, -1);
         if (this.state != null) {
-            drawCenteredTextWithShadow(ms, this.textRenderer, this.state, this.width / 2, this.height / 3 * 2, -26368);
-            drawCenteredTextWithShadow(ms, this.textRenderer, SharedIAS.LOADING[(int)(System.currentTimeMillis() / 50L % (long)SharedIAS.LOADING.length)], this.width / 2, this.height / 3 * 2 + 10, -26368);
+            drawContext.drawCenteredTextWithShadow(this.textRenderer, this.state, this.width / 2, this.height / 3 * 2, -26368);
+            drawContext.drawCenteredTextWithShadow(this.textRenderer, SharedIAS.LOADING[(int)(System.currentTimeMillis() / 50L % (long)SharedIAS.LOADING.length)], this.width / 2, this.height / 3 * 2 + 10, -26368);
         }
 
-        super.render(ms, mx, my, delta);
+        super.render(drawContext, mx, my, delta);
     }
 
     public void close() {

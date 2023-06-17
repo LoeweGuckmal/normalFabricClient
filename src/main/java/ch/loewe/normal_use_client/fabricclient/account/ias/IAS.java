@@ -84,11 +84,11 @@ public class IAS {
                         int finalTx = tx;
                         ScreenEvents.afterRender(screen).register((s, ms, mx, my, delta) -> {
                             if (Config.titleScreenTextAlignment == Config.Alignment.LEFT) {
-                                InGameHud.drawTextWithShadow(ms, mc.textRenderer, Text.translatable("ias.title", mc.getSession().getUsername()), finalTxx, finalTx, -3372920);
+                                ms.drawTextWithShadow(mc.textRenderer, Text.translatable("ias.title", mc.getSession().getUsername()), finalTxx, finalTx, -3372920);
                             } else if (Config.titleScreenTextAlignment == Config.Alignment.RIGHT) {
-                                InGameHud.drawTextWithShadow(ms, mc.textRenderer, Text.translatable("ias.title", mc.getSession().getUsername()), finalTxx - mc.textRenderer.getWidth(Text.translatable("ias.title", mc.getSession().getUsername())), finalTx, -3372920);
+                                ms.drawTextWithShadow(mc.textRenderer, Text.translatable("ias.title", mc.getSession().getUsername()), finalTxx - mc.textRenderer.getWidth(Text.translatable("ias.title", mc.getSession().getUsername())), finalTx, -3372920);
                             } else {
-                                InGameHud.drawCenteredTextWithShadow(ms, mc.textRenderer, Text.translatable("ias.title", mc.getSession().getUsername()), finalTxx, finalTx, -3372920);
+                                ms.drawCenteredTextWithShadow(mc.textRenderer, Text.translatable("ias.title", mc.getSession().getUsername()), finalTxx, finalTx, -3372920);
                             }
                         });
                     } catch (Throwable var9) {
@@ -96,7 +96,7 @@ public class IAS {
                         int ty = h / 4 + 48 + 72 + 12 + (modMenu ? 32 : 22);
                         int finalTx1 = tx;
                         ScreenEvents.afterRender(screen).register((s, ms, mx, my, delta) -> {
-                            InGameHud.drawCenteredTextWithShadow(ms, mc.textRenderer, Text.translatable("ias.title", mc.getSession().getUsername()), finalTx1, ty, -3372920);
+                            ms.drawCenteredTextWithShadow(mc.textRenderer, Text.translatable("ias.title", mc.getSession().getUsername()), finalTx1, ty, -3372920);
                         });
                     }
                 }

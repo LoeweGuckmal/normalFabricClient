@@ -1,6 +1,7 @@
 package ch.loewe.normal_use_client.fabricclient.modmenu;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -38,9 +39,9 @@ public class MonopolyScreen extends SimpleOptionsScreen {
         }).dimensions(this.width / 2 - 100, this.height - 27, 200, 20).build());
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackgroundTexture(matrices);
-        super.render(matrices, mouseX, mouseY, delta);
+    public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+        this.renderBackgroundTexture(drawContext);
+        super.render(drawContext, mouseX, mouseY, delta);
     }
 
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {

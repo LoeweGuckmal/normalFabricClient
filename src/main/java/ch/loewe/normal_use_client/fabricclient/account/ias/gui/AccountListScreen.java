@@ -8,6 +8,7 @@ import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.util.UUIDTypeAdapter;
 import net.minecraft.client.RunArgs;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.NoticeScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -90,48 +91,49 @@ public class AccountListScreen extends Screen {
         Config.save(this.client.runDirectory.toPath());
     }
 
-    public void render(MatrixStack ms, int mx, int my, float delta) {
-        this.renderBackground(ms);
-        super.render(ms, mx, my, delta);
-        drawCenteredTextWithShadow(ms, this.textRenderer, this.title, this.width / 2, 4, -1);
+    public void render(DrawContext drawContext, int mx, int my, float delta) {
+        this.renderBackground(drawContext);
+        super.render(drawContext, mx, my, delta);
+        drawContext.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 4, -1);
+        //drawCenteredTextWithShadow(drawContext, this.textRenderer, this.title, this.width / 2, 4, -1);
         if (this.list.getSelectedOrNull() != null) {
-            RenderSystem.setShaderTexture(0, ((AccountList.AccountEntry)this.list.getSelectedOrNull()).skin());
+            //RenderSystem.setShaderTexture(0, this.list.getSelectedOrNull().skin());
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             boolean slim = this.list.getSelectedOrNull().slimSkin();
-            ms.push();
-            ms.scale(4.0F, 4.0F, 4.0F);
-            ms.translate(1.0D, (double)this.height / 8.0D - 16.0D - 4.0D, 0.0D);
-            Screen.drawTexture(ms, 4, 0, 8.0F, 8.0F, 8, 8, 64, 64);
-            Screen.drawTexture(ms, 4, 8, 20.0F, 20.0F, 8, 12, 64, 64);
-            Screen.drawTexture(ms, slim ? 1 : 0, 8, 44.0F, 20.0F, slim ? 3 : 4, 12, 64, 64);
-            Screen.drawTexture(ms, 12, 8, 36.0F, 52.0F, slim ? 3 : 4, 12, 64, 64);
-            Screen.drawTexture(ms, 4, 20, 4.0F, 20.0F, 4, 12, 64, 64);
-            Screen.drawTexture(ms, 8, 20, 20.0F, 52.0F, 4, 12, 64, 64);
+            drawContext.getMatrices().push();
+            drawContext.getMatrices().scale(4.0F, 4.0F, 4.0F);
+            drawContext.getMatrices().translate(1.0D, (double)this.height / 8.0D - 16.0D - 4.0D, 0.0D);
+            drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 4, 0, 8.0F, 8.0F, 8, 8, 64, 64);
+            drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 4, 8, 20.0F, 20.0F, 8, 12, 64, 64);
+            drawContext.drawTexture(this.list.getSelectedOrNull().skin(), slim ? 1 : 0, 8, 44.0F, 20.0F, slim ? 3 : 4, 12, 64, 64);
+            drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 12, 8, 36.0F, 52.0F, slim ? 3 : 4, 12, 64, 64);
+            drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 4, 20, 4.0F, 20.0F, 4, 12, 64, 64);
+            drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 8, 20, 20.0F, 52.0F, 4, 12, 64, 64);
             if (this.client.options.isPlayerModelPartEnabled(PlayerModelPart.HAT)) {
-                Screen.drawTexture(ms, 4, 0, 40.0F, 8.0F, 8, 8, 64, 64);
+                drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 4, 0, 40.0F, 8.0F, 8, 8, 64, 64);
             }
 
             if (this.client.options.isPlayerModelPartEnabled(PlayerModelPart.RIGHT_SLEEVE)) {
-                Screen.drawTexture(ms, slim ? 1 : 0, 8, 44.0F, 36.0F, slim ? 3 : 4, 12, 64, 64);
+                drawContext.drawTexture(this.list.getSelectedOrNull().skin(), slim ? 1 : 0, 8, 44.0F, 36.0F, slim ? 3 : 4, 12, 64, 64);
             }
 
             if (this.client.options.isPlayerModelPartEnabled(PlayerModelPart.LEFT_SLEEVE)) {
-                Screen.drawTexture(ms, 12, 8, 52.0F, 52.0F, slim ? 3 : 4, 12, 64, 64);
+                drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 12, 8, 52.0F, 52.0F, slim ? 3 : 4, 12, 64, 64);
             }
 
             if (this.client.options.isPlayerModelPartEnabled(PlayerModelPart.RIGHT_PANTS_LEG)) {
-                Screen.drawTexture(ms, 4, 20, 4.0F, 36.0F, 4, 12, 64, 64);
+                drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 4, 20, 4.0F, 36.0F, 4, 12, 64, 64);
             }
 
             if (this.client.options.isPlayerModelPartEnabled(PlayerModelPart.LEFT_PANTS_LEG)) {
-                Screen.drawTexture(ms, 8, 20, 4.0F, 52.0F, 4, 12, 64, 64);
+                drawContext.drawTexture(this.list.getSelectedOrNull().skin(), 8, 20, 4.0F, 52.0F, 4, 12, 64, 64);
             }
 
-            ms.pop();
+            drawContext.getMatrices().pop();
         }
 
         if (this.state != null) {
-            drawCenteredTextWithShadow(ms, this.textRenderer, this.state, this.width / 2, this.height - 62, -26368);
+            drawContext.drawCenteredTextWithShadow(this.textRenderer, this.state, this.width / 2, this.height - 62, -26368);
         }
 
     }

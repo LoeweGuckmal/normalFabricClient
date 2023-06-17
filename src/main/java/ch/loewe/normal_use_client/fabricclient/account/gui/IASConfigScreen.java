@@ -3,6 +3,7 @@ package ch.loewe.normal_use_client.fabricclient.account.gui;
 import java.util.Objects;
 
 import ch.loewe.normal_use_client.fabricclient.account.Config;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -120,9 +121,9 @@ public class IASConfigScreen extends Screen {
         super.tick();
     }
 
-    public void render(MatrixStack ms, int mx, int my, float delta) {
+    public void render(DrawContext ms, int mx, int my, float delta) {
         this.renderBackground(ms);
-        drawCenteredTextWithShadow(ms, this.textRenderer, this.title, this.width / 2, 5, -1);
+        ms.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 5, -1); //drawCenteredTextWithShadow(ms, this.textRenderer, this.title, this.width / 2, 5, -1);
         super.render(ms, mx, my, delta);
     }
 }

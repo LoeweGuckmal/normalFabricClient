@@ -3,7 +3,10 @@ package ch.loewe.normal_use_client.fabricclient.client;
 import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
 import ch.loewe.normal_use_client.fabricclient.account.ias.gui.AccountListScreen;
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
+import ch.loewe.normal_use_client.fabricclient.commands.RgbCommand;
+import ch.loewe.normal_use_client.fabricclient.loewe.DamageRGB;
 import ch.loewe.normal_use_client.fabricclient.loewe.HandleServerMessage;
+import ch.loewe.normal_use_client.fabricclient.mixin.HealthMixin;
 import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftAccessor;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import ch.loewe.normal_use_client.fabricclient.modmenu.ConfigScreen;
@@ -19,10 +22,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +42,13 @@ import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowFps;
 public class FabricClientClient implements ClientModInitializer {
     public static KeyBinding settingsKeyBinding;
     public static KeyBinding infoKeyBinding;
-    private static int oldHealth = 0;
+    public static int HealthTimeout = 9;
+    public static int HealthTimeoutBack = 10;
     public static MinecraftClient mc = MinecraftClient.getInstance();
-    private static int timeout = 9;
-    private static int timeoutBack = 10;
     public static final DecimalFormat df = new DecimalFormat("#.00");
     public static Logger logger = LoggerFactory.getLogger("Loewe");
     public static HashMap<String, String> colorMap = new HashMap<>();
+    public static boolean isConnectedToServer = false;
     public static ServerAddress lastAddress = new ServerAddress("-", 25565);
     public static boolean isOnMonopoly(){return lastAddress.getAddress().equals("loewe-monopoly.feathermc.gg");}
 
@@ -63,35 +68,36 @@ public class FabricClientClient implements ClientModInitializer {
         });
 
         //overlay
-        HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
+        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
             if (!mc.options.debugEnabled && getShowFps()) {
                 if (!getShowCords())
-                    renderer.draw(matrixStack, ((MinecraftAccessor) mc).getCurrentFps() + " FPS", 2, 2, 0xffffff);
+                    drawContext.drawText(renderer, ((MinecraftAccessor) mc).getCurrentFps() + " FPS", 2, 2, 0xffffff, false);
                 else
-                    renderer.draw(matrixStack, ((MinecraftAccessor) mc).getCurrentFps() + " FPS", 2, 12, 0xffffff);
+                    drawContext.drawText(renderer, ((MinecraftAccessor) mc).getCurrentFps() + " FPS", 2, 12, 0xffffff, false);
             }
         }); //FPS
-        HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
+        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
             if (mc.player != null) {
                 if (!mc.options.debugEnabled && getShowCords())
-                    renderer.draw(matrixStack, "X: " + df.format(mc.player.getX()) +
-                            ", Y: " + df.format(mc.player.getY()) + ", Z: " + df.format(mc.player.getZ()), 2, 2, 0xffffff);
+                    drawContext.drawText(renderer, "X: " + df.format(mc.player.getX()) +
+                            ", Y: " + df.format(mc.player.getY()) + ", Z: " + df.format(mc.player.getZ()), 2, 2, 0xffffff, false);
             }
         }); //X, Y, Z
-        HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
+        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
             if (Zoom.isZooming())
                 if (!mc.options.debugEnabled)
                     if (!getShowFps() || !getShowCords()){
                         if (!getShowFps() && !getShowCords())
-                            renderer.draw(matrixStack, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 2, 0xffffff);
+                            drawContext.drawText(renderer, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 2, 0xffffff, false);
                         else
-                            renderer.draw(matrixStack, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 12, 0xffffff);
+                            drawContext.drawText(renderer, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 12, 0xffffff, false);
                     } else
-                        renderer.draw(matrixStack, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 22, 0xffffff);
-        }); //Zoom
+                        drawContext.drawText(renderer, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 22, 0xffffff, false);
+        });
+        //Zoom
         settingsKeyBinding = new KeyBinding("loewe.key.settings", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_R, "loewe.category");
         KeyBindingHelper.registerKeyBinding(settingsKeyBinding);
         infoKeyBinding = new KeyBinding("loewe.key.info", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_I, "loewe.category");
@@ -99,42 +105,17 @@ public class FabricClientClient implements ClientModInitializer {
     }
 
     public static void onTick(){
+        if (isConnectedToServer)
+            DamageRGB.onTickOnServer();
         if (settingsKeyBinding.isPressed() && ConfigScreen.openTimeout == 0) {
             mc.setScreen(new ConfigScreen(mc.currentScreen));
         }
         if (ConfigScreen.openTimeout > 0)
             ConfigScreen.openTimeout -= 1;
-        damageRGB();
-    }
-
-    private static void damageRGB(){
-        ClientPlayerEntity player = mc.player;
-        int health = 0;
-        if (player != null)
-            health = (int) player.getHealth() + (int) player.getAbsorptionAmount();
-
-        if (timeout == timeoutBack){
-            timeout -= 1;
+        if (HealthTimeout == HealthTimeoutBack)
             OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), false);
-        }
-        else if (timeout > 0)
-            timeout -= 1;
-        else if (player != null) {
-            if (Config.getDoRgb()) {
-                if (oldHealth > health) {
-                    timeout = 35;
-                    timeoutBack = 17;
-                    OpenRGB.loadMode("rot", false);
-                } else if (oldHealth < health) {
-                    timeout = 30;
-                    timeoutBack = 10;
-                    OpenRGB.loadMode("gruen", false);
-                }
-            }
-        }
-        if (player != null){
-            oldHealth = health;
-        }
+        if (HealthTimeout > 0)
+            HealthTimeout -= 1;
     }
 
     public static void doCustom(String key){

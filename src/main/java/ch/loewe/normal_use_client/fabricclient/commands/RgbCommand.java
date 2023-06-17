@@ -7,12 +7,14 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.entity.player.PlayerEntity;
 
+import static ch.loewe.normal_use_client.fabricclient.cape.DownloadManager.isLocalPlayer;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getStandardColor;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class RgbCommand{
-
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess) {
         dispatcher.register(literal("maincolor")
                 .then(literal("bg")

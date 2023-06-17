@@ -6,19 +6,17 @@ import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.Locale;
-
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.util.Locale;
 
 public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.AccountEntry> {
     public AccountList(MinecraftClient mc, int width, int height) {
@@ -81,34 +79,36 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
             return this.slimSkin;
         }
 
-        public void render(MatrixStack ms, int i, int y, int x, int w, int h, int mx, int my, boolean hover, float delta) {
+        public void render(DrawContext drawContext, int i, int y, int x, int w, int h, int mx, int my, boolean hover, float delta) {
             int color = -1;
             if (AccountList.this.client.getSession().getUsername().equals(this.account.name())) {
                 color = 65280;
             }
 
-            DrawableHelper.drawTextWithShadow(ms, AccountList.this.client.textRenderer, this.account.name(), x + 10, y + 1, color);
+            drawContext.drawTextWithShadow(AccountList.this.client.textRenderer, this.account.name(), x + 10, y + 1, color);
+            //DrawableHelper.drawTextWithShadow(drawContext, AccountList.this.client.textRenderer, this.account.name(), x + 10, y + 1, color);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, this.skin());
-            Screen.drawTexture(ms, x, y + 1, 8.0F, 8.0F, 8, 8, 64, 64);
+            //RenderSystem.setShaderTexture(0, this.skin());
+            drawContext.drawTexture(this.skin, x, y + 1, 8.0F, 8.0F, 8, 8, 64, 64);
+            drawContext.drawTexture(this.skin, x, y + 1, 8.0F, 8.0F, 8, 8, 64, 64);
             if (AccountList.this.client.options.isPlayerModelPartEnabled(PlayerModelPart.HAT)) {
-                Screen.drawTexture(ms, x, y + 1, 40.0F, 8.0F, 8, 8, 64, 64);
+                drawContext.drawTexture(this.skin, x, y + 1, 40.0F, 8.0F, 8, 8, 64, 64);
             }
 
             if (AccountList.this.getSelectedOrNull() == this) {
-                RenderSystem.setShaderTexture(0, new Identifier("textures/gui/server_selection.png"));
+                //RenderSystem.setShaderTexture(0, new Identifier("textures/gui/server_selection.png"));
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 boolean movableDown = i + 1 < AccountList.this.children().size();
                 boolean movableUp = i > 0;
                 boolean hoveredUp;
                 if (movableDown) {
                     hoveredUp = mx > x + w - 16 && mx < x + w - 6 && hover;
-                    Screen.drawTexture(ms, x + w - 35, y - 18, 48.0F, hoveredUp ? 32.0F : 0.0F, 32, 32, 256, 256);
+                    drawContext.drawTexture(new Identifier("textures/gui/server_selection.png"), x + w - 35, y - 18, 48.0F, hoveredUp ? 32.0F : 0.0F, 32, 32, 256, 256);
                 }
 
                 if (movableUp) {
                     hoveredUp = mx > x + w - (movableDown ? 28 : 16) && mx < x + w - (movableDown ? 16 : 6) && hover;
-                    Screen.drawTexture(ms, x + w - (movableDown ? 30 : 19), y - 3, 96.0F, hoveredUp ? 32.0F : 0.0F, 32, 32, 256, 256);
+                    drawContext.drawTexture(new Identifier("textures/gui/server_selection.png"), x + w - (movableDown ? 30 : 19), y - 3, 96.0F, hoveredUp ? 32.0F : 0.0F, 32, 32, 256, 256);
                 }
             }
 
