@@ -6,7 +6,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
@@ -48,9 +47,6 @@ public class MonopolyScreen extends SimpleOptionsScreen {
         if (settingsKeyBinding.matchesKey(keyCode, scanCode)) {
             openTimeout = 5;
             close();
-        }
-        if (infoKeyBinding.matchesKey(keyCode, scanCode)) {
-            logger.info(String.valueOf(mc.player.getServer() != null));
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }

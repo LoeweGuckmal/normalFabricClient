@@ -3,38 +3,39 @@ package ch.loewe.normal_use_client.fabricclient.client;
 import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
 import ch.loewe.normal_use_client.fabricclient.account.ias.gui.AccountListScreen;
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
-import ch.loewe.normal_use_client.fabricclient.commands.RgbCommand;
+import ch.loewe.normal_use_client.fabricclient.commands.WayPointCommand;
 import ch.loewe.normal_use_client.fabricclient.loewe.DamageRGB;
+import ch.loewe.normal_use_client.fabricclient.loewe.DataFromUrl;
 import ch.loewe.normal_use_client.fabricclient.loewe.HandleServerMessage;
-import ch.loewe.normal_use_client.fabricclient.mixin.HealthMixin;
 import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftAccessor;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import ch.loewe.normal_use_client.fabricclient.modmenu.ConfigScreen;
 import ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.propertyKeys;
 import ch.loewe.normal_use_client.fabricclient.modmenu.MonopolyScreen;
 import ch.loewe.normal_use_client.fabricclient.openrgb.OpenRGB;
-import ch.loewe.normal_use_client.fabricclient.zoom.Zoom;
+import ch.loewe.normal_use_client.fabricclient.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Objects;
 
+import static ch.loewe.normal_use_client.fabricclient.loewe.WayPoints.indexMap;
+import static ch.loewe.normal_use_client.fabricclient.loewe.WayPoints.wayPointsMap;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowCords;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowFps;
 
@@ -45,7 +46,8 @@ public class FabricClientClient implements ClientModInitializer {
     public static int HealthTimeout = 9;
     public static int HealthTimeoutBack = 10;
     public static MinecraftClient mc = MinecraftClient.getInstance();
-    public static final DecimalFormat df = new DecimalFormat("#.00");
+    public static final DecimalFormat df = new DecimalFormat("0.00");
+    public static Boolean wpToggled = null;
     public static Logger logger = LoggerFactory.getLogger("Loewe");
     public static HashMap<String, String> colorMap = new HashMap<>();
     public static boolean isConnectedToServer = false;
@@ -60,6 +62,7 @@ public class FabricClientClient implements ClientModInitializer {
         //rgb
         colorMap.put("yellow", "gelb");
         colorMap.put("bluegreen", "bg");
+        colorMap.put("current", "current");
         ClientPlayNetworking.registerGlobalReceiver(new Identifier("monopoly", "loewe"), (client, handler, buf, responseSender) -> {
             String message = new String(buf.getWrittenBytes());
             if (message.length() > 0 && !Character.isLetter(message.charAt(0)))
@@ -67,7 +70,14 @@ public class FabricClientClient implements ClientModInitializer {
             HandleServerMessage.onReceiveMessage(client, handler, message, responseSender);
         });
 
+        //Bindings
+        settingsKeyBinding = new KeyBinding("loewe.key.settings", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_R, "loewe.category");
+        KeyBindingHelper.registerKeyBinding(settingsKeyBinding);
+        infoKeyBinding = new KeyBinding("loewe.key.info", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_I, "loewe.category");
+        KeyBindingHelper.registerKeyBinding(infoKeyBinding);
+
         //overlay
+        ClientCommandRegistrationCallback.EVENT.register(WayPointCommand::register);
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
             if (!mc.options.debugEnabled && getShowFps()) {
@@ -96,12 +106,14 @@ public class FabricClientClient implements ClientModInitializer {
                             drawContext.drawText(renderer, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 12, 0xffffff, false);
                     } else
                         drawContext.drawText(renderer, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 22, 0xffffff, false);
-        });
-        //Zoom
-        settingsKeyBinding = new KeyBinding("loewe.key.settings", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_R, "loewe.category");
-        KeyBindingHelper.registerKeyBinding(settingsKeyBinding);
-        infoKeyBinding = new KeyBinding("loewe.key.info", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_I, "loewe.category");
-        KeyBindingHelper.registerKeyBinding(infoKeyBinding);
+        }); //ZOOM
+        HudRenderCallback.EVENT.register(((drawContext, tickDelta) -> {
+            TextRenderer renderer = mc.textRenderer;
+            if (!wayPointsMap.isEmpty())
+                if (infoKeyBinding.isPressed() || wpToggled)
+                    wayPointsMap.forEach((name, cords) -> drawContext.drawText(renderer, name + ": " + df.format(cords[0]) + ", " +
+                                    df.format(cords[1]) + ", " + df.format(cords[2]), 2, indexMap.get(name) * 10 + 5, 0xffffff, false));
+        })); //WAYPOINTS
     }
 
     public static void onTick(){
@@ -120,6 +132,11 @@ public class FabricClientClient implements ClientModInitializer {
 
     public static void doCustom(String key){
         if (key.equals(propertyKeys.standardColor())){
+            String c = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor")).subSequence(2, 9).toString();
+            if (!c.equals("#ffff00") && !c.equals("#00ffff")) {
+                DamageRGB.currentColor = c;
+                logger.info(c);
+            }
             if (!OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), false))
                 logger.warn("Could not load color " + colorMap.get(Config.getStandardColor()));
         }

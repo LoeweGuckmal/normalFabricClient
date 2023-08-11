@@ -7,4 +7,9 @@ public class FabricClient implements ModInitializer {
     public void onInitialize() {
 
     }
+
+    /*
+    "main": [
+      "ch.loewe.normal_use_client.fabricclient.FabricClient"
+    ],*/
 }

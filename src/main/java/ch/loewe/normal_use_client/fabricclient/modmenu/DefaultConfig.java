@@ -14,7 +14,7 @@ public class DefaultConfig {
         return true;
     }
     public static StandardColor getStandardColor(){
-        return StandardColor.YELLOW;
+        return StandardColor.CURRENT;
     }
     //overlay
     public static boolean getShowFps(){

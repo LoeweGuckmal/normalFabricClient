@@ -2,6 +2,7 @@ package ch.loewe.normal_use_client.fabricclient.mixin;
 
 import ch.loewe.normal_use_client.fabricclient.commands.RgbCommand;
 import ch.loewe.normal_use_client.fabricclient.loewe.DamageRGB;
+import ch.loewe.normal_use_client.fabricclient.loewe.WayPoints;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.network.ServerAddress;
@@ -20,5 +21,6 @@ public abstract class ConnectMixin {
     private void connect(MinecraftClient client, ServerAddress address, ServerInfo info, CallbackInfo ci) {
         DamageRGB.firstAfterJoined = true;
         lastAddress = address;
+        WayPoints.getWayPoints();
     }
 }

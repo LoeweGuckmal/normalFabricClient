@@ -11,8 +11,10 @@
     "loewe.button.standard_color": "Standardfarbe",
     "loewe.button.standard_color.yellow": "Gelb",
     "loewe.button.standard_color.bluegreen": "Blau/Grün",
+    "loewe.button.standard_color.current": "Anpassend",
     "loewe.button.standard_color.tooltip.yellow": "Die Standardfarbe ist jetzt: \n§eGelb.",
     "loewe.button.standard_color.tooltip.bluegreen": "Die Standardfarbe ist jetzt: \n§bBlau§f/§aGrün.",
+    "loewe.button.standard_color.tooltip.current": "Die Standardfarbe passt sich jetzt an deine aktuelle Farbe an.",
 
     "loewe.button.show_fps": "FPS anzeigen",
     "loewe.button.show_fps.tooltip": "Dadurch werden die FPS in der oberen linken Ecke angezeigt.",

@@ -1,5 +1,6 @@
 package ch.loewe.normal_use_client.fabricclient.modmenu;
 
+import ch.loewe.normal_use_client.fabricclient.loewe.WayPoints;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
@@ -8,8 +9,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.*;
@@ -76,7 +76,7 @@ public class Config {
 
 
 
-    private static void logError(String key) {
+    public static void logError(String key) {
         logger.warn("Failed to parse variable '" + key + "' in Loewe's config, generating a new one!");
     }
 
@@ -92,46 +92,7 @@ public class Config {
                 out.close();
             }
         } catch (IOException ignored) {}
-
-        /*try {
-            BufferedWriter comment = Files.newBufferedWriter(path, StandardOpenOption.APPEND, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-
-            try {
-                comment.write("\n# Definitions");
-                comment.write("\n# " + writable(propertyKeys.tryLimit()) + " = how many times in a row should the same count of loaded chunks be ignored before we cancel pre-rendering.");
-                comment.write("\n# Min = 1, Max = 1000. Set 1000 for infinity");
-                comment.write("\n#");
-                comment.write("\n# " + writable(propertyKeys.unsafeClose()) + " = should skip 'Joining World', and 'Downloading Terrain'. Potentially can result in joining world before chunks are properly loaded");
-                comment.write("\n# Enabled = true, Disabled = false");
-                comment.write("\n#");
-                comment.write("\n# " + writable(propertyKeys.debug()) + " = debug (log) all things happening in fastload to aid in diagnosing issues.");
-                comment.write("\n# Enabled = true, Disabled = false");
-                comment.write("\n#");
-                comment.write("\n# " + writable(propertyKeys.render()) + " = how many chunks are loaded until 'building terrain' is completed. Adjusts with FOV to decide how many chunks are visible");
-                comment.write("\n# Min = 0, Max = 32 or your render distance, Whichever is smaller. Set 0 to disable.");
-                comment.write("\n#");
-                comment.write("\n# " + writable(propertyKeys.pregen()) + " = how many chunks (from 441 Loading) are pre-generated until the server starts");
-                comment.write("\n# Min = 0, Max = 32. Set 0 to only pregen 1 chunk.");
-            } catch (Throwable var6) {
-                try {
-                    comment.close();
-                } catch (Throwable var3) {
-                    var6.addSuppressed(var3);
-                }
-
-                throw var6;
-            }
-
-            comment.close();
-
-        } catch (IOException var7) {
-            throw new RuntimeException(var7);
-        }*/
     }
-
-    /*private static String writable(String key) {
-        return "'" + key.toLowerCase() + "'";
-    }*/
 
     private static int getInt(String key, MinMaxDefHolder holder) {
         try {
@@ -180,7 +141,7 @@ public class Config {
         } else {
             throw new NumberFormatException(string);
         }
-    } //form String to boolean (only used in getBoolean())
+    } //form String to boolean
 
     public static void storeProperty(String key, String value) {
         properties.setProperty(key, value);
@@ -208,6 +169,8 @@ public class Config {
         getCapeFromFile();
         getSkipFrontView();
         getDebug();
+        WayPoints.getWayPoints();
+        WayPoints.toggle();
 
         write();
     }

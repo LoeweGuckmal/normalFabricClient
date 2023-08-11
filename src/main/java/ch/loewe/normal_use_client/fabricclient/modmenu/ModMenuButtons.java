@@ -4,19 +4,12 @@ import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.propertyKeys;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.option.SimpleOption.ValidatingIntSliderCallbacks;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.Callbacks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class ModMenuButtons {
     public static final ArrayList<String> addressStorage = new ArrayList<>();
@@ -116,7 +109,8 @@ public class ModMenuButtons {
     //Enums (loewe)
     public enum StandardColor {
         YELLOW,
-        BLUEGREEN;
+        BLUEGREEN,
+        CURRENT;
     }
     public enum ReloadCape {
         RELOAD,
