@@ -13,7 +13,7 @@ import ch.loewe.normal_use_client.fabricclient.modmenu.ConfigScreen;
 import ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.propertyKeys;
 import ch.loewe.normal_use_client.fabricclient.modmenu.MonopolyScreen;
 import ch.loewe.normal_use_client.fabricclient.openrgb.OpenRGB;
-import ch.loewe.normal_use_client.fabricclient.*;
+import ch.loewe.normal_use_client.fabricclient.zoom.Zoom;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -132,13 +132,18 @@ public class FabricClientClient implements ClientModInitializer {
 
     public static void doCustom(String key){
         if (key.equals(propertyKeys.standardColor())){
-            String c = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor")).subSequence(2, 9).toString();
-            if (!c.equals("#ffff00") && !c.equals("#00ffff")) {
-                DamageRGB.currentColor = c;
-                logger.info(c);
-            }
-            if (!OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), false))
-                logger.warn("Could not load color " + colorMap.get(Config.getStandardColor()));
+            new Thread(() -> {
+                String c = "";
+                try {
+                    c = DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid()).subSequence(2, 9).toString();
+                } catch (Exception ignored) {}
+                if (c.contains("#") && !c.equals("#ffff00") && !c.equals("#00ffff")) {
+                    DamageRGB.currentColor = c;
+                    logger.info(c);
+                }
+                if (!OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), false))
+                    logger.warn("Could not load color " + colorMap.get(Config.getStandardColor()));
+            }).start();
         }
         else if (key.equals(propertyKeys.hasCapeGlint()) || key.equals(propertyKeys.capeFromFile()) || key.equals(propertyKeys.reloadCape())){
             if (mc.player != null) {

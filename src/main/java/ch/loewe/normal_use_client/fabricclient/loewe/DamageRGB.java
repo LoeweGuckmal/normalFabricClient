@@ -36,12 +36,12 @@ public class DamageRGB {
             if (heal) {
                 HealthTimeout = 25;
                 HealthTimeoutBack = 5;
-                currentColor = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor")).subSequence(2, 9).toString();
+                currentColor = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid())).subSequence(2, 9).toString();
                 OpenRGB.loadMode("gruen", false);
             } else {
                 HealthTimeout = 30;
                 HealthTimeoutBack = 16;
-                currentColor = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor")).subSequence(2, 9).toString();
+                currentColor = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid())).subSequence(2, 9).toString();
                 OpenRGB.loadMode("rot", false);
             }
     }

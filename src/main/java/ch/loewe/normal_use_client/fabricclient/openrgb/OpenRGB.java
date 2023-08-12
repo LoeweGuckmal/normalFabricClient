@@ -2,6 +2,7 @@ package ch.loewe.normal_use_client.fabricclient.openrgb;
 
 import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import ch.loewe.normal_use_client.fabricclient.loewe.DamageRGB;
+import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import net.minecraft.network.ClientConnection;
 
 import java.io.IOException;
@@ -19,8 +20,8 @@ public class OpenRGB {
 
         String urlString;
         if (mode.equals("current"))
-            urlString = "http://192.168.100.168:8881/sdk?mode=direct&color=" + hexToRgb(DamageRGB.currentColor);
-        else urlString = "http://192.168.100.168:8880/color?color=" + mode;
+            urlString = "http://192.168.100.168:8881/sdk?mode=direct&color=" + hexToRgb(DamageRGB.currentColor) + "&uuid=" + Config.getRgbUuid();
+        else urlString = "http://192.168.100.168:8880/color?color=" + mode + "&uuid=" + Config.getRgbUuid();
         try {
             URL url = new URL(urlString);
             URLConnection conn = url.openConnection();

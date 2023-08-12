@@ -31,6 +31,18 @@ public class Config {
     public static String getStandardColor(){
         return getString(propertyKeys.standardColor(), DefaultConfig.getStandardColor());
     }
+    public static String getRgbUuid() {
+        try {
+            String s = properties.getProperty("rgb_uuid");
+            if (s != null) {
+                properties.setProperty("rgb_uuid", s);
+                return s;
+            }
+        } catch (NumberFormatException ignored){}
+        logError("rgb_uuid");
+        properties.setProperty("rgb_uuid", UUID.randomUUID().toString());
+        return properties.getProperty("rgb_uuid");
+    }
 
     public static boolean getShowFps(){
         return getBoolean(propertyKeys.showFps(), DefaultConfig.getShowFps());
@@ -162,6 +174,7 @@ public class Config {
 
         getDoRgb();
         getStandardColor();
+        getRgbUuid();
         getShowFps();
         getShowCords();
         getStandardZoom();

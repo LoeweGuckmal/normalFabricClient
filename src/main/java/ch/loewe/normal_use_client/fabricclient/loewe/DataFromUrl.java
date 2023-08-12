@@ -13,7 +13,9 @@ public class DataFromUrl {
             InputStream is = conn.getInputStream();
             String returnString = new String(is.readAllBytes());
             is.close();
+            if (returnString == null)
+                returnString = "-----------";
             return returnString;
-        } catch (IOException ignored) {return null;}
+        } catch (IOException ignored) {return "-----------";}
     }
 }

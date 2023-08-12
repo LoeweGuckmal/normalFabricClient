@@ -5,14 +5,14 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.OptionListWidget;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
 import java.util.function.Supplier;
 
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.settingsKeyBinding;
 
 public class ConfigScreen extends SimpleOptionsScreen {
     private final Screen parent;
