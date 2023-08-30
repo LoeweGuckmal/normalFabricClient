@@ -1,6 +1,5 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
-import ch.loewe.normal_use_client.fabricclient.commands.RgbCommand;
 import ch.loewe.normal_use_client.fabricclient.loewe.DamageRGB;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import ch.loewe.normal_use_client.fabricclient.openrgb.OpenRGB;
@@ -11,7 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.colorMap;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.lastAddress;
 
 @Mixin({ClientConnection.class})
 public abstract class DisconnectMixin {
@@ -21,7 +21,6 @@ public abstract class DisconnectMixin {
         lastAddress = new ServerAddress("-", 25565);
         DamageRGB.firstAfterJoined = true;
         DamageRGB.oldHealth = -1;
-        if (!OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), false))
-            logger.warn("Could not load color " + colorMap.get(Config.getStandardColor()));
+        OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), true);
     }
 }

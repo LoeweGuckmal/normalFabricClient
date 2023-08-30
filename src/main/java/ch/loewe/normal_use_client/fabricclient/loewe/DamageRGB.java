@@ -33,16 +33,18 @@ public class DamageRGB {
     }
     public static void damageRGB(boolean heal){
         if (HealthTimeout <= 0 && Config.getDoRgb() && !isOnMonopoly())
-            if (heal) {
-                HealthTimeout = 25;
-                HealthTimeoutBack = 5;
-                currentColor = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid())).subSequence(2, 9).toString();
-                OpenRGB.loadMode("gruen", false);
-            } else {
-                HealthTimeout = 30;
-                HealthTimeoutBack = 16;
-                currentColor = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid())).subSequence(2, 9).toString();
-                OpenRGB.loadMode("rot", false);
-            }
+            new Thread(() -> {
+                if (heal) {
+                    HealthTimeout = 25;
+                    HealthTimeoutBack = 5;
+                    currentColor = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid())).subSequence(2, 9).toString();
+                    OpenRGB.loadMode("gruen", false);
+                } else {
+                    HealthTimeout = 30;
+                    HealthTimeoutBack = 16;
+                    currentColor = Objects.requireNonNull(DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid())).subSequence(2, 9).toString();
+                    OpenRGB.loadMode("rot", false);
+                }
+            }).start();
     }
 }
