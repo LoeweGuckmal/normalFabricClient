@@ -1,22 +1,23 @@
 package ch.loewe.normal_use_client.fabricclient.account.ias.gui;
-
+//
 import ch.loewe.normal_use_client.fabricclient.account.Config;
+import ch.loewe.normal_use_client.fabricclient.account.SharedIAS;
 import ch.loewe.normal_use_client.fabricclient.account.account.Account;
 import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.DefaultSkinHelper;
+import net.minecraft.client.util.SkinTextures;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.AccountEntry> {
     public AccountList(MinecraftClient mc, int width, int height) {
@@ -24,128 +25,115 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
     }
 
     public void updateAccounts(String query) {
-        this.clearEntries();
-        Config.accounts.stream().filter((acc) -> {
-            return query.trim().isEmpty() || acc.name().toLowerCase(Locale.ROOT).startsWith(query.toLowerCase(Locale.ROOT));
-        }).forEach((acc) -> {
-            this.addEntry(new AccountList.AccountEntry(acc));
-        });
-        this.setSelected(this.children().isEmpty() ? null : this.getEntry(0));
+        clearEntries();
+        Config.accounts.stream()
+                .filter(acc -> query.trim().isEmpty() || acc.name().toLowerCase(Locale.ROOT)
+                        .startsWith(query.toLowerCase(Locale.ROOT)))
+                .forEach(acc -> addEntry(new AccountEntry(acc)));
+        setSelected(children().isEmpty() ? null : getEntry(0));
     }
 
     public void swap(int first, int second) {
         Account account = Config.accounts.get(first);
         Config.accounts.set(first, Config.accounts.get(second));
         Config.accounts.set(second, account);
-        Config.save(this.client.runDirectory.toPath());
-        AccountList.AccountEntry entry = this.children().get(first);
-        this.children().set(first, this.children().get(second));
-        this.children().set(second, entry);
-        this.setSelected(entry);
+        Config.save(client.runDirectory.toPath());
+        AccountEntry entry = children().get(first);
+        children().set(first, children().get(second));
+        children().set(second, entry);
+        setSelected(entry);
     }
 
     public class AccountEntry extends Entry<AccountList.AccountEntry> {
+        static final Identifier MOVE_UP_HIGHLIGHTED_SPRITE = new Identifier("transferable_list/move_up_highlighted");
+        static final Identifier MOVE_UP_SPRITE = new Identifier("transferable_list/move_up");
+        static final Identifier MOVE_DOWN_HIGHLIGHTED_SPRITE = new Identifier("transferable_list/move_down_highlighted");
+        static final Identifier MOVE_DOWN_SPRITE = new Identifier("transferable_list/move_down");
         private final Account account;
-        private Identifier skin;
-        private boolean slimSkin;
+        private SkinTextures skin;
 
         public AccountEntry(Account account) {
             this.account = account;
             if (IAS.SKIN_CACHE.containsKey(account.uuid())) {
                 this.skin = IAS.SKIN_CACHE.get(account.uuid());
-            } else {
-                this.skin = DefaultSkinHelper.getTexture(account.uuid());
-                this.slimSkin = DefaultSkinHelper.getModel(account.uuid()).equalsIgnoreCase("slim");
-                AccountList.this.client.getSkinProvider().loadSkin(new GameProfile(account.uuid(), account.name()), (type, loc, tex) -> {
-                    if (type == Type.SKIN) {
-                        this.skin = loc;
-                        this.slimSkin = "slim".equalsIgnoreCase(tex.getMetadata("model"));
-                        IAS.SKIN_CACHE.put(account.uuid(), loc);
-                    }
-
-                }, true);
+                return;
             }
+            skin = DefaultSkinHelper.getSkinTextures(account.uuid());
+            CompletableFuture.supplyAsync(() -> {
+                ProfileResult result = client.getSessionService().fetchProfile(account.uuid(), false);
+                if (result == null) return null;
+                return result.profile();
+            }, SharedIAS.EXECUTOR).thenComposeAsync(profile -> {
+                if (profile == null) return CompletableFuture.completedFuture(DefaultSkinHelper.getSkinTextures(account.uuid()));
+                return client.getSkinProvider().fetchSkinTextures(profile);
+            }, client).thenAcceptAsync(skin -> {
+                this.skin = skin;
+                IAS.SKIN_CACHE.put(account.uuid(), skin);
+            }, client);
         }
 
         public Account account() {
-            return this.account;
+            return account;
         }
 
-        public Identifier skin() {
-            return this.skin;
+        public SkinTextures skin() {
+            return skin;
         }
 
-        public boolean slimSkin() {
-            return this.slimSkin;
-        }
-
-        public void render(DrawContext drawContext, int i, int y, int x, int w, int h, int mx, int my, boolean hover, float delta) {
+        @Override
+        public void render(DrawContext ctx, int i, int y, int x, int w, int h, int mx, int my, boolean hover, float delta) {
             int color = -1;
-            if (AccountList.this.client.getSession().getUsername().equals(this.account.name())) {
-                color = 65280;
-            }
-
-            drawContext.drawTextWithShadow(AccountList.this.client.textRenderer, this.account.name(), x + 10, y + 1, color);
-            //DrawableHelper.drawTextWithShadow(drawContext, AccountList.this.client.textRenderer, this.account.name(), x + 10, y + 1, color);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            //RenderSystem.setShaderTexture(0, this.skin());
-            drawContext.drawTexture(this.skin, x, y + 1, 8.0F, 8.0F, 8, 8, 64, 64);
-            drawContext.drawTexture(this.skin, x, y + 1, 8.0F, 8.0F, 8, 8, 64, 64);
-            if (AccountList.this.client.options.isPlayerModelPartEnabled(PlayerModelPart.HAT)) {
-                drawContext.drawTexture(this.skin, x, y + 1, 40.0F, 8.0F, 8, 8, 64, 64);
-            }
-
-            if (AccountList.this.getSelectedOrNull() == this) {
-                //RenderSystem.setShaderTexture(0, new Identifier("textures/gui/server_selection.png"));
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                boolean movableDown = i + 1 < AccountList.this.children().size();
+            if (client.getSession().getUsername().equals(account.name())) color = 0x00FF00;
+            ctx.drawTextWithShadow(client.textRenderer, account.name(), x + 10, y + 1, color);
+            Identifier tex = skin.texture();
+            ctx.drawTexture(tex, x, y + 1, 8, 8, 8, 8, 64, 64); // Head
+            if (client.options.isPlayerModelPartEnabled(PlayerModelPart.HAT))
+                ctx.drawTexture(tex, x, y + 1, 40, 8, 8, 8, 64, 64); // Head (Overlay)
+            if (getSelectedOrNull() == this) {
+                boolean movableDown = i + 1 < children().size();
                 boolean movableUp = i > 0;
-                boolean hoveredUp;
                 if (movableDown) {
-                    hoveredUp = mx > x + w - 16 && mx < x + w - 6 && hover;
-                    drawContext.drawTexture(new Identifier("textures/gui/server_selection.png"), x + w - 35, y - 18, 48.0F, hoveredUp ? 32.0F : 0.0F, 32, 32, 256, 256);
+                    boolean hoveredDown = mx > x + w - 16 && mx < x + w - 6 && hover;
+                    ctx.drawGuiTexture(hoveredDown ? MOVE_DOWN_HIGHLIGHTED_SPRITE : MOVE_DOWN_SPRITE, x + w - 35, y - 18, 32, 32);
                 }
-
                 if (movableUp) {
-                    hoveredUp = mx > x + w - (movableDown ? 28 : 16) && mx < x + w - (movableDown ? 16 : 6) && hover;
-                    drawContext.drawTexture(new Identifier("textures/gui/server_selection.png"), x + w - (movableDown ? 30 : 19), y - 3, 96.0F, hoveredUp ? 32.0F : 0.0F, 32, 32, 256, 256);
+                    boolean hoveredUp = mx > x + w - (movableDown ? 28 : 16) && mx < x + w - (movableDown ? 16 : 6) && hover;
+                    ctx.drawGuiTexture(hoveredUp ? MOVE_UP_HIGHLIGHTED_SPRITE : MOVE_UP_SPRITE, x + w - (movableDown ? 30 : 19) - 16, y - 3, 96, 32, 32);
                 }
             }
-
         }
 
+        @Override
         public boolean mouseClicked(double mx, double my, int button) {
-            if (button == 0 && AccountList.this.getSelectedOrNull() == this) {
-                int x = AccountList.this.getRowLeft();
-                int w = AccountList.this.getRowWidth();
-                int i = AccountList.this.children().indexOf(this);
-                boolean movableDown = i + 1 < AccountList.this.children().size();
+            if (button == 0 && getSelectedOrNull() == this) {
+                int x = getRowLeft();
+                int w = getRowWidth();
+                int i = children().indexOf(this);
+                boolean movableDown = i + 1 < children().size();
                 boolean movableUp = i > 0;
-                boolean hoveredUp;
                 if (movableDown) {
-                    hoveredUp = mx > (double)(x + w - 16) && mx < (double)(x + w - 6);
-                    if (hoveredUp) {
-                        AccountList.this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                        AccountList.this.swap(i, i + 1);
+                    boolean hoveredDown = mx > x + w - 16 && mx < x + w - 6;
+                    if (hoveredDown) {
+                        client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1F));
+                        swap(i, i + 1);
                     }
                 }
-
                 if (movableUp) {
-                    hoveredUp = mx > (double)(x + w - (movableDown ? 28 : 16)) && mx < (double)(x + w - (movableDown ? 16 : 6));
+                    boolean hoveredUp = mx > x + w - (movableDown ? 28 : 16) && mx < x + w - (movableDown ? 16 : 6);
                     if (hoveredUp) {
-                        AccountList.this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                        AccountList.this.swap(i, i - 1);
+                        client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1F));
+                        swap(i, i - 1);
                     }
                 }
-
-            } else {
-                AccountList.this.setSelected(this);
+                return true;
             }
+            setSelected(this);
             return true;
         }
 
+        @Override
         public Text getNarration() {
-            return Text.literal(this.account.name());
+            return Text.literal(account.name());
         }
     }
 }

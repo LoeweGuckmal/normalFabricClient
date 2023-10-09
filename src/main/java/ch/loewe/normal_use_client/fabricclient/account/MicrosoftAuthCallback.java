@@ -18,128 +18,89 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MicrosoftAuthCallback implements Closeable {
-    public static final String MICROSOFT_AUTH_URL = "https://login.live.com/oauth20_authorize.srf?client_id=54fd49e4-2103-4044-9603-2b028c814ec3&response_type=code&scope=XboxLive.signin%20XboxLive.offline_access&redirect_uri=http://localhost:59125&prompt=select_account";
+    //public static final String MICROSOFT_AUTH_URL = "https://login.live.com/oauth20_authorize.srf?client_id=54fd49e4-2103-4044-9603-2b028c814ec3&response_type=code&scope=XboxLive.signin%20XboxLive.offline_access&redirect_uri=http://localhost:59125&prompt=select_account";
+    public static final String MICROSOFT_AUTH_URL = "https://login.live.com/oauth20_authorize.srf?client_id=55fca734-6e47-4719-ac3f-1fcdc5600732&response_type=code&scope=XboxLive.signin%20XboxLive.offline_access&redirect_uri=http://localhost:59125&prompt=select_account";
     private HttpServer server;
 
     public MicrosoftAuthCallback() {
     }
 
     @NotNull
-    public CompletableFuture<MicrosoftAccount> start(@NotNull BiConsumer<String, Object[]> progressHandler, @NotNull String done) {
-        CompletableFuture cf = new CompletableFuture();
-
+    public CompletableFuture<@Nullable MicrosoftAccount> start(@NotNull BiConsumer<@NotNull String, @NotNull Object[]> progressHandler, @NotNull String done) {
+        CompletableFuture<MicrosoftAccount> cf = new CompletableFuture<>();
         try {
-            this.server = HttpServer.create(new InetSocketAddress("localhost", 59125), 0);
-            this.server.createContext("/", (ex) -> {
+            server = HttpServer.create(new InetSocketAddress("localhost", 59125), 0);
+            server.createContext("/", ex -> {
                 SharedIAS.LOG.info("Microsoft authentication callback request: " + ex.getRemoteAddress());
-
-                try {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(MicrosoftAuthCallback.class.getResourceAsStream("/authPage.html"), StandardCharsets.UTF_8));
-
-                    try {
-                        progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"preparing"});
-                        byte[] b = in.lines().collect(Collectors.joining("\n")).replace("%message%", done).getBytes(StandardCharsets.UTF_8);
-                        ex.getResponseHeaders().add("Content-Type", "text/html; charset=UTF-8");
-                        ex.sendResponseHeaders(307, b.length);
-                        OutputStream os = ex.getResponseBody();
-
-                        try {
-                            os.write(b);
-                        } catch (Throwable var12) {
-                            if (os != null) {
-                                try {
-                                    os.close();
-                                } catch (Throwable var11) {
-                                    var12.addSuppressed(var11);
-                                }
-                            }
-
-                            throw var12;
-                        }
-
-                        if (os != null) {
-                            os.close();
-                        }
-
-                        this.close();
-                        SharedIAS.EXECUTOR.execute(() -> {
-                            try {
-                                cf.complete(this.auth(progressHandler, ex.getRequestURI().getQuery()));
-                            } catch (Throwable var5) {
-                                SharedIAS.LOG.error("Unable to authenticate via Microsoft.", var5);
-                                cf.completeExceptionally(var5);
-                            }
-
-                        });
-                    } catch (Throwable var13) {
-                        try {
-                            in.close();
-                        } catch (Throwable var10) {
-                            var13.addSuppressed(var10);
-                        }
-
-                        throw var13;
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(MicrosoftAuthCallback.class
+                        .getResourceAsStream("/authPage.html"), StandardCharsets.UTF_8))) {
+                    progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"preparing"});
+                    byte[] b = in.lines().collect(Collectors.joining("\n")).replace("%message%", done).getBytes(StandardCharsets.UTF_8);
+                    ex.getResponseHeaders().add("Content-Type", "text/html; charset=UTF-8");
+                    ex.sendResponseHeaders(307, b.length);
+                    try (OutputStream os = ex.getResponseBody()) {
+                        os.write(b);
                     }
-
-                    in.close();
-                } catch (Throwable var14) {
-                    SharedIAS.LOG.error("Unable to process request on Microsoft authentication callback server.", var14);
-                    this.close();
-                    cf.completeExceptionally(var14);
+                    close();
+                    SharedIAS.EXECUTOR.execute(() -> {
+                        try {
+                            cf.complete(auth(progressHandler, ex.getRequestURI().getQuery()));
+                        } catch (Throwable t) {
+                            SharedIAS.LOG.error("Unable to authenticate via Microsoft.", t);
+                            cf.completeExceptionally(t);
+                        }
+                    });
+                } catch (Throwable t) {
+                    SharedIAS.LOG.error("Unable to process request on Microsoft authentication callback server.", t);
+                    close();
+                    cf.completeExceptionally(t);
                 }
-
             });
-            this.server.start();
+            server.start();
             SharedIAS.LOG.info("Started Microsoft authentication callback server.");
-        } catch (Throwable var5) {
-            SharedIAS.LOG.error("Unable to run the Microsoft authentication callback server.", var5);
-            this.close();
-            cf.completeExceptionally(var5);
+        } catch (Throwable t) {
+            SharedIAS.LOG.error("Unable to run the Microsoft authentication callback server.", t);
+            close();
+            cf.completeExceptionally(t);
         }
-
         return cf;
     }
-
     @Nullable
-    private MicrosoftAccount auth(@NotNull BiConsumer<String, Object[]> progressHandler, @Nullable String query) throws Exception {
+    private MicrosoftAccount auth(@NotNull BiConsumer<@NotNull String, @NotNull Object[]> progressHandler,
+                                            @Nullable String query) throws Exception {
         SharedIAS.LOG.info("Authenticating...");
-        if (query == null) {
-            throw new NullPointerException("query=null");
-        } else if (query.equals("error=access_denied&error_description=The user has denied access to the scope requested by the client application.")) {
-            return null;
-        } else if (!query.startsWith("code=")) {
-            throw new IllegalStateException("query=" + query);
-        } else {
-            SharedIAS.LOG.info("Step: codeToToken.");
-            progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"codeToToken"});
-            Entry<String, String> authRefreshTokens = Auth.codeToToken(query.replace("code=", ""));
-            String refreshToken = (String)authRefreshTokens.getValue();
-            SharedIAS.LOG.info("Step: authXBL.");
-            progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"authXBL"});
-            String xblToken = Auth.authXBL((String)authRefreshTokens.getKey());
-            SharedIAS.LOG.info("Step: authXSTS.");
-            progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"authXSTS"});
-            Entry<String, String> xstsTokenUserhash = Auth.authXSTS(xblToken);
-            SharedIAS.LOG.info("Step: authMinecraft.");
-            progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"authMinecraft"});
-            String accessToken = Auth.authMinecraft((String)xstsTokenUserhash.getValue(), (String)xstsTokenUserhash.getKey());
-            SharedIAS.LOG.info("Step: getProfile.");
-            progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"getProfile"});
-            Entry<UUID, String> profile = Auth.getProfile(accessToken);
-            SharedIAS.LOG.info("Authenticated.");
-            return new MicrosoftAccount((String)profile.getValue(), accessToken, refreshToken, (UUID)profile.getKey());
-        }
+        if (query == null) throw new NullPointerException("query=null");
+        if (query.equals("error=access_denied&error_description=The user has denied access to the scope requested by the client application.")) return null;
+        if (!query.startsWith("code=")) throw new IllegalStateException("query=" + query);
+        SharedIAS.LOG.info("Step: codeToToken.");
+        progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"codeToToken"});
+        Entry<String, String> authRefreshTokens = Auth.codeToToken(query.replace("code=", ""));
+        String refreshToken = authRefreshTokens.getValue();
+        SharedIAS.LOG.info("Step: authXBL.");
+        progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"authXBL"});
+        String xblToken = Auth.authXBL(authRefreshTokens.getKey());
+        SharedIAS.LOG.info("Step: authXSTS.");
+        progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"authXSTS"});
+        Entry<String, String> xstsTokenUserhash = Auth.authXSTS(xblToken);
+        SharedIAS.LOG.info("Step: authMinecraft.");
+        progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"authMinecraft"});
+        String accessToken = Auth.authMinecraft(xstsTokenUserhash.getValue(), xstsTokenUserhash.getKey());
+        SharedIAS.LOG.info("Step: getProfile.");
+        progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"getProfile"});
+        Entry<UUID, String> profile = Auth.getProfile(accessToken);
+        SharedIAS.LOG.info("Authenticated.");
+        return new MicrosoftAccount(profile.getValue(), accessToken, refreshToken, profile.getKey());
     }
 
+    @Override
     public void close() {
         try {
-            if (this.server != null) {
-                this.server.stop(0);
+            if (server != null) {
+                server.stop(0);
                 SharedIAS.LOG.info("Stopped Microsoft authentication callback server.");
             }
-        } catch (Throwable var2) {
-            SharedIAS.LOG.error("Unable to stop the Microsoft authentication callback server.", var2);
+        } catch (Throwable t) {
+            SharedIAS.LOG.error("Unable to stop the Microsoft authentication callback server.", t);
         }
-
     }
 }

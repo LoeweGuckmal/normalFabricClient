@@ -63,9 +63,9 @@ public class DownloadManager {
     }
 
     public static boolean isLocalPlayer(PlayerEntity player){
-        if (mc.player != null && !mc.player.getUuid().equals(player.getUuid()) && mc.player.getEntityName().equals(player.getEntityName())) {
+        /*if (mc.player != null && !mc.player.getUuid().equals(player.getUuid()) && mc.player.getEntityName().equals(player.getEntityName())) {
             new AccountListScreen(mc.currentScreen).loginOffline(new OfflineAccount(player.getEntityName(), Auth.resolveUUID(player.getEntityName())));
-        }
+        }*/
         return mc.player == null || mc.player.getUuid().equals(player.getUuid()) || mc.player.getEntityName().equals(player.getEntityName());
     }
 
@@ -76,7 +76,7 @@ public class DownloadManager {
             }
             else try { //////////////////////////////////////////////////////////
                 String uuidString = playerHandler.getPlayerUUID().toString();
-                URL url = new URL("https://minecraftcapes.net/profile/" + uuidString.replace("-", ""));
+                URL url = new URL("https://api.minecraftcapes.net/profile/" + uuidString.replace("-", ""));
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection(mc.getNetworkProxy());
                 conn.setDoInput(true);
                 conn.setDoOutput(false);

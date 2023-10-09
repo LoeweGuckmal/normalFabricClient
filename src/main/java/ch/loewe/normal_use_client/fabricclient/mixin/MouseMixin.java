@@ -17,7 +17,7 @@ import static ch.loewe.normal_use_client.fabricclient.zoom.Zoom.zoomLevel;
 @Mixin({Mouse.class})
 public class MouseMixin {
 
-    @Shadow private double eventDeltaWheel;
+    @Shadow private double eventDeltaVerticalWheel;
 
     public MouseMixin() {
     }
@@ -26,7 +26,7 @@ public class MouseMixin {
             method = {"onMouseScroll"},
             at = {@At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/Mouse;eventDeltaWheel:D",
+                    target = "Lnet/minecraft/client/Mouse;eventDeltaVerticalWheel:D",
                     ordinal = 7
             )},
             cancellable = true
@@ -36,7 +36,7 @@ public class MouseMixin {
             double amount = zoomLevel / 10;
             if (zoomLevel > 0.3D)
                 amount = 0.03D;
-            zoomLevel = eventDeltaWheel > 0D ? zoomLevel - amount : zoomLevel + amount;
+            zoomLevel = eventDeltaVerticalWheel > 0D ? zoomLevel - amount : zoomLevel + amount;
             ci.cancel();
         }
     }

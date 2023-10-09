@@ -18,6 +18,22 @@
     </head>
     <body>
         <h1>%message%</h1>
-        <iframe width="854" height="480" src="https://www.youtube.com/embed/ITwiK-aUYyw?controls=0&start=10" frameborder="0" allow="encrypted-media;"></iframe>
+        <!--<iframe width="854" height="480" src="https://www.youtube.com/embed/ITwiK-aUYyw?controls=0&start=10" frameborder="0" allow="encrypted-media;"></iframe>-->
+        <div id="twitch-embed"></div>
+        <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+
+        <script type="text/javascript">
+            var options = {
+                width: 880,
+                height: 495,
+                channel: "stegi",
+                //video: "<video ID>",
+                //collection: "<collection ID>",
+                // only needed if your site is also embedded on embed.example.com and othersite.example.com
+                parent: ["loeweguckmal.github.io"]
+            };
+            var player = new Twitch.Player("twitch-embed", options);
+            player.setVolume(0.5);
+        </script>
     </body>
 </html>

@@ -18,7 +18,7 @@ public class Deadmau5 extends FeatureRenderer<AbstractClientPlayerEntity, Player
 
     public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
-        if (playerHandler.getEarLocation() != null && entitylivingbaseIn.hasSkinTexture() && !entitylivingbaseIn.isInvisible()) {
+        if (playerHandler.getEarLocation() != null && entitylivingbaseIn.getSkinTextures() != null && !entitylivingbaseIn.isInvisible()) { //TODO: test
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderLayer.getEntitySolid(playerHandler.getEarLocation()));
             int i = LivingEntityRenderer.getOverlay(entitylivingbaseIn, 0.0F);
             matrixStackIn.push();

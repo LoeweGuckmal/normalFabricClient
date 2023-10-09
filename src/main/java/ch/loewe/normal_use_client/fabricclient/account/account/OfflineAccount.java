@@ -6,27 +6,31 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
+/**
+ * Offline account for Minecraft.
+ *
+ * @author VidTu
+ */
 public class OfflineAccount implements Account {
     private final String name;
     private final UUID uuid;
-
     public OfflineAccount(@NotNull String name, @NotNull UUID uuid) {
         this.name = name;
         this.uuid = uuid;
     }
 
-    @NotNull
-    public UUID uuid() {
-        return this.uuid;
+    @Override
+    public @NotNull UUID uuid() {
+        return uuid;
     }
 
-    @NotNull
-    public String name() {
-        return this.name;
+    @Override
+    public @NotNull String name() {
+        return name;
     }
 
-    @NotNull
-    public CompletableFuture<AuthData> login(@NotNull BiConsumer<String, Object[]> progressHandler) {
-        return CompletableFuture.completedFuture(new AuthData(this.name(), this.uuid(), "0", "legacy"));
+    @Override
+    public @NotNull CompletableFuture<@NotNull AuthData> login(@NotNull BiConsumer<@NotNull String, @NotNull Object[]> progressHandler) {
+        return CompletableFuture.completedFuture(new AuthData(name(), uuid(), "0", AuthData.LEGACY));
     }
 }

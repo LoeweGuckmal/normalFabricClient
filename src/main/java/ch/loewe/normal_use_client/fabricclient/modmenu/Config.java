@@ -1,6 +1,7 @@
 package ch.loewe.normal_use_client.fabricclient.modmenu;
 
 import ch.loewe.normal_use_client.fabricclient.loewe.WayPoints;
+import ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.propertyKeys;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;

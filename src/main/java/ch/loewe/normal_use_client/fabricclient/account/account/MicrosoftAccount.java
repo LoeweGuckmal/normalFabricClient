@@ -4,101 +4,115 @@ import ch.loewe.normal_use_client.fabricclient.account.SharedIAS;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
+/**
+ * Microsoft account for Minecraft.
+ *
+ * @author VidTu
+ */
 public class MicrosoftAccount implements Account {
     private String name;
     private String accessToken;
     private String refreshToken;
     private UUID uuid;
 
-    public MicrosoftAccount(@NotNull String name, @NotNull String accessToken, @NotNull String refreshToken, @NotNull UUID uuid) {
+    public MicrosoftAccount(@NotNull String name, @NotNull String accessToken,
+                            @NotNull String refreshToken, @NotNull UUID uuid) {
         this.name = name;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.uuid = uuid;
     }
 
-    @NotNull
-    public UUID uuid() {
-        return this.uuid;
+    @Override
+    public @NotNull UUID uuid() {
+        return uuid;
     }
 
-    @NotNull
-    public String name() {
-        return this.name;
+    @Override
+    public @NotNull String name() {
+        return name;
     }
 
-    @Contract(
-            pure = true
-    )
-    @NotNull
-    public String accessToken() {
-        return this.accessToken;
+    /**
+     * Get access token of this account.
+     *
+     * @return Access token
+     */
+    @Contract(pure = true)
+    public @NotNull String accessToken() {
+        return accessToken;
     }
 
-    @Contract(
-            pure = true
-    )
+    /**
+     * Get refresh token of this account.
+     *
+     * @return Refresh token
+     */
+    @Contract(pure = true)
     public String refreshToken() {
-        return this.refreshToken;
+        return refreshToken;
     }
 
-    @NotNull
-    public CompletableFuture<AuthData> login(@NotNull BiConsumer<String, Object[]> progressHandler) {
-        CompletableFuture<AuthData> cf = new CompletableFuture();
+    @Override
+    public @NotNull CompletableFuture<@NotNull AuthData> login(@NotNull BiConsumer<@NotNull String, @NotNull Object[]> progressHandler) {
+        CompletableFuture<AuthData> cf = new CompletableFuture<>();
         SharedIAS.EXECUTOR.execute(() -> {
             try {
-                this.refresh(progressHandler);
-                cf.complete(new AuthData(this.name, this.uuid, this.accessToken, "msa"));
-            } catch (Throwable var4) {
-                SharedIAS.LOG.error("Unable to login/refresh Microsoft account.", var4);
-                cf.completeExceptionally(var4);
+                refresh(progressHandler);
+                cf.complete(new AuthData(name, uuid, accessToken, AuthData.MSA));
+            } catch (Throwable t) {
+                SharedIAS.LOG.error("Unable to login/refresh Microsoft account.", t);
+                cf.completeExceptionally(t);
             }
-
         });
         return cf;
     }
 
-    private void refresh(@NotNull BiConsumer<String, Object[]> progressHandler) throws Exception {
+    /**
+     * Validate and refresh account.
+     *
+     * @throws Exception If something goes wrong
+     */
+    private void refresh(@NotNull BiConsumer<@NotNull String, @NotNull Object[]> progressHandler) throws Exception {
         try {
             SharedIAS.LOG.info("Refreshing...");
-            progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"getProfile"});
-            Entry<UUID, String> profile = Auth.getProfile(this.accessToken);
+            progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"getProfile"});
+            Map.Entry<UUID, String> profile = Auth.getProfile(accessToken);
             SharedIAS.LOG.info("Access token is valid.");
-            this.uuid = (UUID)profile.getKey();
-            this.name = (String)profile.getValue();
-        } catch (Exception var10) {
+            uuid = profile.getKey();
+            name = profile.getValue();
+        } catch (Exception e) {
             try {
                 SharedIAS.LOG.info("Step: refreshToken.");
-                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"refreshToken"});
-                Entry<String, String> authRefreshTokens = Auth.refreshToken(this.refreshToken);
-                String refreshToken = (String)authRefreshTokens.getValue();
+                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"refreshToken"});
+                Map.Entry<String, String> authRefreshTokens = Auth.refreshToken(refreshToken);
+                String refreshToken = authRefreshTokens.getValue();
                 SharedIAS.LOG.info("Step: authXBL.");
-                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"authXBL"});
-                String xblToken = Auth.authXBL((String)authRefreshTokens.getKey());
+                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"authXBL"});
+                String xblToken = Auth.authXBL(authRefreshTokens.getKey());
                 SharedIAS.LOG.info("Step: authXSTS.");
-                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"authXSTS"});
-                Entry<String, String> xstsTokenUserhash = Auth.authXSTS(xblToken);
+                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"authXSTS"});
+                Map.Entry<String, String> xstsTokenUserhash = Auth.authXSTS(xblToken);
                 SharedIAS.LOG.info("Step: authMinecraft.");
-                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"authMinecraft"});
-                String accessToken = Auth.authMinecraft((String)xstsTokenUserhash.getValue(), (String)xstsTokenUserhash.getKey());
+                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"authMinecraft"});
+                String accessToken = Auth.authMinecraft(xstsTokenUserhash.getValue(), xstsTokenUserhash.getKey());
                 SharedIAS.LOG.info("Step: getProfile.");
-                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[]{"getProfile"});
-                Entry<UUID, String> profile = Auth.getProfile(accessToken);
+                progressHandler.accept("ias.loginGui.microsoft.progress", new Object[] {"getProfile"});
+                Map.Entry<UUID, String> profile = Auth.getProfile(accessToken);
                 SharedIAS.LOG.info("Refreshed.");
                 this.uuid = profile.getKey();
                 this.name = profile.getValue();
                 this.accessToken = accessToken;
                 this.refreshToken = refreshToken;
-            } catch (Exception var9) {
-                var9.addSuppressed(var10);
-                throw var9;
+            } catch (Exception ex) {
+                ex.addSuppressed(e);
+                throw ex;
             }
         }
-
     }
 }

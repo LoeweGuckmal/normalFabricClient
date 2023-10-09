@@ -64,8 +64,8 @@ public class FabricClientClient implements ClientModInitializer {
         colorMap.put("bluegreen", "bg");
         colorMap.put("current", "current");
         ClientPlayNetworking.registerGlobalReceiver(new Identifier("monopoly", "loewe"), (client, handler, buf, responseSender) -> {
-            String message = new String(buf.getWrittenBytes());
-            if (message.length() > 0 && !Character.isLetter(message.charAt(0)))
+            String message = new String(buf.array()); //TODO: test
+            if (!message.isEmpty() && !Character.isLetter(message.charAt(0)))
                 message = message.substring(1);
             HandleServerMessage.onReceiveMessage(client, handler, message, responseSender);
         });
@@ -80,7 +80,7 @@ public class FabricClientClient implements ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register(WayPointCommand::register);
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
-            if (!mc.options.debugEnabled && getShowFps()) {
+            if (!mc.getDebugHud().shouldShowDebugHud() && getShowFps()) { //TODO: test, before: !mc.options.debugEnabled
                 if (!getShowCords())
                     drawContext.drawText(renderer, ((MinecraftAccessor) mc).getCurrentFps() + " FPS", 2, 2, 0xffffff, false);
                 else
@@ -90,7 +90,7 @@ public class FabricClientClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
             if (mc.player != null) {
-                if (!mc.options.debugEnabled && getShowCords())
+                if (!mc.getDebugHud().shouldShowDebugHud() && getShowCords())
                     drawContext.drawText(renderer, "X: " + df.format(mc.player.getX()) +
                             ", Y: " + df.format(mc.player.getY()) + ", Z: " + df.format(mc.player.getZ()), 2, 2, 0xffffff, false);
             }
@@ -98,7 +98,7 @@ public class FabricClientClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
             if (Zoom.isZooming())
-                if (!mc.options.debugEnabled)
+                if (!mc.getDebugHud().shouldShowDebugHud())
                     if (!getShowFps() || !getShowCords()){
                         if (!getShowFps() && !getShowCords())
                             drawContext.drawText(renderer, "Zoom: " + df.format(Zoom.zoom_X)  + "x", 2, 2, 0xffffff, false);

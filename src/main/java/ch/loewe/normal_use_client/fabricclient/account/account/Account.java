@@ -1,30 +1,73 @@
 package ch.loewe.normal_use_client.fabricclient.account.account;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
+/**
+ * Interface implemented by all Minecraft accounts.
+ *
+ * @author VidTu
+ */
 public interface Account {
-    @NotNull
-    UUID uuid();
+    /**
+     * Get the UUID of this account.
+     *
+     * @return Account UUID
+     */
+    @NotNull UUID uuid();
 
-    @NotNull
-    String name();
+    /**
+     * Get the player name of this account.
+     *
+     * @return Account player name
+     */
+    @NotNull String name();
 
-    @NotNull
-    CompletableFuture<AuthData> login(@NotNull BiConsumer<String, Object[]> var1);
+    /**
+     * Future that will return auth data if authentication is successful or will complete exceptionally if authentication failed.
+     * Future must be ready to be called from another thread.
+     *
+     * @param progressHandler Progress handler, must be ready to be called from another thread
+     */
+    @NotNull CompletableFuture<@NotNull AuthData> login(@NotNull BiConsumer<@NotNull String, @NotNull Object[]> progressHandler);
 
-    public static class AuthData {
+    /**
+     * Immutable version-independent authentication data class.
+     *
+     * @author VidTu
+     */
+    class AuthData {
+        /**
+         * <code>Microsoft Authentication</code> - current system used by Minecraft.
+         */
         public static final String MSA = "msa";
+
+        /**
+         * <code>Mojang Authentication</code> - deprecated system, no longer officially supported by Minecraft.
+         */
         public static final String MOJANG = "mojang";
+
+        /**
+         * <code>Legacy Authentication</code> - deprecated system, not officially supported by Minecraft, often used for offline accounts.
+         */
         public static final String LEGACY = "legacy";
+
         private final String name;
         private final UUID uuid;
         private final String accessToken;
         private final String userType;
 
+        /**
+         * Create new authentication data.
+         *
+         * @param name        Player name
+         * @param uuid        Player UUID
+         * @param accessToken Account access token
+         * @param userType    Account type, usually <code>MSA</code>, <code>MOJANG</code> or <code>LEGACY</code>
+         */
         public AuthData(@NotNull String name, @NotNull UUID uuid, @NotNull String accessToken, @NotNull String userType) {
             this.name = name;
             this.uuid = uuid;
@@ -32,36 +75,44 @@ public interface Account {
             this.userType = userType;
         }
 
-        @Contract(
-                pure = true
-        )
-        @NotNull
-        public String name() {
-            return this.name;
+        /**
+         * Get player name.
+         *
+         * @return Player name
+         */
+        @Contract(pure = true)
+        public @NotNull String name() {
+            return name;
         }
 
-        @Contract(
-                pure = true
-        )
-        @NotNull
-        public UUID uuid() {
-            return this.uuid;
+        /**
+         * Get player unique ID.
+         *
+         * @return Player UUID
+         */
+        @Contract(pure = true)
+        public @NotNull UUID uuid() {
+            return uuid;
         }
 
-        @Contract(
-                pure = true
-        )
-        @NotNull
-        public String accessToken() {
-            return this.accessToken;
+        /**
+         * Get account access token.
+         *
+         * @return Access token
+         */
+        @Contract(pure = true)
+        public @NotNull String accessToken() {
+            return accessToken;
         }
 
-        @Contract(
-                pure = true
-        )
-        @NotNull
-        public String userType() {
-            return this.userType;
+        /**
+         * Get user type, usually <code>MSA</code>, <code>MOJANG</code> or <code>LEGACY</code>
+         *
+         * @return User type
+         */
+        @Contract(pure = true)
+        public @NotNull String userType() {
+            return userType;
         }
     }
 }

@@ -34,8 +34,8 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
             Identifier resourcelocation;
             if (playerHandler.getCapeLocation() != null) {
                 resourcelocation = playerHandler.getCapeLocation();
-            } else if (livingEntity.getCapeTexture() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
-                resourcelocation = livingEntity.getCapeTexture();
+            } else if (livingEntity.getSkinTextures().capeTexture() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+                resourcelocation = livingEntity.getSkinTextures().capeTexture();
             } else {
                 resourcelocation = WINGS_LOCATION;
             }

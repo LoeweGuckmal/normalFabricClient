@@ -24,8 +24,8 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
         PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
-        if (abstractClientPlayerEntity.canRenderCapeTexture() && !abstractClientPlayerEntity.isInvisible()
-                && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && (abstractClientPlayerEntity.getCapeTexture() != null
+        if (!abstractClientPlayerEntity.isInvisible() //TODO: test, before: abstractClientPlayerEntity.canRenderCapeTexture() &&
+                && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && (abstractClientPlayerEntity.getSkinTextures().capeTexture() != null
                 || playerHandler.getCapeLocation() != null)) {
             ItemStack itemStack = abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST);
             if (!itemStack.isOf(Items.ELYTRA)) {
@@ -60,7 +60,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
                 if (playerHandler.getCapeLocation() != null) {
                     vertexConsumer = ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, RenderLayer.getEntitySolid(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
                 } else {
-                    vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(abstractClientPlayerEntity.getCapeTexture()));
+                    vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(abstractClientPlayerEntity.getSkinTextures().capeTexture()));
                 }
                 this.getContextModel().renderCape(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV);
                 matrixStack.pop();

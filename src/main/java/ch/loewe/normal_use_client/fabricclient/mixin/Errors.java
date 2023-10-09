@@ -3,15 +3,18 @@ package ch.loewe.normal_use_client.fabricclient.mixin;
 import com.mojang.authlib.exceptions.MinecraftClientException;
 import com.mojang.authlib.minecraft.UserApiService;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.session.ProfileKeysImpl;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.ProfileKeysImpl;
 import net.minecraft.network.encryption.NetworkEncryptionException;
 import net.minecraft.network.encryption.PlayerKeyPair;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.crash.CrashReportSection;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -83,7 +86,7 @@ public abstract class Errors {
                 abstractTexture = texture;
             } catch (IOException var6) {
                 if (id != MISSING_IDENTIFIER) {
-                    LOGGER.warn("Failed to load texture: {}", id, var6);
+                    //LOGGER.warn("Failed to load texture: {}", id, var6);
                 }
 
                 abstractTexture = MissingSprite.getMissingSpriteTexture();
