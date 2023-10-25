@@ -10,10 +10,11 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.UUID;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
-import static ch.loewe.normal_use_client.fabricclient.modmenu.DefaultConfig.*;
 
 public class Config {
     public static final Properties properties = new Properties();
@@ -85,6 +86,9 @@ public class Config {
     //monopoly
     public static String getStartGame() {
         return getString(propertyKeys.startGame(), DefaultConfig.getStartGame());
+    }
+    public static String getStopGame() {
+        return getString(propertyKeys.stopGame(), DefaultConfig.getStartGame());
     }
 
 

@@ -1,6 +1,7 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
 import ch.loewe.normal_use_client.fabricclient.cape.DownloadManager;
+import ch.loewe.normal_use_client.fabricclient.loewe.WayPoints;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -29,6 +30,7 @@ public abstract class MixinPlayerJoinWorld extends PlayerEntity {
     private void construct(ClientWorld clientLevel, GameProfile gameProfile, CallbackInfo ci) {
         if (this.getWorld().isClient()) {
             DownloadManager.prepareDownload(this, false, true);
+            WayPoints.getWayPoints();
         }
     }
 

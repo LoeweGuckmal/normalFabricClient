@@ -36,7 +36,8 @@ public class ModMenuButtons {
             getNewBoolButton(propertyKeys.debug(), Config.getDebug())
     };
     public static final SimpleOption<?>[] monopolyButtons = new SimpleOption[]{
-            getNewEnumButton(propertyKeys.startGame(), StartGame.valueOf(Config.getStartGame().toUpperCase()))
+            getNewEnumButton(propertyKeys.startGame(), StartGame.valueOf(Config.getStartGame().toUpperCase())),
+            getNewEnumButton(propertyKeys.stopGame(), StartGame.valueOf(Config.getStopGame().toUpperCase()))
     };
 
     public ModMenuButtons() {}
@@ -110,24 +111,24 @@ public class ModMenuButtons {
     public enum StandardColor {
         YELLOW,
         BLUEGREEN,
-        CURRENT;
+        CURRENT
     }
     public enum ReloadCape {
         RELOAD,
-        RELOAD2;
+        RELOAD2
     }
     public enum OpenAccountSwitcher {
         ACCOUNT,
-        ACCOUNT2;
+        ACCOUNT2
     }
     public enum RequestServerAccess {
         ACCESS,
-        ACCESS2;
+        ACCESS2
     }
 
     //Enums (monopoly)
     public enum StartGame {
         START,
-        START2;
+        START2
     }
 }

@@ -4,7 +4,6 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -18,7 +17,7 @@ public class Deadmau5 extends FeatureRenderer<AbstractClientPlayerEntity, Player
 
     public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
-        if (playerHandler.getEarLocation() != null && entitylivingbaseIn.getSkinTextures() != null && !entitylivingbaseIn.isInvisible()) { //TODO: test
+        if (playerHandler.getEarLocation() != null && entitylivingbaseIn.getSkinTextures() != null && !entitylivingbaseIn.isInvisible()) {
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderLayer.getEntitySolid(playerHandler.getEarLocation()));
             int i = LivingEntityRenderer.getOverlay(entitylivingbaseIn, 0.0F);
             matrixStackIn.push();

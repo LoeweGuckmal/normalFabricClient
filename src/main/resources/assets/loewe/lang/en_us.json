@@ -3,6 +3,7 @@
     "loewe.screen.config": "Loewe settings",
     "loewe.key.zoom": "Zoom",
     "loewe.key.settings": "Open settings",
+    "loewe.key.waypoints": "Waypoints",
 
 
     "loewe.button.do_rgb_on_damage": "RGB on damage",
@@ -57,5 +58,17 @@
     "loewe.button.request_server_access.access2": "▢",
 
     "loewe.button.debug": "Debug",
-    "loewe.button.debug.tooltip": "This enables the debug mode of this mod."
+    "loewe.button.debug.tooltip": "This enables the debug mode of this mod.",
+
+    "loewe.button.start_game": "Start game",
+    "loewe.button.start_game.start": "▢",
+    "loewe.button.start_game.start2": "▢",
+    "loewe.button.start_game.tooltip.start": "Start the game",
+    "loewe.button.start_game.tooltip.start2": "Start the game",
+
+    "loewe.button.stop_game": "Stop game",
+    "loewe.button.stop_game.start": "▢",
+    "loewe.button.stop_game.start2": "▢",
+    "loewe.button.stop_game.tooltip.start": "Stop the game",
+    "loewe.button.stop_game.tooltip.start2": "Stop the game"
 }

@@ -34,15 +34,17 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Objects;
 
+import static ch.loewe.normal_use_client.fabricclient.loewe.HandleServerMessage.removeZerosFromEnd;
 import static ch.loewe.normal_use_client.fabricclient.loewe.WayPoints.indexMap;
 import static ch.loewe.normal_use_client.fabricclient.loewe.WayPoints.wayPointsMap;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowCords;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowFps;
+import static ch.loewe.normal_use_client.fabricclient.modmenu.MonopolyScreen.exeAfterClose;
 
 @Environment(EnvType.CLIENT)
 public class FabricClientClient implements ClientModInitializer {
     public static KeyBinding settingsKeyBinding;
-    public static KeyBinding infoKeyBinding;
+    public static KeyBinding waypointKeyBinding;
     public static int HealthTimeout = 9;
     public static int HealthTimeoutBack = 10;
     public static MinecraftClient mc = MinecraftClient.getInstance();
@@ -63,24 +65,26 @@ public class FabricClientClient implements ClientModInitializer {
         colorMap.put("yellow", "gelb");
         colorMap.put("bluegreen", "bg");
         colorMap.put("current", "current");
-        ClientPlayNetworking.registerGlobalReceiver(new Identifier("monopoly", "loewe"), (client, handler, buf, responseSender) -> {
-            String message = new String(buf.array()); //TODO: test
-            if (!message.isEmpty() && !Character.isLetter(message.charAt(0)))
-                message = message.substring(1);
-            HandleServerMessage.onReceiveMessage(client, handler, message, responseSender);
-        });
+        ClientPlayNetworking.registerGlobalReceiver(new Identifier("monopoly", "loewe"), (client, handler, buf, responseSender) ->
+                HandleServerMessage.onReceiveMessage(client, handler, new String(removeZerosFromEnd(buf.array())), responseSender));
 
         //Bindings
         settingsKeyBinding = new KeyBinding("loewe.key.settings", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_R, "loewe.category");
         KeyBindingHelper.registerKeyBinding(settingsKeyBinding);
-        infoKeyBinding = new KeyBinding("loewe.key.info", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_I, "loewe.category");
-        KeyBindingHelper.registerKeyBinding(infoKeyBinding);
+        waypointKeyBinding = new KeyBinding("loewe.key.waypoints", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_I, "loewe.category");
+        KeyBindingHelper.registerKeyBinding(waypointKeyBinding);
 
         //overlay
         ClientCommandRegistrationCallback.EVENT.register(WayPointCommand::register);
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
+            if (mc.currentScreen == null && !Objects.equals(exeAfterClose, "")) {
+                HandleServerMessage.sendMessage(exeAfterClose);
+                exeAfterClose = "";
+            }
+        }); //Screen executer
+        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
-            if (!mc.getDebugHud().shouldShowDebugHud() && getShowFps()) { //TODO: test, before: !mc.options.debugEnabled
+            if (!mc.getDebugHud().shouldShowDebugHud() && getShowFps()) {
                 if (!getShowCords())
                     drawContext.drawText(renderer, ((MinecraftAccessor) mc).getCurrentFps() + " FPS", 2, 2, 0xffffff, false);
                 else
@@ -110,9 +114,10 @@ public class FabricClientClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(((drawContext, tickDelta) -> {
             TextRenderer renderer = mc.textRenderer;
             if (!wayPointsMap.isEmpty())
-                if (infoKeyBinding.isPressed() || wpToggled)
-                    wayPointsMap.forEach((name, cords) -> drawContext.drawText(renderer, name + ": " + df.format(cords[0]) + ", " +
-                                    df.format(cords[1]) + ", " + df.format(cords[2]), 2, indexMap.get(name) * 10 + 5, 0xffffff, false));
+                if (!mc.getDebugHud().shouldShowDebugHud())
+                    if (waypointKeyBinding.isPressed() || wpToggled)
+                        wayPointsMap.forEach((name, cords) -> drawContext.drawText(renderer, name + ": " + df.format(cords[0]) + ", " +
+                               df.format(cords[1]) + ", " + df.format(cords[2]), 2, indexMap.get(name) * 10 + 5, 0xffffff, false));
         })); //WAYPOINTS
     }
 
@@ -154,7 +159,12 @@ public class FabricClientClient implements ClientModInitializer {
             mc.setScreen(new MonopolyScreen(mc.currentScreen));
         }
         else if (key.equals(propertyKeys.startGame())) {
-            HandleServerMessage.sendMessage("start_game");
+            //HandleServerMessage.sendMessage("start_game");
+            MonopolyScreen.exeAfterClose = "start_game";
+        }
+        else if (key.equals(propertyKeys.stopGame())) {
+            //HandleServerMessage.sendMessage("stop_game");
+            MonopolyScreen.exeAfterClose = "stop_game";
         }
     }
 }

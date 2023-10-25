@@ -1,8 +1,6 @@
 package ch.loewe.normal_use_client.fabricclient.modmenu;
 
 import ch.loewe.normal_use_client.fabricclient.modmenu.ModMenuButtons.*;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 public class DefaultConfig {
     public DefaultConfig() {
@@ -110,6 +108,9 @@ public class DefaultConfig {
         //monopolyscreen
         public static String startGame() {
             return "start_game";
+        }
+        public static String stopGame() {
+            return "stop_game";
         }
     }
 }

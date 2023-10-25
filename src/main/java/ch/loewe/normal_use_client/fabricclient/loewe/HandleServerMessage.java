@@ -20,12 +20,21 @@ public class HandleServerMessage {
         }
     }
 
-    public static void sendMessage(String namespace, String path, String message) {
-        ClientPlayNetworking.send(new Identifier(namespace, path), PacketByteBufs.create().writeString(message));
+    public static void sendMessage(String namespace, String message) {
+        ClientPlayNetworking.send(new Identifier(namespace), PacketByteBufs.create().writeString(message));
+    }
+    public static void sendMessage(String message) {
+        ClientPlayNetworking.send(new Identifier("monopoly:loewe"), PacketByteBufs.create().writeString(message));
     }
 
-    public static void sendMessage(String message) {
-        sendMessage("monopoly", "leowe", message);
+    public static byte[] removeZerosFromEnd(byte[] array) {
+        int lastIndex = array.length - 1;
+        while (lastIndex >= 0 && array[lastIndex] == 0) {
+            lastIndex--;
+        }
+        byte[] result = new byte[lastIndex + 1];
+        System.arraycopy(array, 0, result, 0, lastIndex + 1);
+        return result;
     }
 }
 

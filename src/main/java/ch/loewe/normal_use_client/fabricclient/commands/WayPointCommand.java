@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;

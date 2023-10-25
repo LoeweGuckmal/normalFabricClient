@@ -11,7 +11,8 @@ import net.minecraft.text.Text;
 
 import java.util.function.Supplier;
 
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.settingsKeyBinding;
 
 public class MonopolyScreen extends SimpleOptionsScreen {
     private final Screen parent;
@@ -19,6 +20,7 @@ public class MonopolyScreen extends SimpleOptionsScreen {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Supplier<SimpleOption<?>[]> array = ModMenuButtons::asOptionsMonopoly;
     public static int openTimeout = 0;
+    public static String exeAfterClose = "";
 
     public MonopolyScreen(Screen parent) {
         super(parent, client.options, title, ModMenuButtons.asOptionsMonopoly());
