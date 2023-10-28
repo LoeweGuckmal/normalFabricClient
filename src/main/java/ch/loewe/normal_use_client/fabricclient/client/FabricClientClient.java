@@ -124,7 +124,7 @@ public class FabricClientClient implements ClientModInitializer {
     }
 
     public static void onTick(){
-        if (initializeDone) {
+        if (initializeDone && Objects.nonNull(settingsKeyBinding)) {
             if (isConnectedToServer)
                 DamageRGB.onTickOnServer();
             if (settingsKeyBinding.isPressed() && ConfigScreen.openTimeout == 0)
