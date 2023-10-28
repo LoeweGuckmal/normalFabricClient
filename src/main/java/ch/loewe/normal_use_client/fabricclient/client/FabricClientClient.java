@@ -43,6 +43,7 @@ import static ch.loewe.normal_use_client.fabricclient.modmenu.MonopolyScreen.exe
 
 @Environment(EnvType.CLIENT)
 public class FabricClientClient implements ClientModInitializer {
+    public static boolean initializeDone = false;
     public static KeyBinding settingsKeyBinding;
     public static KeyBinding waypointKeyBinding;
     public static int HealthTimeout = 9;
@@ -119,20 +120,22 @@ public class FabricClientClient implements ClientModInitializer {
                         wayPointsMap.forEach((name, cords) -> drawContext.drawText(renderer, name + ": " + df.format(cords[0]) + ", " +
                                df.format(cords[1]) + ", " + df.format(cords[2]), 2, indexMap.get(name) * 10 + 5, 0xffffff, false));
         })); //WAYPOINTS
+        initializeDone = true;
     }
 
     public static void onTick(){
-        if (isConnectedToServer)
-            DamageRGB.onTickOnServer();
-        if (settingsKeyBinding.isPressed() && ConfigScreen.openTimeout == 0) {
-            mc.setScreen(new ConfigScreen(mc.currentScreen));
+        if (initializeDone) {
+            if (isConnectedToServer)
+                DamageRGB.onTickOnServer();
+            if (settingsKeyBinding.isPressed() && ConfigScreen.openTimeout == 0)
+                mc.setScreen(new ConfigScreen(mc.currentScreen));
+            if (ConfigScreen.openTimeout > 0)
+                ConfigScreen.openTimeout -= 1;
+            if (HealthTimeout == HealthTimeoutBack)
+                OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), false);
+            if (HealthTimeout > 0)
+                HealthTimeout -= 1;
         }
-        if (ConfigScreen.openTimeout > 0)
-            ConfigScreen.openTimeout -= 1;
-        if (HealthTimeout == HealthTimeoutBack)
-            OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), false);
-        if (HealthTimeout > 0)
-            HealthTimeout -= 1;
     }
 
     public static void doCustom(String key){

@@ -1,6 +1,5 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
-import ch.loewe.normal_use_client.fabricclient.FabricClient;
 import ch.loewe.normal_use_client.fabricclient.client.FabricClientClient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
