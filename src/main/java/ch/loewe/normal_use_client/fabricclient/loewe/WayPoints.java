@@ -38,26 +38,26 @@ public class WayPoints {
 
     public static HashMap<String, double[]> getWayPoints(){
         String key = "wayPoints_" + getUUID();
-        HashMap<String, double[]> retrunV = new HashMap<>();
+        HashMap<String, double[]> returnV = new HashMap<>();
         try {
             String s = properties.getProperty(key);
             if (s != null) {
                 properties.setProperty(key, s);
                 Config.write();
-                Arrays.stream(s.split(";")).toList().forEach(wayPoint -> retrunV.put(wayPoint.split("_")[0],
+                Arrays.stream(s.split(";")).toList().forEach(wayPoint -> returnV.put(wayPoint.split("_")[0],
                         new double[]{Double.parseDouble(wayPoint.split("_")[1]), Double.parseDouble(wayPoint.split("_")[2]),
                                 Double.parseDouble(wayPoint.split("_")[3])}));
                 wayPointsMap.clear();
-                wayPointsMap.putAll(retrunV);
+                wayPointsMap.putAll(returnV);
                 rearrangeIndex();
-                return retrunV;
+                return returnV;
             }
         } catch (Exception ignored) {}
         properties.setProperty(key, "");
         Config.write();
         wayPointsMap.clear();
         rearrangeIndex();
-        return retrunV;
+        return returnV;
     }
 
     public static void addWayPoint(String s, double[] i){
