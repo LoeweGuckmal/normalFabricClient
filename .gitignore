@@ -100,9 +100,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-#.gradle
+.gradle
 #build/
-.gradle/loom-cache/**
 
 # Ignore Gradle GUI config
 gradle-app.setting
