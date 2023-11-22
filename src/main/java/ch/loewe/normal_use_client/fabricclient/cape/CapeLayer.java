@@ -24,7 +24,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
         PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
-        if (!abstractClientPlayerEntity.isInvisible() //TODO: test, before: abstractClientPlayerEntity.canRenderCapeTexture() &&
+        if (!abstractClientPlayerEntity.isInvisible()
                 && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && (abstractClientPlayerEntity.getSkinTextures().capeTexture() != null
                 || playerHandler.getCapeLocation() != null)) {
             ItemStack itemStack = abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST);
