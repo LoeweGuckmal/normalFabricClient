@@ -1,5 +1,7 @@
 # User-specific stuff
 .idea/
+*.gz
+logs/
 
 *.iml
 *.ipr
