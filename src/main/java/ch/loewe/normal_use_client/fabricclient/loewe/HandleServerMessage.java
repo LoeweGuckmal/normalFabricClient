@@ -8,15 +8,14 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.util.Identifier;
 
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.lastAddress;
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
 
 public class HandleServerMessage {
     public static void onReceiveMessage(MinecraftClient client, ClientPlayNetworkHandler handler, String message, PacketSender responseSender) {
-        if (message.equals("monopoly")) {
-            lastAddress = new ServerAddress("loewe-monopoly.feathermc.gg", 25565);
-        } else {
-            logger.info(message);
+        switch (message) {
+            case "monopoly" -> lastAddress = new ServerAddress("loewe-monopoly.feathermc.gg", 25565);
+            case "op" -> isOpOnMonopoly = true;
+            default -> logger.info(message);
         }
     }
 

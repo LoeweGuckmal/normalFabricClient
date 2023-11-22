@@ -89,12 +89,12 @@ public class ModMenuButtons {
     //other
     public static SimpleOption<?>[] asOptions() {
         SimpleOption<?>[] newArr;
-        if (!FabricClientClient.isOnMonopoly()) {
+        if (FabricClientClient.isOnMonopoly() && FabricClientClient.isOpOnMonopoly) {
+            newArr = buttons.clone();
+        } else {
             newArr = new SimpleOption<?>[buttons.length - 1];
             System.arraycopy(buttons, 0, newArr, 0, buttons.length - 2);
             newArr[buttons.length-2] = buttons[buttons.length-1];
-        } else {
-            newArr = buttons.clone();
         }
         return newArr.clone();
     }

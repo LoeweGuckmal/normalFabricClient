@@ -56,6 +56,7 @@ public class FabricClientClient implements ClientModInitializer {
     public static boolean isConnectedToServer = false;
     public static ServerAddress lastAddress = new ServerAddress("-", 25565);
     public static boolean isOnMonopoly(){return lastAddress.getAddress().equals("loewe-monopoly.feathermc.gg");}
+    public static boolean isOpOnMonopoly = false;
 
     @Override
     public void onInitializeClient() {

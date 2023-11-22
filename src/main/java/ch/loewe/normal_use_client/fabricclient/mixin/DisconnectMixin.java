@@ -10,8 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.colorMap;
-import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.lastAddress;
+import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.*;
 
 @Mixin({ClientConnection.class})
 public abstract class DisconnectMixin {
@@ -19,6 +18,7 @@ public abstract class DisconnectMixin {
     @Inject(method = "handleDisconnection", at = @At("HEAD"))
     private void handleDisconnection(CallbackInfo ci) {
         lastAddress = new ServerAddress("-", 25565);
+        isOpOnMonopoly = false;
         DamageRGB.firstAfterJoined = true;
         DamageRGB.oldHealth = -1;
         OpenRGB.loadMode(colorMap.get(Config.getStandardColor()), true);
