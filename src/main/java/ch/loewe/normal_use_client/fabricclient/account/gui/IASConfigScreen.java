@@ -33,9 +33,8 @@ public class IASConfigScreen extends Screen {
     @Override
     public void init() {
         addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> client.setScreen(prev)).dimensions(width / 2 - 75, height - 28, 150, 20).build());
-        addDrawableChild(titleScreenText = new CheckboxWidget(5, 20, 24 + textRenderer.getWidth(Text.translatable(
-                "ias.configGui.titleScreenText")), 20, Text.translatable(
-                "ias.configGui.titleScreenText"), Config.titleScreenText));
+        //addDrawableChild(titleScreenText = new CheckboxWidget(5, 20, 24 + textRenderer.getWidth(Text.translatable(
+        //        "ias.configGui.titleScreenText")), 20, Text.translatable("ias.configGui.titleScreenText"), Config.titleScreenText));
         addDrawableChild(titleScreenTextX = new TextFieldWidget(textRenderer, 35 + textRenderer.getWidth(Text.translatable(
                 "ias.configGui.titleScreenText")), 20, 50, 20, Text.literal("X")));
         addDrawableChild(titleScreenTextY = new TextFieldWidget(textRenderer, 35 + textRenderer.getWidth(Text.translatable(
@@ -47,16 +46,16 @@ public class IASConfigScreen extends Screen {
                         "ias.configGui.titleScreenText")) + 108, 20, textRenderer.getWidth(Text.translatable(
                         "ias.configGui.titleScreenText.alignment", I18n.translate(Config.titleScreenTextAlignment.key()))) + 20, 20
         ).build());
-        addDrawableChild(titleScreenButton = new CheckboxWidget(5, 44, 24 + textRenderer.getWidth(Text.translatable(
-                "ias.configGui.titleScreenButton")), 20, Text.translatable(
-                "ias.configGui.titleScreenButton"), Config.titleScreenButton));
+        //addDrawableChild(titleScreenButton = new CheckboxWidget(5, 44, 24 + textRenderer.getWidth(Text.translatable(
+        //        "ias.configGui.titleScreenButton")), 20, Text.translatable(
+        //        "ias.configGui.titleScreenButton"), Config.titleScreenButton));
         addDrawableChild(titleScreenButtonX = new TextFieldWidget(textRenderer, 35 + textRenderer.getWidth(Text.translatable(
                 "ias.configGui.titleScreenButton")), 44, 50, 20, Text.literal("X")));
         addDrawableChild(titleScreenButtonY = new TextFieldWidget(textRenderer, 35 + textRenderer.getWidth(Text.translatable(
                 "ias.configGui.titleScreenButton")) + 54, 44, 50, 20, Text.literal("Y")));
-        addDrawableChild(multiplayerScreenButton = new CheckboxWidget(5, 68, 24 + textRenderer.getWidth(Text.translatable(
-                "ias.configGui.multiplayerScreenButton")), 20, Text.translatable(
-                "ias.configGui.multiplayerScreenButton"), Config.multiplayerScreenButton));
+        //addDrawableChild(multiplayerScreenButton = new CheckboxWidget(5, 68, 24 + textRenderer.getWidth(Text.translatable(
+        //        "ias.configGui.multiplayerScreenButton")), 20, Text.translatable(
+        //        "ias.configGui.multiplayerScreenButton"), Config.multiplayerScreenButton));
         addDrawableChild(multiplayerScreenButtonX = new TextFieldWidget(textRenderer, 35 + textRenderer.getWidth(Text.translatable(
                 "ias.configGui.multiplayerScreenButton")), 68, 50, 20, Text.literal("X")));
         addDrawableChild(multiplayerScreenButtonY = new TextFieldWidget(textRenderer, 35 + textRenderer.getWidth(Text.translatable(

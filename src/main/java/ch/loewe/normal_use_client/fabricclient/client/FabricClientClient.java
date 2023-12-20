@@ -88,9 +88,9 @@ public class FabricClientClient implements ClientModInitializer {
             TextRenderer renderer = mc.textRenderer;
             if (!mc.getDebugHud().shouldShowDebugHud() && getShowFps()) {
                 if (!getShowCords())
-                    drawContext.drawText(renderer, ((MinecraftAccessor) mc).getCurrentFps() + " FPS", 2, 2, 0xffffff, false);
+                    drawContext.drawText(renderer, MinecraftAccessor.getCurrentFps() + " FPS", 2, 2, 0xffffff, false);
                 else
-                    drawContext.drawText(renderer, ((MinecraftAccessor) mc).getCurrentFps() + " FPS", 2, 12, 0xffffff, false);
+                    drawContext.drawText(renderer, MinecraftAccessor.getCurrentFps() + " FPS", 2, 12, 0xffffff, false);
             }
         }); //FPS
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {

@@ -1,6 +1,5 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
-import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import net.minecraft.client.MinecraftClient;
@@ -18,11 +17,7 @@ public class MinecraftAccessorClass {
             cancellable = true
     )
     private void inject(YggdrasilAuthenticationService authService, RunArgs runArgs, CallbackInfoReturnable<UserApiService> cir) {
-        try {
-            cir.setReturnValue(authService.createUserApiService(runArgs.network.session.getAccessToken()));
-        } catch (AuthenticationException var4) {
-            cir.setReturnValue(UserApiService.OFFLINE);
-        }
-        cir.cancel();
+    cir.setReturnValue(authService.createUserApiService(runArgs.network.session.getAccessToken()));
+    cir.cancel();
     }
 }

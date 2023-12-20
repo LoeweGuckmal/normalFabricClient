@@ -15,7 +15,10 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin({MinecraftClient.class})
 public interface MinecraftAccessor {
-    @Accessor int getCurrentFps();
+    @Accessor
+    static int getCurrentFps() {
+        return getCurrentFps();
+    }
 
     @Accessor("session")
     @Mutable

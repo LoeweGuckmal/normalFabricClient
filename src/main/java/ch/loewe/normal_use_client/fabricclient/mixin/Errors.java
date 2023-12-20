@@ -1,8 +1,11 @@
 package ch.loewe.normal_use_client.fabricclient.mixin;
 
-import com.mojang.authlib.exceptions.MinecraftClientException;
+import com.mojang.authlib.exceptions.*;
 import com.mojang.authlib.minecraft.UserApiService;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.realms.RealmsClient;
+import net.minecraft.client.realms.Request;
+import net.minecraft.client.realms.exception.RealmsServiceException;
 import net.minecraft.client.session.ProfileKeysImpl;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.MissingSprite;
@@ -12,11 +15,7 @@ import net.minecraft.network.encryption.PlayerKeyPair;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -76,8 +75,6 @@ public abstract class Errors {
     public abstract static class TextureManagerMixin {
         @Shadow @Final private ResourceManager resourceContainer;
 
-        @Shadow @Final private static Logger LOGGER;
-
         @Inject(method = "loadTexture", at = @At("HEAD"), cancellable = true)
         private void inject(Identifier id, AbstractTexture texture, CallbackInfoReturnable<AbstractTexture> cir) {
             AbstractTexture abstractTexture = null;
@@ -92,6 +89,34 @@ public abstract class Errors {
                 abstractTexture = MissingSprite.getMissingSpriteTexture();
             } catch (Throwable ignored) {}
             cir.setReturnValue(abstractTexture);
+            cir.cancel();
+        }
+    }
+
+    @Mixin(MinecraftClientHttpException.class)
+    public abstract static class MinecraftClientHttpExceptionMixin {
+
+        @Inject(method = "toAuthenticationException", at = @At("HEAD"), cancellable = true, remap = false)
+        private void inject(CallbackInfoReturnable<AuthenticationException> cir) {
+            cir.setReturnValue(new AuthenticationException());
+            cir.cancel();
+        }
+    }
+
+    @Mixin(RealmsClient.class)
+    public abstract static class RealmsClientMixin {
+        @Shadow protected abstract String url(String path);
+
+        @Shadow protected abstract String execute(Request<?> r) throws RealmsServiceException;
+
+        @Inject(method = "clientCompatible", at = @At("HEAD"), cancellable = true)
+        private void inject(CallbackInfoReturnable<RealmsClient.CompatibleVersionResponse> cir) {
+            String string = this.url("mco/client/compatible");
+
+            try {
+                String string2 = this.execute(Request.get(string));
+                cir.setReturnValue(RealmsClient.CompatibleVersionResponse.valueOf(string2));
+            } catch (IllegalArgumentException | RealmsServiceException ignored) {}
             cir.cancel();
         }
     }

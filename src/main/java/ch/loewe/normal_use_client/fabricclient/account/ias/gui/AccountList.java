@@ -21,7 +21,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.AccountEntry> {
     public AccountList(MinecraftClient mc, int width, int height) {
-        super(mc, width, height, 32, height - 64, 14);
+        //super(mc, width, height, 32, height - 64, 14);
+        super(mc, width, height, 32, 14);
     }
 
     public void updateAccounts(String query) {

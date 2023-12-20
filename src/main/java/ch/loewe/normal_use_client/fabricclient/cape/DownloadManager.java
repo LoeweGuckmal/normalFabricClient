@@ -1,13 +1,9 @@
 package ch.loewe.normal_use_client.fabricclient.cape;
 
-import ch.loewe.normal_use_client.fabricclient.account.account.Auth;
-import ch.loewe.normal_use_client.fabricclient.account.account.OfflineAccount;
-import ch.loewe.normal_use_client.fabricclient.account.ias.gui.AccountListScreen;
 import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 import com.google.gson.Gson;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.option.Perspective;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
@@ -37,7 +33,7 @@ public class DownloadManager {
             PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
             if (doHardRefresh || !playerHandler.getHasInfo()) { //set UUID
                 Thread playerDownload = new Thread(() -> {
-                    UUID uuid = MinecraftApi.getUUID(player.getEntityName());
+                    UUID uuid = MinecraftApi.getUUID(String.valueOf(player.getName()));
                     if (uuid != null) { //is known and online
                         playerHandler.setPlayerUUID(uuid);
                         downloadProfile(playerHandler);
@@ -66,7 +62,7 @@ public class DownloadManager {
         /*if (mc.player != null && !mc.player.getUuid().equals(player.getUuid()) && mc.player.getEntityName().equals(player.getEntityName())) {
             new AccountListScreen(mc.currentScreen).loginOffline(new OfflineAccount(player.getEntityName(), Auth.resolveUUID(player.getEntityName())));
         }*/
-        return mc.player == null || mc.player.getUuid().equals(player.getUuid()) || mc.player.getEntityName().equals(player.getEntityName());
+        return mc.player == null || mc.player.getUuid().equals(player.getUuid()) || mc.player.getName().equals(player.getName());
     }
 
     private static void downloadProfile(PlayerHandler playerHandler) {
