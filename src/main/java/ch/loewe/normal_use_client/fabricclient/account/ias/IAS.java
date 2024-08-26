@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class IAS {
-    public static final ButtonTextures IAS_BUTTON = new ButtonTextures(new Identifier("ias", "iasbutton_plain"), new Identifier("ias", "iasbutton_hover"));
+    public static final ButtonTextures IAS_BUTTON = new ButtonTextures(Identifier.of("ias", "iasbutton_plain"), Identifier.of("ias", "iasbutton_hover"));
     public static final Map<UUID, SkinTextures> SKIN_CACHE = new HashMap<>();
     public static boolean modMenu;
 

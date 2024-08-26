@@ -222,7 +222,7 @@ public class DownloadManager {
                         }
 
                         playerHandler.setHasInfo(true);
-                        playerHandler.applyTextureP(new Identifier("loewe", "capes/" + playerHandler.getPlayerUUID()), imgNew);
+                        playerHandler.applyTextureP(Identifier.of("loewe", "capes/" + playerHandler.getPlayerUUID()), imgNew);
                         playerHandler.setHasStaticCape(true);
                         playerHandler.setHasAnimatedCape(false);
                     }

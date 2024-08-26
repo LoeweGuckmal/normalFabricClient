@@ -21,12 +21,12 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +34,12 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Objects;
 
-import static ch.loewe.normal_use_client.fabricclient.loewe.HandleServerMessage.removeZerosFromEnd;
 import static ch.loewe.normal_use_client.fabricclient.loewe.WayPoints.indexMap;
 import static ch.loewe.normal_use_client.fabricclient.loewe.WayPoints.wayPointsMap;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowCords;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.Config.getShowFps;
 import static ch.loewe.normal_use_client.fabricclient.modmenu.MonopolyScreen.exeAfterClose;
+import static ch.loewe.normal_use_client.fabricclient.openrgb.OpenRGB.getIp;
 
 @Environment(EnvType.CLIENT)
 public class FabricClientClient implements ClientModInitializer {
@@ -57,6 +57,7 @@ public class FabricClientClient implements ClientModInitializer {
     public static ServerAddress lastAddress = new ServerAddress("-", 25565);
     public static boolean isOnMonopoly(){return lastAddress.getAddress().equals("loewe-monopoly.feathermc.gg");}
     public static boolean isOpOnMonopoly = false;
+    public static boolean stopDisconnect = false;
 
     @Override
     public void onInitializeClient() {
@@ -67,8 +68,12 @@ public class FabricClientClient implements ClientModInitializer {
         colorMap.put("yellow", "gelb");
         colorMap.put("bluegreen", "bg");
         colorMap.put("current", "current");
-        ClientPlayNetworking.registerGlobalReceiver(new Identifier("monopoly", "loewe"), (client, handler, buf, responseSender) ->
-                HandleServerMessage.onReceiveMessage(client, handler, new String(removeZerosFromEnd(buf.array())), responseSender));
+        PayloadTypeRegistry.playS2C().register(HandleServerMessage.StringPayload.ID, HandleServerMessage.StringPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(HandleServerMessage.StringPayload.ID, HandleServerMessage.StringPayload.CODEC);
+        ClientPlayNetworking.registerGlobalReceiver(HandleServerMessage.StringPayload.ID, HandleServerMessage::onReceiveMessage);
+        //TODO: ClientPlayNetworking.registerGlobalReceiver(new CustomPayload.Id<>(Identifier.of("monopoly", "loewe")), HandleServerMessage::onReceiveMessage);
+        //ClientPlayNetworking.registerGlobalReceiver(new CustomPayload.Id<>(Identifier.of("monopoly", "loewe")), (client, handler, buf, responseSender) ->
+                //HandleServerMessage.onReceiveMessage(client, handler, new String(removeZerosFromEnd( buf.array())), responseSender));
 
         //Bindings
         settingsKeyBinding = new KeyBinding("loewe.key.settings", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_R, "loewe.category");
@@ -144,7 +149,7 @@ public class FabricClientClient implements ClientModInitializer {
             new Thread(() -> {
                 String c = "";
                 try {
-                    c = DataFromUrl.getData("http://192.168.100.168:8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid()).subSequence(2, 9).toString();
+                    c = DataFromUrl.getData("http://" + getIp() + ":8881/sdk?mode=getCurrentColor&uuid=" + Config.getRgbUuid()).subSequence(2, 9).toString();
                 } catch (Exception ignored) {}
                 if (c.contains("#") && !c.equals("#ffff00") && !c.equals("#00ffff"))
                     DamageRGB.currentColor = c;

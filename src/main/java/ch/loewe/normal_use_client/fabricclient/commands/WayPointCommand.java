@@ -8,8 +8,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.util.math.BlockPos;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
-import static dev.xpple.clientarguments.arguments.CBlockPosArgumentType.blockPos;
-import static dev.xpple.clientarguments.arguments.CBlockPosArgumentType.getCBlockPos;
+import static dev.xpple.clientarguments.arguments.CBlockPosArgument.blockPos;
+import static dev.xpple.clientarguments.arguments.CBlockPosArgument.getBlockPos;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -19,7 +19,7 @@ public class WayPointCommand {
                 .then(literal("add")
                         .then(argument("name", StringArgumentType.string()).executes(ctx -> wp(ctx.getSource(), getString(ctx, "name"))))
                         .then(argument("name", StringArgumentType.string())
-                                .then(argument("pos", blockPos()).executes(ctx -> wp(getString(ctx, "name"),  getCBlockPos(ctx, "pos"))))))
+                                .then(argument("pos", blockPos()).executes(ctx -> wp(getString(ctx, "name"),  getBlockPos(ctx, "pos"))))))
                 .then(literal("remove")
                         .then(argument("name", StringArgumentType.string()).executes(ctx -> remove(getString(ctx, "name")))))
                 .then(literal("toggle").executes((ctx) -> WayPoints.toggle())));

@@ -8,10 +8,10 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.SkinTextures;
+import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -46,10 +46,10 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
     }
 
     public class AccountEntry extends Entry<AccountList.AccountEntry> {
-        static final Identifier MOVE_UP_HIGHLIGHTED_SPRITE = new Identifier("transferable_list/move_up_highlighted");
-        static final Identifier MOVE_UP_SPRITE = new Identifier("transferable_list/move_up");
-        static final Identifier MOVE_DOWN_HIGHLIGHTED_SPRITE = new Identifier("transferable_list/move_down_highlighted");
-        static final Identifier MOVE_DOWN_SPRITE = new Identifier("transferable_list/move_down");
+        static final Identifier MOVE_UP_HIGHLIGHTED_SPRITE = Identifier.of("transferable_list/move_up_highlighted");
+        static final Identifier MOVE_UP_SPRITE = Identifier.of("transferable_list/move_up");
+        static final Identifier MOVE_DOWN_HIGHLIGHTED_SPRITE = Identifier.of("transferable_list/move_down_highlighted");
+        static final Identifier MOVE_DOWN_SPRITE = Identifier.of("transferable_list/move_down");
         private final Account account;
         private SkinTextures skin;
 

@@ -2,13 +2,14 @@
   "required": true,
   "minVersion": "0.8",
   "package": "ch.loewe.normal_use_client.fabricclient.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "Errors$MinecraftClientHttpExceptionMixin"
   ],
   "client": [
     "ConnectMixin",
     "DisconnectMixin",
+    "DisconnectPacketMixin",
     "Errors",
     "Errors$KeyPairMixin",
     "Errors$RealmsClientMixin",

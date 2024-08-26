@@ -100,7 +100,7 @@ public class PlayerHandler {
 
                 capeImage.close();
                 this.setHasInfo(true);
-                this.applyTexture(new Identifier("loewe", "capes/" + this.playerUUID), imgNew);
+                this.applyTexture(Identifier.of("loewe", "capes/" + this.playerUUID), imgNew);
                 this.setHasStaticCape(true);
                 this.setHasAnimatedCape(false);
             }
@@ -110,7 +110,7 @@ public class PlayerHandler {
 
     public void applyEars(String ears) {
         NativeImage earImage = this.readTexture(ears);
-        this.applyTexture(new Identifier("loewe", "ears/" + this.playerUUID), earImage);
+        this.applyTexture(Identifier.of("loewe", "ears/" + this.playerUUID), earImage);
         this.setHasEars(true);
     }
 
@@ -122,7 +122,7 @@ public class PlayerHandler {
     }
     private void loadFramesToResource() {
         this.getAnimatedCape().forEach((integer, nativeImage) -> {
-            Identifier currentResource = new Identifier("loewe", String.format("capes/%s/%d", this.playerUUID, integer));
+            Identifier currentResource = Identifier.of("loewe", String.format("capes/%s/%d", this.playerUUID, integer));
             this.applyTexture(currentResource, nativeImage);
         });
     }
@@ -132,17 +132,17 @@ public class PlayerHandler {
             int currentFrameNo = this.lastFrame + 1 > this.getAnimatedCape().size() - 1 ? 0 : this.lastFrame + 1;
             this.lastFrame = currentFrameNo;
             this.lastFrameTime = time;
-            return new Identifier("loewe", String.format("capes/%s/%d", this.playerUUID, currentFrameNo));
+            return Identifier.of("loewe", String.format("capes/%s/%d", this.playerUUID, currentFrameNo));
         } else {
-            return new Identifier("loewe", String.format("capes/%s/%d", this.playerUUID, this.lastFrame));
+            return Identifier.of("loewe", String.format("capes/%s/%d", this.playerUUID, this.lastFrame));
         }
     }
 
     public Identifier getCapeLocation() {
-        return this.hasStaticCape ? new Identifier("loewe", "capes/" + this.playerUUID) : this.hasAnimatedCape ? this.getFrame() : null;
+        return this.hasStaticCape ? Identifier.of("loewe", "capes/" + this.playerUUID) : this.hasAnimatedCape ? this.getFrame() : null;
     }
     public Identifier getEarLocation() {
-        return this.hasEars ? new Identifier("loewe", "ears/" + this.playerUUID) : null;
+        return this.hasEars ? Identifier.of("loewe", "ears/" + this.playerUUID) : null;
     }
 
     private void applyTexture(Identifier resourceLocation, NativeImage nativeImage) {

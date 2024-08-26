@@ -6,8 +6,7 @@ import ch.loewe.normal_use_client.fabricclient.modmenu.Config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 
 import static ch.loewe.normal_use_client.fabricclient.client.FabricClientClient.logger;
 
@@ -21,8 +20,8 @@ public class OpenRGB {
 
             String urlString;
             if (mode.equals("current"))
-                urlString = "http://192.168.100.168:8881/sdk?mode=direct&color=" + hexToRgb(DamageRGB.currentColor) + "&uuid=" + Config.getRgbUuid();
-            else urlString = "http://192.168.100.168:8880/color?color=" + mode + "&uuid=" + Config.getRgbUuid();
+                urlString = "http://" + getIp() + ":8881/sdk?mode=direct&color=" + hexToRgb(DamageRGB.currentColor) + "&uuid=" + Config.getRgbUuid();
+            else urlString = "http://" + getIp() + ":8880/color?color=" + mode + "&uuid=" + Config.getRgbUuid();
             try {
                 URL url = new URL(urlString);
                 URLConnection conn = url.openConnection();
@@ -32,8 +31,10 @@ public class OpenRGB {
                     return;
                 }
                 is.close();
-            } catch (IOException ignored) {}
-            logger.warn("Could not load color " + FabricClientClient.colorMap.get(Config.getStandardColor()));
+            } catch (IOException ignored) {
+                logger.warn("{}: {}", ignored, urlString);
+            }
+            logger.warn("Could not load color {}", FabricClientClient.colorMap.get(Config.getStandardColor()));
         }).start();
     }
 
@@ -45,5 +46,13 @@ public class OpenRGB {
         int g = Integer.parseInt(hex.substring(2, 4), 16);
         int b = Integer.parseInt(hex.substring(4, 6), 16);
         return r + ";" + g + ";" + b;
+    }
+
+    public static String getIp(){
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException ignored) {
+            return "192.168.100.168";
+        }
     }
 }

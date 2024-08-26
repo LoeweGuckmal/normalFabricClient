@@ -5,7 +5,6 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.*;
@@ -14,12 +13,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-    private static final Identifier WINGS_LOCATION = new Identifier("textures/entity/elytra.png");
+    private static final Identifier WINGS_LOCATION = Identifier.of("textures/entity/elytra.png");
     private final ElytraEntityModel<AbstractClientPlayerEntity> elytraModel;
 
     public ElytraLayer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext, EntityModelLoader entityModelSet) {
@@ -45,7 +45,7 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
             this.getContextModel().copyStateTo(this.elytraModel);
             this.elytraModel.setAngles(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
             VertexConsumer vertexConsumer = ItemRenderer.getItemGlintConsumer(bufferIn, this.elytraModel.getLayer(resourcelocation), false, itemStack.hasGlint());
-            this.elytraModel.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.elytraModel.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.DEFAULT_UV);
             poseStack.pop();
         }
 
