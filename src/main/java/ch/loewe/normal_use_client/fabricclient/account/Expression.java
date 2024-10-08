@@ -17,7 +17,7 @@ public class Expression {
     /**
      * Create new expression.
      *
-     * @param expression Expression string
+     * @param expression Expression message
      */
     public Expression(String expression) {
         this.expression = expression.replaceAll("\\s+",""); //Remove all white spaces
@@ -114,7 +114,7 @@ public class Expression {
     /**
      * Parse expression, replacing <code>w</code> with width, <code>h</code> with height.
      *
-     * @param expression Expression string
+     * @param expression Expression message
      * @param width      Screen width
      * @param height     Screen height
      * @return Expression result

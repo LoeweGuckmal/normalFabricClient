@@ -71,9 +71,6 @@ public class FabricClientClient implements ClientModInitializer {
         PayloadTypeRegistry.playS2C().register(HandleServerMessage.StringPayload.ID, HandleServerMessage.StringPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(HandleServerMessage.StringPayload.ID, HandleServerMessage.StringPayload.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(HandleServerMessage.StringPayload.ID, HandleServerMessage::onReceiveMessage);
-        //TODO: ClientPlayNetworking.registerGlobalReceiver(new CustomPayload.Id<>(Identifier.of("monopoly", "loewe")), HandleServerMessage::onReceiveMessage);
-        //ClientPlayNetworking.registerGlobalReceiver(new CustomPayload.Id<>(Identifier.of("monopoly", "loewe")), (client, handler, buf, responseSender) ->
-                //HandleServerMessage.onReceiveMessage(client, handler, new String(removeZerosFromEnd( buf.array())), responseSender));
 
         //Bindings
         settingsKeyBinding = new KeyBinding("loewe.key.settings", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_R, "loewe.category");
@@ -168,11 +165,9 @@ public class FabricClientClient implements ClientModInitializer {
             mc.setScreen(new MonopolyScreen(mc.currentScreen));
         }
         else if (key.equals(propertyKeys.startGame())) {
-            //HandleServerMessage.sendMessage("start_game");
             MonopolyScreen.exeAfterClose = "start_game";
         }
         else if (key.equals(propertyKeys.stopGame())) {
-            //HandleServerMessage.sendMessage("stop_game");
             MonopolyScreen.exeAfterClose = "stop_game";
         }
     }
