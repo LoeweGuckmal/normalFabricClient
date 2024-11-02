@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,8 +20,8 @@ import static ch.loewe.normal_use_client.fabricclient.loewe.DamageRGB.damageRGB;
 public abstract class HealthMixin {
     private static int oldHealth = 10000;
 
-    @Inject(method = "damage(Lnet/minecraft/entity/damage/DamageSource;F)Z", at = @At("RETURN"))
-    private void onDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "damage(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/damage/DamageSource;F)Z", at = @At("RETURN"))
+    private void onDamage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if ((LivingEntity) (Object) this instanceof PlayerEntity player && isLocalPlayer(player)) {
             damageRGB(false);
             oldHealth = (int) Math.ceil(player.getHealth()) + (int) Math.ceil(player.getAbsorptionAmount());

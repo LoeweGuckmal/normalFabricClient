@@ -13,7 +13,10 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.CapeFeatureRenderer;
 import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRendererContext;
+import net.minecraft.client.render.entity.model.ElytraEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin({PlayerEntityRenderer.class})
-public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-    public MixinPlayerEntityRenderer(Context context, PlayerEntityModel<AbstractClientPlayerEntity> entityModel, float f) {
+public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityRenderState, PlayerEntityModel> {
+    public MixinPlayerEntityRenderer(Context context, PlayerEntityModel entityModel, float f) {
         super(context, entityModel, f);
     }
 
@@ -32,18 +35,18 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
             at = {@At("RETURN")}
     )
     private void construct(Context ctm, boolean alex, CallbackInfo info) {
-        this.addFeature(new CapeLayer(this));
-        this.addFeature(new Deadmau5(this));
-        this.addFeature(new ElytraLayer(this, ctm.getModelLoader()));
-        this.features.removeIf((modelFeature) -> modelFeature instanceof ElytraFeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>);
-        this.features.removeIf((modelFeature) -> modelFeature instanceof CapeFeatureRenderer);
+        //this.addFeature(new CapeLayer(this));
+        //this.addFeature(new Deadmau5(this));
+        //this.addFeature(new ElytraLayer(this, ctm.getModelLoader()));
+        //this.features.removeIf((modelFeature) -> modelFeature instanceof ElytraFeatureRenderer<PlayerEntityRenderState, PlayerEntityModel>);
+        //this.features.removeIf((modelFeature) -> modelFeature instanceof CapeFeatureRenderer);
     }
 
-    @Inject(
+    /*@Inject(
             method = {"render"},
             at = {@At("RETURN")}
     )
     private void render(AbstractClientPlayerEntity abstractClientPlayer, float f, float g, MatrixStack poseStack, VertexConsumerProvider multiBufferSource, int i, CallbackInfo ci) {
         CompatHooks.getHooks().forEach((hook) -> hook.onPlayerRender(abstractClientPlayer));
-    }
+    }*/
 }

@@ -3,6 +3,7 @@ package ch.loewe.normal_use_client.fabricclient.cape;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,6 +47,10 @@ public class PlayerHandler {
         return playerHandler == null ? new PlayerHandler(player) : playerHandler;
     }
 
+    public static PlayerHandler getFromPlayer(PlayerEntityRenderState player) {
+        return null;
+    }
+
     private NativeImage readTexture(String textureBase64) {
         try {
             byte[] imgBytes = Base64.getDecoder().decode(textureBase64);
@@ -70,7 +75,7 @@ public class PlayerHandler {
 
                     for (int x = 0; x < frame.getWidth(); ++x) {
                         for (int y = 0; y < frame.getHeight(); ++y) {
-                            frame.setColor(x, y, capeImage.getColor(x, y + currentFrame * imageHeigt));
+                            frame.setColorArgb(x, y, capeImage.getColorArgb(x, y + currentFrame * imageHeigt));
                         }
                     }
 
@@ -94,7 +99,7 @@ public class PlayerHandler {
 
                 for (int x = 0; x < capeImage.getWidth(); ++x) {
                     for (int y = 0; y < capeImage.getHeight(); ++y) {
-                        imgNew.setColor(x, y, capeImage.getColor(x, y));
+                        imgNew.setColorArgb(x, y, capeImage.getColorArgb(x, y));
                     }
                 }
 

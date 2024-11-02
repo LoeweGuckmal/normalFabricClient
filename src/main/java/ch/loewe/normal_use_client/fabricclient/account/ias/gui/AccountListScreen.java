@@ -5,6 +5,7 @@ import ch.loewe.normal_use_client.fabricclient.account.account.Account;
 import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
 import ch.loewe.normal_use_client.fabricclient.mixin.MinecraftAccessor;
 import com.mojang.authlib.minecraft.UserApiService;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.RunArgs;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -13,6 +14,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.network.SocialInteractionsManager;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.session.ProfileKeysImpl;
 import net.minecraft.client.session.Session;
@@ -30,6 +33,7 @@ import org.lwjgl.glfw.GLFW;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 public class AccountListScreen extends Screen {
     private static long nextSkinUpdate = System.currentTimeMillis();
@@ -86,29 +90,30 @@ public class AccountListScreen extends Screen {
         super.render(ctx, mx, my, delta);
         ctx.drawCenteredTextWithShadow(textRenderer, this.title, this.width / 2, 4, -1);
         if (list.getSelectedOrNull() != null) {
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             SkinTextures skin = list.getSelectedOrNull().skin();
             boolean slim = skin.model() == SkinTextures.Model.SLIM;
             Identifier skinTexture = skin.texture();
             MatrixStack ms = ctx.getMatrices();
             ms.push();
-            ms.scale(4, 4, 4);
-            ms.translate(1, height / 8D - 16D - 4D, 0);
-            ctx.drawTexture(skinTexture, 4, 0, 8, 8, 8, 8, 64, 64); // Head
-            ctx.drawTexture(skinTexture, 4, 8, 20, 20, 8, 12, 64, 64); // Body
-            ctx.drawTexture(skinTexture, slim ? 1 : 0, 8, 44, 20, slim ? 3 : 4, 12, 64, 64); // Right Arm (Left from our perspective)
-            ctx.drawTexture(skinTexture, 12, 8, 36, 52, slim ? 3 : 4, 12, 64, 64); // Left Arm (Right from our perspective)
-            ctx.drawTexture(skinTexture, 4, 20, 4, 20, 4, 12, 64, 64); // Right Leg (Left from our perspective)
-            ctx.drawTexture(skinTexture, 8, 20, 20, 52, 4, 12, 64, 64); // Left Leg (Right from our perspective)
+            ms.scale(4.0F, 4.0F, 4.0F);
+            ms.translate(1.0D, (double)this.height / 8.0D - 16.0D - 4.0D, 0.0D);
+            ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 4, 0, 8, 8, 8, 8, 64, 64); // Head
+            ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 4, 8, 20, 20, 8, 12, 64, 64); // Body
+            ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, slim ? 1 : 0, 8, 44, 20, slim ? 3 : 4, 12, 64, 64); // Right Arm (Left from our perspective)
+            ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 12, 8, 36, 52, slim ? 3 : 4, 12, 64, 64); // Left Arm (Right from our perspective)
+            ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 4, 20, 4, 20, 4, 12, 64, 64); // Right Leg (Left from our perspective)
+            ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 8, 20, 20, 52, 4, 12, 64, 64); // Left Leg (Right from our perspective)
             if (client.options.isPlayerModelPartEnabled(PlayerModelPart.HAT))
-                ctx.drawTexture(skinTexture, 4, 0, 40, 8, 8, 8, 64, 64); // Head (Overlay)
+                ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 4, 0, 40, 8, 8, 8, 64, 64); // Head (Overlay)
             if (client.options.isPlayerModelPartEnabled(PlayerModelPart.RIGHT_SLEEVE))
-                ctx.drawTexture(skinTexture, slim ? 1 : 0, 8, 44, 36, slim ? 3 : 4, 12, 64, 64); // Right Arm (Overlay)
+                ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, slim ? 1 : 0, 8, 44, 36, slim ? 3 : 4, 12, 64, 64); // Right Arm (Overlay)
             if (client.options.isPlayerModelPartEnabled(PlayerModelPart.LEFT_SLEEVE))
-                ctx.drawTexture(skinTexture, 12, 8, 52, 52, slim ? 3 : 4, 12, 64, 64); // Left Arm (Overlay)
+                ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 12, 8, 52, 52, slim ? 3 : 4, 12, 64, 64); // Left Arm (Overlay)
             if (client.options.isPlayerModelPartEnabled(PlayerModelPart.RIGHT_PANTS_LEG))
-                ctx.drawTexture(skinTexture, 4, 20, 4, 36, 4, 12, 64, 64); // Right Leg (Overlay)
+                ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 4, 20, 4, 36, 4, 12, 64, 64); // Right Leg (Overlay)
             if (client.options.isPlayerModelPartEnabled(PlayerModelPart.LEFT_PANTS_LEG))
-                ctx.drawTexture(skinTexture, 8, 20, 4, 52, 4, 12, 64, 64); // Left Leg (Overlay)
+                ctx.drawTexture(RenderLayer::getGuiTextured, skinTexture, 8, 20, 4, 52, 4, 12, 64, 64); // Left Leg (Overlay)
             ms.pop();
         }
         if (state != null) {

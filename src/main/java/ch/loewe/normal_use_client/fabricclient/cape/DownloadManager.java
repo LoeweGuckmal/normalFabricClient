@@ -194,7 +194,7 @@ public class DownloadManager {
 
                             for (int x = 0; x < frame.getWidth(); ++x) {
                                 for (int y = 0; y < frame.getHeight(); ++y) {
-                                    frame.setColor(x, y, ABGRfromARGB(capeImage.getRGB(x, y + currentFrame * imageHeigt)));
+                                    frame.setColorArgb(x, y, capeImage.getRGB(x, y + currentFrame * imageHeigt));
                                 }
                             }
 
@@ -217,7 +217,7 @@ public class DownloadManager {
 
                         for (int x = 0; x < imageWidth; ++x) {
                             for (int y = 0; y < imageHeight; ++y) {
-                                imgNew.setColor(x, y, ABGRfromARGB(capeImage.getRGB(x, y)));
+                                imgNew.setColorArgb(x, y, capeImage.getRGB(x, y));
                             }
                         }
 

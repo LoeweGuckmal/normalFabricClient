@@ -14,19 +14,19 @@ import static ch.loewe.normal_use_client.fabricclient.zoom.Zoom.*;
 @Environment(EnvType.CLIENT)
 @Mixin({GameRenderer.class})
 public class ZoomMixin {
-    private static double oldZoomLevel = 0;
+    private static float oldZoomLevel = 0;
 
     public ZoomMixin() {
     }
 
     @Inject(
-            method = {"getFov(Lnet/minecraft/client/render/Camera;FZ)D"},
+            method = {"getFov(Lnet/minecraft/client/render/Camera;FZ)F"},
             at = {@At("RETURN")},
             cancellable = true
     )
-    public void getZoomLevel(CallbackInfoReturnable<Double> callbackInfo) {
+    public void getZoomLevel(CallbackInfoReturnable<Float> callbackInfo) {
         if (Zoom.isZooming()) {
-            double fov = callbackInfo.getReturnValue();
+            float fov = callbackInfo.getReturnValue();
             if (zoomLevel > 1)
                 zoomLevel = 1;
             if (zoomLevel < 9.12575328614815E-5D)
@@ -36,8 +36,8 @@ public class ZoomMixin {
                 if (zoom_X > 10000)
                     zoom_X = 10000;
             }
-            oldZoomLevel = zoomLevel;
-            callbackInfo.setReturnValue(fov * zoomLevel);
+            oldZoomLevel = (float) zoomLevel;
+            callbackInfo.setReturnValue((float) (fov * zoomLevel));
         }
 
         Zoom.manageSmoothCamera();

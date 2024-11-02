@@ -17,26 +17,22 @@ import static ch.loewe.normal_use_client.fabricclient.zoom.Zoom.zoomLevel;
 @Mixin({Mouse.class})
 public class MouseMixin {
 
-    @Shadow private double eventDeltaVerticalWheel;
+    //@Shadow private double eventDeltaVerticalWheel;
 
     public MouseMixin() {
     }
 
     @Inject(
             method = {"onMouseScroll"},
-            at = {@At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/client/Mouse;eventDeltaVerticalWheel:D",
-                    ordinal = 7
-            )},
+            at = {@At("HEAD")},
             cancellable = true
     )
-    private void scrollStepCounter(CallbackInfo ci) {
+    private void scrollStepCounter(long window, double horizontal, double vertical, CallbackInfo ci) {
         if (Zoom.isZooming()) {
-            double amount = zoomLevel / 10;
+            double amount = zoomLevel / 10D;
             if (zoomLevel > 0.3D)
                 amount = 0.03D;
-            zoomLevel = eventDeltaVerticalWheel > 0D ? zoomLevel - amount : zoomLevel + amount;
+            zoomLevel = vertical > 0D ? zoomLevel - amount : zoomLevel + amount;
             ci.cancel();
         }
     }

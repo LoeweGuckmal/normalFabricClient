@@ -8,6 +8,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
@@ -17,12 +18,60 @@ import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
-public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-    public CapeLayer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext) {
+public class CapeLayer extends FeatureRenderer<PlayerEntityRenderState, PlayerEntityModel> {
+    public CapeLayer(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
         super(featureRendererContext);
     }
 
-    public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
+    @Override
+    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+        //PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
+        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(state);
+        if (!state.invisible
+                && state.capeVisible && (state.skinTextures.capeTexture() != null)) {
+                //|| playerHandler.getCapeLocation() != null)) {
+            ItemStack itemStack = state.equippedChestStack;
+            if (!itemStack.isOf(Items.ELYTRA)) {
+                matrices.push();
+                matrices.translate(0.0F, 0.0F, 0.125F);
+                double d = 0.0;
+                double e = 0;
+                double m = 0;
+                float n = MathHelper.lerpAngleDegrees(limbDistance, state.bodyYaw, state.bodyYaw);
+                double o = MathHelper.sin(n * 0.017453292F);
+                double p = -MathHelper.cos(n * 0.017453292F);
+                float q = (float)e * 10.0F;
+                q = MathHelper.clamp(q, -6.0F, 32.0F);
+                float r = (float)(d * o + m * p) * 100.0F;
+                r = MathHelper.clamp(r, 0.0F, 150.0F);
+                float s = (float)(d * p - m * o) * 100.0F;
+                s = MathHelper.clamp(s, -20.0F, 20.0F);
+                if (r < 0.0F) {
+                    r = 0.0F;
+                }
+
+                float t = 2;
+                q += MathHelper.sin(3 * 6.0F) * 32.0F * t;
+                if (state.isInSneakingPose) {
+                    q += 25.0F;
+                }
+
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(6.0F + r / 2.0F + q));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(s / 2.0F));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - s / 2.0F));
+                VertexConsumer vertexConsumer;
+                if (false) {//playerHandler.getCapeLocation() != null) {
+                    //vertexConsumer = ItemRenderer.getItemGlintConsumer(vertexConsumers, RenderLayer.getEntitySolid(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+                } else {
+                    vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntitySolid(state.skinTextures.capeTexture()));
+                }
+                this.getContextModel().render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
+                matrices.pop();
+            }
+        }
+    }
+
+    /*public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float h) {
         PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
         if (!abstractClientPlayerEntity.isInvisible()
                 && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && (abstractClientPlayerEntity.getSkinTextures().capeTexture() != null
@@ -67,6 +116,6 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
             }
         }
 
-    }
+    }*/
 }
 

@@ -8,6 +8,7 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.SkinTextures;
@@ -87,19 +88,19 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
             if (client.getSession().getUsername().equals(account.name())) color = 0x00FF00;
             ctx.drawTextWithShadow(client.textRenderer, account.name(), x + 10, y + 1, color);
             Identifier tex = skin.texture();
-            ctx.drawTexture(tex, x, y + 1, 8, 8, 8, 8, 64, 64); // Head
+            ctx.drawTexture(RenderLayer::getGuiTextured, tex, x, y + 1, 8, 8, 8, 8, 64, 64); // Head
             if (client.options.isPlayerModelPartEnabled(PlayerModelPart.HAT))
-                ctx.drawTexture(tex, x, y + 1, 40, 8, 8, 8, 64, 64); // Head (Overlay)
+                ctx.drawTexture(RenderLayer::getGuiTextured, tex, x, y + 1, 40, 8, 8, 8, 64, 64); // Head (Overlay)
             if (getSelectedOrNull() == this) {
                 boolean movableDown = i + 1 < children().size();
                 boolean movableUp = i > 0;
                 if (movableDown) {
                     boolean hoveredDown = mx > x + w - 16 && mx < x + w - 6 && hover;
-                    ctx.drawGuiTexture(hoveredDown ? MOVE_DOWN_HIGHLIGHTED_SPRITE : MOVE_DOWN_SPRITE, x + w - 35, y - 18, 32, 32);
+                    ctx.drawGuiTexture(RenderLayer::getGuiTextured, hoveredDown ? MOVE_DOWN_HIGHLIGHTED_SPRITE : MOVE_DOWN_SPRITE, x + w - 35, y - 18, 32, 32);
                 }
                 if (movableUp) {
                     boolean hoveredUp = mx > x + w - (movableDown ? 28 : 16) && mx < x + w - (movableDown ? 16 : 6) && hover;
-                    ctx.drawGuiTexture(hoveredUp ? MOVE_UP_HIGHLIGHTED_SPRITE : MOVE_UP_SPRITE, x + w - (movableDown ? 30 : 19) - 16, y - 3, 96, 32, 32);
+                    ctx.drawGuiTexture(RenderLayer::getGuiTextured, hoveredUp ? MOVE_UP_HIGHLIGHTED_SPRITE : MOVE_UP_SPRITE, x + w - (movableDown ? 30 : 19) - 16, y - 3, 32, 32);
                 }
             }
         }
