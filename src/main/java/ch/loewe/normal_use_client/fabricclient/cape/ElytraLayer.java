@@ -23,7 +23,7 @@ public class ElytraLayer extends FeatureRenderer<PlayerEntityRenderState, Elytra
     private static final Identifier WINGS_LOCATION = Identifier.of("textures/entity/elytra.png");
     private final ElytraEntityModel elytraModel;
 
-    public ElytraLayer(FeatureRendererContext<PlayerEntityRenderState, ElytraEntityModel> featureRendererContext, EntityModelLoader entityModelSet) {
+    public ElytraLayer(FeatureRendererContext<PlayerEntityRenderState, ElytraEntityModel> featureRendererContext, LoadedEntityModels entityModelSet) {
         super(featureRendererContext);
         this.elytraModel = new ElytraEntityModel(entityModelSet.getModelPart(EntityModelLayers.ELYTRA));
     }

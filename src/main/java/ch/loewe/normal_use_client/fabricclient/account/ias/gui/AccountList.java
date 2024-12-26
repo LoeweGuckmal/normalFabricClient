@@ -4,6 +4,7 @@ import ch.loewe.normal_use_client.fabricclient.account.Config;
 import ch.loewe.normal_use_client.fabricclient.account.SharedIAS;
 import ch.loewe.normal_use_client.fabricclient.account.account.Account;
 import ch.loewe.normal_use_client.fabricclient.account.ias.IAS;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -18,6 +19,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.AccountEntry> {
@@ -63,14 +65,14 @@ public class AccountList extends AlwaysSelectedEntryListWidget<AccountList.Accou
             skin = DefaultSkinHelper.getSkinTextures(account.uuid());
             CompletableFuture.supplyAsync(() -> {
                 ProfileResult result = client.getSessionService().fetchProfile(account.uuid(), false);
-                if (result == null) return null;
-                return result.profile();
+                if (result == null) return Optional.empty();
+                return Optional.ofNullable(result.profile());
             }, SharedIAS.EXECUTOR).thenComposeAsync(profile -> {
-                if (profile == null) return CompletableFuture.completedFuture(DefaultSkinHelper.getSkinTextures(account.uuid()));
-                return client.getSkinProvider().fetchSkinTextures(profile);
+                if (profile.isEmpty()) return CompletableFuture.completedFuture(Optional.of(DefaultSkinHelper.getSkinTextures(account.uuid())));
+                return client.getSkinProvider().fetchSkinTextures((GameProfile) profile.orElse(null)); // Unwrap the Optional
             }, client).thenAcceptAsync(skin -> {
-                this.skin = skin;
-                IAS.SKIN_CACHE.put(account.uuid(), skin);
+                this.skin = skin.orElse(DefaultSkinHelper.getSkinTextures(account.uuid()));
+                IAS.SKIN_CACHE.put(account.uuid(), skin.orElse(DefaultSkinHelper.getSkinTextures(account.uuid())));
             }, client);
         }
 

@@ -7,9 +7,7 @@ import net.minecraft.client.realms.RealmsClient;
 import net.minecraft.client.realms.Request;
 import net.minecraft.client.realms.exception.RealmsServiceException;
 import net.minecraft.client.session.ProfileKeysImpl;
-import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.client.texture.MissingSprite;
-import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.texture.*;
 import net.minecraft.network.encryption.NetworkEncryptionException;
 import net.minecraft.network.encryption.PlayerKeyPair;
 import net.minecraft.resource.ResourceManager;
@@ -23,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -75,18 +74,16 @@ public abstract class Errors {
     public abstract static class TextureManagerMixin {
         @Shadow @Final private ResourceManager resourceContainer;
 
-        @Inject(method = "loadTexture", at = @At("HEAD"), cancellable = true)
-        private void inject(Identifier id, AbstractTexture texture, CallbackInfoReturnable<AbstractTexture> cir) {
-            AbstractTexture abstractTexture = null;
-            try {
-                texture.load(resourceContainer);
-                abstractTexture = texture;
-            } catch (IOException var6) {
-                if (id != MISSING_IDENTIFIER) {
-                    //LOGGER.warn("Failed to load texture: {}", id, var6);
-                }
+        @Shadow
+        private static TextureContents loadTexture(ResourceManager resourceManager, Identifier id, ReloadableTexture texture) {
+            return null;
+        }
 
-                abstractTexture = MissingSprite.getMissingSpriteTexture();
+        @Inject(method = "loadTexture", at = @At("HEAD"), cancellable = true)
+        private void inject(Identifier id, ReloadableTexture texture, CallbackInfoReturnable<TextureContents> cir) {
+            TextureContents abstractTexture = null;
+            try {
+                abstractTexture = loadTexture(this.resourceContainer, id, texture);
             } catch (Throwable ignored) {}
             cir.setReturnValue(abstractTexture);
             cir.cancel();
